@@ -6,3 +6,4 @@ node_modules/
 
 electron/webpack.config.js
 electron-webpack.js
+webpack.config.js

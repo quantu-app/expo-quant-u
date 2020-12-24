@@ -7,8 +7,8 @@ export {
   Consumer,
   Context,
   connect,
-  IState,
 } from "./lib/state";
+export type { IState } from "./lib/state";
 
 export { screenSize };
 export { forms };

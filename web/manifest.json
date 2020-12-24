@@ -1,0 +1,9 @@
+{
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "lang": "en",
+  "name": "MathCafe",
+  "short_name": "MathCafe",
+  "start_url": "/?utm_source=web_app_manifest",
+  "orientation": "portrait"
+}

@@ -19,6 +19,7 @@ test:
 pages:
   stage: deploy
   script:
+    - npm install expo-cli -g
     - npm run build.web
     - mv ./web-build ./public
   artifacts:
