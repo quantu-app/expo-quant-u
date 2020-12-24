@@ -1,6 +1,5 @@
 {
   "private": true,
-  "homepage": "https://aicacia.gitlab.io/expo-mathcafe/",
   "name": "expo-mathcafe",
   "version": "0.1.0",
   "main": "node_modules/expo/AppEntry.js",
