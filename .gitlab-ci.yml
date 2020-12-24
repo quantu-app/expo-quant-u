@@ -1,0 +1,26 @@
+image: node:14
+
+stages:
+  - test
+  - deploy
+
+before_script:
+  - npm install
+
+cache:
+  paths:
+    - node_modules/
+
+test:
+  stage: test
+  script:
+    - npm run lint
+
+pages:
+  stage: deploy
+  script:
+    - npm run build.web
+    - mv ./web-build ./public
+  artifacts:
+    paths:
+      - public

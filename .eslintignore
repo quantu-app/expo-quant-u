@@ -1,0 +1,8 @@
+.expo/
+.vscode/
+dist/
+src/
+node_modules/
+
+electron/webpack.config.js
+electron-webpack.js
