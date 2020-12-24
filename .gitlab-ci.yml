@@ -6,6 +6,7 @@ stages:
 
 before_script:
   - npm install
+  - npm install expo-cli -g
 
 cache:
   paths:
@@ -19,9 +20,8 @@ test:
 pages:
   stage: deploy
   script:
-    - npm install expo-cli -g
     - npm run build.web
-    - mv ./web-build ./public
+    - mv web-build public
   artifacts:
     paths:
       - public
