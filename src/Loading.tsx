@@ -1,5 +1,4 @@
-import { View, StyleSheet } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -12,7 +11,7 @@ const styles = StyleSheet.create({
 
 export function Loading() {
   return (
-    <View style={styles.container}>
+    <View>
       <ActivityIndicator />
     </View>
   );

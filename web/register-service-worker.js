@@ -6,7 +6,7 @@ if ("serviceWorker" in navigator) {
       .register("SW_PUBLIC_URL/expo-service-worker.js", {
         scope: "SW_PUBLIC_SCOPE",
       })
-      .then(function (_info) {
+      .then(function (info) {
         // console.info('Registered service-worker', info);
       })
       .catch(function (error) {
