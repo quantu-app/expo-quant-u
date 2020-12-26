@@ -1,4 +1,5 @@
-import { View, Text } from "react-native";
+import { View, Text } from "native-base";
+import { Layout } from "./Layout";
 
 const RE_NEWLINE = /[^\r\n]+/g;
 
@@ -10,7 +11,7 @@ export function JSError(props: IJSErrorProps) {
   console.error(props.error);
 
   return (
-    <View>
+    <Layout>
       <Text>{props.error.name}</Text>
       <Text>{props.error.message}</Text>
       <View>
@@ -18,6 +19,6 @@ export function JSError(props: IJSErrorProps) {
           <Text key={index}>{line}</Text>
         ))}
       </View>
-    </View>
+    </Layout>
   );
 }

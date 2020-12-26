@@ -1,31 +1,16 @@
-import { Text, Image, View, Button } from "react-native";
-import {
-  selectHeight,
-  selectWidth,
-} from "../../state/lib/screenSize/selectors";
-import { IState, useState } from "../../state";
+import { Image } from "react-native";
+import { Text, View, Button } from "native-base";
 import bg from "../../../assets/bg.jpg";
-
-function mapStateToProps(state: IState) {
-  return {
-    width: selectWidth(state),
-    height: selectHeight(state),
-  };
-}
+import app from "../../../app.json";
+import { Layout } from "../../Layout";
 
 export function Home() {
-  const props = useState(mapStateToProps);
-
-  function onCoursesPress() {
-    console.log("Go to Courses");
-  }
+  function onCoursesPress() {}
 
   return (
-    <View>
+    <Layout>
       <View>
-        <Text>
-          Math Cafe - {props.width} {props.height}
-        </Text>
+        <Text>{app.expo.name}</Text>
       </View>
       <View>
         <View>
@@ -36,7 +21,7 @@ export function Home() {
             reasoning and quantitative skills.
           </Text>
           <Text>
-            <Button title="Courses" onPress={onCoursesPress} />
+            <Button onPress={onCoursesPress}>Courses</Button>
           </Text>
         </View>
         <View>
@@ -44,8 +29,10 @@ export function Home() {
         </View>
       </View>
       <View>
-        <Text>&copy; Quant University 2020</Text>
+        <Text>
+          &copy; {app.expo.name} {new Date().getFullYear()}
+        </Text>
       </View>
-    </View>
+    </Layout>
   );
 }

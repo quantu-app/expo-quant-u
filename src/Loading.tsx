@@ -1,4 +1,5 @@
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { StyleSheet } from "react-native";
+import { View, Spinner } from "native-base";
 
 const styles = StyleSheet.create({
   container: {
@@ -11,8 +12,8 @@ const styles = StyleSheet.create({
 
 export function Loading() {
   return (
-    <View>
-      <ActivityIndicator />
+    <View style={styles.container}>
+      <Spinner />
     </View>
   );
 }
