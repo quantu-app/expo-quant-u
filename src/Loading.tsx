@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
-import { View, Spinner } from "native-base";
+import { StyleSheet, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
 export function Loading() {
   return (
     <View style={styles.container}>
-      <Spinner />
+      <ActivityIndicator />
     </View>
   );
 }

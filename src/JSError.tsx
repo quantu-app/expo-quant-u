@@ -1,4 +1,5 @@
-import { View, Text } from "native-base";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 import { Layout } from "./Layout";
 
 const RE_NEWLINE = /[^\r\n]+/g;

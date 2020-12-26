@@ -1,5 +1,4 @@
-import { StyleSheet } from "react-native";
-import { Container } from "native-base";
+import { StyleSheet, View } from "react-native";
 import { ReactNode } from "react";
 
 const styles = StyleSheet.create({
@@ -11,7 +10,7 @@ const styles = StyleSheet.create({
   },
   layout: {
     flex: 1,
-    maxWidth: 768,
+    maxWidth: 1080,
   },
 });
 
@@ -21,8 +20,8 @@ export interface ILayoutProps {
 
 export function Layout(props: ILayoutProps) {
   return (
-    <Container style={styles.container}>
-      <Container style={styles.layout}>{props.children}</Container>
-    </Container>
+    <View style={styles.container}>
+      <View style={styles.layout}>{props.children}</View>
+    </View>
   );
 }
