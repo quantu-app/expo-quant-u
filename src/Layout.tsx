@@ -4,10 +4,10 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { ReactNode } from "react";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Appbar } from "react-native-paper";
 import app from "../app.json";
-import { isLargeScreen } from "./isLargeScreen";
+import { MAX_WIDTH } from "./screens";
 import { ParamList } from "./Navigation";
 
 const styles = StyleSheet.create({
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   layout: {
     flex: 1,
-    maxWidth: 1080,
+    maxWidth: MAX_WIDTH,
   },
 });
 

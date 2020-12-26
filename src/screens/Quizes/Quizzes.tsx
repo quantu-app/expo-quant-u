@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Home() {
+export function Quizzes() {
   return (
     <Layout>
       <View style={styles.container}>

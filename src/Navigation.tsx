@@ -7,14 +7,17 @@ import {
   DrawerContentOptions,
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
+import { QuizzesScreen } from "./screens/Quizes/QuizzesScreen";
 import { StyleSheet, View } from "react-native";
 import { Drawer } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 
-const HOME_PAGE = "Home";
+const HOME_SCREEN = "Home",
+  QUIZZES_SCREEN = "Quizzes";
 
 export type ParamList = {
-  [HOME_PAGE]: undefined;
+  [HOME_SCREEN]: undefined;
+  [QUIZZES_SCREEN]: undefined;
 };
 
 export const DrawerNavigator = createDrawerNavigator<ParamList>();
@@ -30,11 +33,12 @@ export function Navigation() {
 export function AppDrawer() {
   return (
     <DrawerNavigator.Navigator
-      initialRouteName={HOME_PAGE}
+      initialRouteName={HOME_SCREEN}
       drawerType="back"
       drawerContent={DrawerContent}
     >
-      <DrawerNavigator.Screen name={HOME_PAGE} component={HomeScreen} />
+      <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
+      <DrawerNavigator.Screen name={QUIZZES_SCREEN} component={QuizzesScreen} />
     </DrawerNavigator.Navigator>
   );
 }
@@ -59,8 +63,15 @@ function DrawerContent(
             icon={({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />
             )}
-            label={HOME_PAGE}
-            onPress={() => props.navigation.jumpTo(HOME_PAGE)}
+            label={HOME_SCREEN}
+            onPress={() => props.navigation.jumpTo(HOME_SCREEN)}
+          />
+          <DrawerItem
+            icon={({ color, size }) => (
+              <Foundation name="page-multiple" color={color} size={size} />
+            )}
+            label={QUIZZES_SCREEN}
+            onPress={() => props.navigation.jumpTo(QUIZZES_SCREEN)}
           />
         </Drawer.Section>
       </View>
