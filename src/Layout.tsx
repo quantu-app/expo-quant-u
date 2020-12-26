@@ -1,5 +1,14 @@
-import { StyleSheet, View } from "react-native";
+import {
+  DrawerActionHelpers,
+  NavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
 import { ReactNode } from "react";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { Appbar } from "react-native-paper";
+import app from "../app.json";
+import { isLargeScreen } from "./isLargeScreen";
+import { ParamList } from "./Navigation";
 
 const styles = StyleSheet.create({
   container: {
@@ -19,9 +28,18 @@ export interface ILayoutProps {
 }
 
 export function Layout(props: ILayoutProps) {
+  const navigation: NavigationProp<ParamList> &
+    DrawerActionHelpers<ParamList> = useNavigation();
+
   return (
-    <View style={styles.container}>
-      <View style={styles.layout}>{props.children}</View>
-    </View>
+    <>
+      <Appbar.Header>
+        <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
+        <Appbar.Content title={app.expo.name} />
+      </Appbar.Header>
+      <View style={styles.container}>
+        <View style={styles.layout}>{props.children}</View>
+      </View>
+    </>
   );
 }

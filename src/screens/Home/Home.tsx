@@ -1,5 +1,5 @@
 import { StyleSheet, Image, View } from "react-native";
-import { Text, Button, Appbar } from "react-native-paper";
+import { Text, Button } from "react-native-paper";
 import bg from "../../../assets/bg.jpg";
 import app from "../../../app.json";
 import { Layout } from "../../Layout";
@@ -28,39 +28,30 @@ const styles = StyleSheet.create({
 });
 
 export function Home() {
-  function onCoursesPress() {}
-
   return (
-    <>
-      <Appbar.Header>
-        <Appbar.Content title={app.expo.name} />
-      </Appbar.Header>
-      <Layout>
-        <View style={styles.container}>
-          <View style={styles.gird}>
-            <View style={styles.half}>
-              <Text>Lifelong Learning</Text>
-              <Text>
-                With our open platform designed for deep thinkers and lifelong
-                learners, you can build, train and iteratively improve your
-                reasoning and quantitative skills.
-              </Text>
-              &nbsp;
-              <Button mode="contained" onPress={onCoursesPress}>
-                Courses
-              </Button>
-            </View>
-            <View style={styles.half}>
-              <Image source={bg} style={styles.image} />
-            </View>
+    <Layout>
+      <View style={styles.container}>
+        <View style={styles.gird}>
+          <View style={styles.half}>
+            <Text>Lifelong Learning</Text>
+            <Text>
+              With our open platform designed for deep thinkers and lifelong
+              learners, you can build, train and iteratively improve your
+              reasoning and quantitative skills.
+            </Text>
+            &nbsp;
+            <Button mode="contained">Courses</Button>
+          </View>
+          <View style={styles.half}>
+            <Image source={bg} style={styles.image} resizeMode="contain" />
           </View>
         </View>
-        <View style={styles.footer}>
-          <Text>
-            &copy; {app.expo.name} {new Date().getFullYear()}
-          </Text>
-        </View>
-      </Layout>
-    </>
+      </View>
+      <View style={styles.footer}>
+        <Text>
+          &copy; {app.expo.name} {new Date().getFullYear()}
+        </Text>
+      </View>
+    </Layout>
   );
 }

@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Text } from "react-native-paper";
+import { Title, Headline, Text } from "react-native-paper";
 import { Layout } from "./Layout";
 
 const RE_NEWLINE = /[^\r\n]+/g;
@@ -13,8 +13,8 @@ export function JSError(props: IJSErrorProps) {
 
   return (
     <Layout>
-      <Text>{props.error.name}</Text>
-      <Text>{props.error.message}</Text>
+      <Title>{props.error.name}</Title>
+      <Headline>{props.error.message}</Headline>
       <View>
         {(props.error.stack || "").split(RE_NEWLINE).map((line, index) => (
           <Text key={index}>{line}</Text>
