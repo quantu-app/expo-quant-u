@@ -3,11 +3,10 @@ import {
   NavigationProp,
   useNavigation,
 } from "@react-navigation/native";
-import { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { Appbar } from "react-native-paper";
 import app from "../app.json";
-import { MAX_WIDTH } from "./screens";
+import { LARGE_WIDTH } from "./screens";
 import { ParamList } from "./Navigation";
 
 const styles = StyleSheet.create({
@@ -19,12 +18,14 @@ const styles = StyleSheet.create({
   },
   layout: {
     flex: 1,
-    maxWidth: MAX_WIDTH,
+    maxWidth: LARGE_WIDTH,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
 });
 
 export interface ILayoutProps {
-  children: ReactNode;
+  children: JSX.Element | Array<JSX.Element>;
 }
 
 export function Layout(props: ILayoutProps) {

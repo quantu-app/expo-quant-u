@@ -12,8 +12,9 @@ import { StyleSheet, View } from "react-native";
 import { Drawer } from "react-native-paper";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 
-const HOME_SCREEN = "Home",
-  QUIZZES_SCREEN = "Quizzes";
+export const HOME_SCREEN = "Home",
+  QUIZZES_SCREEN = "Quizzes",
+  DEFAULT_SCREEN = QUIZZES_SCREEN;
 
 export type ParamList = {
   [HOME_SCREEN]: undefined;
@@ -33,8 +34,8 @@ export function Navigation() {
 export function AppDrawer() {
   return (
     <DrawerNavigator.Navigator
-      initialRouteName={HOME_SCREEN}
-      drawerType="back"
+      initialRouteName={DEFAULT_SCREEN}
+      drawerType="front"
       drawerContent={DrawerContent}
     >
       <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
