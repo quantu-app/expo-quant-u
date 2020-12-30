@@ -22,7 +22,11 @@ export type ParamList = {
 };
 
 export const linking = {
-  prefixes: ["https://mathcafe.com", "mathcafe://"],
+  prefixes: [
+    "https://mathcafe.com",
+    "mathcafe://",
+    "https://aicacia.gitlab.io/expo-mathcafe/",
+  ],
   config: {
     screens: {
       [HOME_SCREEN]: "",
