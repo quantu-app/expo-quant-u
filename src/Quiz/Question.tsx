@@ -1,20 +1,18 @@
 import { Record, RecordOf } from "immutable";
 import { useState } from "react";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
-import { Divider, Button } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { Button, Surface } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../quizlib";
-import { isSmallScreen } from "../screens";
 import { Input } from "./Input";
 import { theme } from "../theme";
 
 export interface IQuestionProps<T = any> {
-  onNext(result: [number, number], explained: boolean, correct: boolean): void;
+  onNext(result: RecordOf<IQuestionResult<T>>): void;
   question: QuestionClass<T>;
 }
 
-interface IQuestionState<T = any> {
-  loading: boolean;
+export interface IQuestionResult<T = any> {
   done: boolean;
   changed: boolean;
   value?: T;
@@ -23,8 +21,7 @@ interface IQuestionState<T = any> {
   result: [number, number];
 }
 
-const QuestionState = Record<IQuestionState>({
-  loading: false,
+const QuestionResult = Record<IQuestionResult>({
   done: false,
   changed: false,
   value: null,
@@ -33,52 +30,63 @@ const QuestionState = Record<IQuestionState>({
   result: [0, 0],
 });
 
+interface IQuestionState<T = any> extends IQuestionResult<T> {
+  loading: boolean;
+}
+
+const QuestionState = Record<IQuestionState>({
+  ...QuestionResult().toJS(),
+  loading: false,
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-  },
-  containerSmall: {
-    flexDirection: "column",
+    marginTop: 16,
+    marginBottom: 16,
   },
   content: {
-    flex: 8,
-    marginRight: 16,
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  contentSmall: {
-    flex: 8,
-    marginTop: 16,
-    marginBottom: 16,
+    flex: 1,
   },
   prompt: {
     flex: 1,
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
+    marginTop: 16,
     marginBottom: 16,
-  },
-  explanation: {
-    flex: 1,
-    marginBottom: 16,
-  },
-  answer: {
-    flex: 4,
   },
   input: {
     marginTop: 16,
     marginBottom: 16,
   },
-  buttons: {
+  explanation: {
+    flex: 1,
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
     marginTop: 16,
+    marginBottom: 16,
+  },
+  buttons: {
+    alignItems: "center",
+    justifyContent: "center",
     flexDirection: "row",
   },
-  button: {
-    flex: 1,
+  button: {},
+  results: {
+    alignItems: "center",
+    marginTop: 16,
   },
 });
 
 export function Question<T = any>(props: IQuestionProps<T>) {
-  const dimensions = useWindowDimensions(),
-    [state, setState] = useState<RecordOf<IQuestionState<T>>>(QuestionState());
+  const [state, setState] = useState<RecordOf<IQuestionState<T>>>(
+    QuestionState()
+  );
 
   function onInputChange(value: any) {
     setState(state.set("value", value).set("changed", true));
@@ -115,46 +123,50 @@ export function Question<T = any>(props: IQuestionProps<T>) {
   }
 
   function onNext() {
-    props.onNext(state.result, state.explained, state.correct);
+    props.onNext(QuestionResult(state.toJS()));
   }
 
   return (
-    <View
-      style={
-        isSmallScreen(dimensions.width)
-          ? styles.containerSmall
-          : styles.container
-      }
-    >
-      <View
-        style={
-          isSmallScreen(dimensions.width) ? styles.contentSmall : styles.content
-        }
-      >
-        <View style={styles.prompt}>{props.question.getPrompt()}</View>
-        {state.explained &&
-          props.question
-            .getExplanation()
-            .map((explanation) => (
-              <>
-                <Divider />
-                <View style={styles.explanation}>
-                  <View>{explanation}</View>
-                </View>
-              </>
-            ))
-            .unwrapOr(null as any)}
+    <>
+      <Surface style={styles.prompt}>{props.question.getPrompt()}</Surface>
+      <View style={styles.input}>
+        <Input
+          input={props.question.getInput()}
+          value={state.value}
+          done={state.done}
+          result={state.result}
+          onChange={onInputChange}
+        />
       </View>
-      <View style={styles.answer}>
-        <View style={styles.input}>
-          <Input
-            input={props.question.getInput()}
-            value={state.value}
-            done={state.done}
-            result={state.result}
-            onChange={onInputChange}
-          />
-        </View>
+      <View style={styles.buttons}>
+        {state.done ? (
+          <Button mode="contained" onPress={onNext} style={styles.button}>
+            Next
+          </Button>
+        ) : (
+          <Button
+            mode="contained"
+            loading={state.loading}
+            disabled={!state.changed || state.loading}
+            style={styles.button}
+            onPress={onCheck}
+          >
+            Check
+          </Button>
+        )}
+        {props.question.getExplanation().isSome() && (
+          <Button
+            mode="outlined"
+            loading={state.loading}
+            disabled={state.explained || state.loading}
+            style={styles.button}
+            onPress={onExplain}
+          >
+            Explain
+          </Button>
+        )}
+      </View>
+      <View style={styles.results}>
         {state.done && state.correct && (
           <MaterialCommunityIcons
             name="check"
@@ -162,43 +174,23 @@ export function Question<T = any>(props: IQuestionProps<T>) {
             color={theme.colors.primary}
           />
         )}
-        {state.done && !state.correct && !state.explained && (
+        {state.done && !state.correct && (
           <MaterialCommunityIcons
             name="window-close"
             size={32}
             color={theme.colors.error}
           />
         )}
-        <Divider />
-        <View style={styles.buttons}>
-          {state.done ? (
-            <Button mode="contained" onPress={onNext} style={styles.button}>
-              Next
-            </Button>
-          ) : (
-            <Button
-              mode="contained"
-              loading={state.loading}
-              disabled={!state.changed || state.loading}
-              style={styles.button}
-              onPress={onCheck}
-            >
-              Check
-            </Button>
-          )}
-          {props.question.getExplanation().isSome() && (
-            <Button
-              mode="outlined"
-              loading={state.loading}
-              disabled={state.explained || state.loading}
-              style={styles.button}
-              onPress={onExplain}
-            >
-              Explain
-            </Button>
-          )}
-        </View>
       </View>
-    </View>
+      {state.explained &&
+        props.question
+          .getExplanation()
+          .map((explanation) => (
+            <Surface key={0} style={styles.explanation}>
+              {explanation}
+            </Surface>
+          ))
+          .unwrapOr(null as any)}
+    </>
   );
 }

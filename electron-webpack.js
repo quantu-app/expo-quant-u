@@ -7,6 +7,7 @@ module.exports = withExpoAdapter({
     "@aicacia/async_component-react",
     "@aicacia/state-forms",
     "@aicacia/state-react",
+    "@matejmazur/react-katex",
   ],
   // Provide any overrides for electron-webpack: https://github.com/electron-userland/electron-webpack/blob/master/docs/en/configuration.md
 });

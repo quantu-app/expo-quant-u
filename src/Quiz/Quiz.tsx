@@ -2,36 +2,24 @@ import { none, Option } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
 import { List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Title } from "react-native-paper";
+import { View } from "react-native";
 import type { Question as QuestionClass, Quiz as QuizClass } from "../quizlib";
-import { Question } from "./Question";
+import { IQuestionResult, Question } from "./Question";
+import { Results } from "./Results";
 
 export interface IQuizProps {
   rng: Rng;
   quiz: QuizClass;
 }
 
-interface IQuestionResult {
-  result: [number, number];
-  explained: boolean;
-  correct: boolean;
-}
-
-const QuestionResult = Record<IQuestionResult>({
-  result: [0, 0],
-  explained: false,
-  correct: false,
-});
-
-interface IQuizState<T = any> {
+export interface IQuizState<T = any> {
   done: boolean;
   current: Option<number>;
   questions: List<QuestionClass<T>>;
   results: List<RecordOf<IQuestionResult>>;
 }
 
-const QuizState = Record<IQuizState>({
+export const QuizState = Record<IQuizState>({
   done: false,
   current: none(),
   questions: List(),
@@ -54,21 +42,9 @@ export function Quiz(props: IQuizProps) {
 
   useMemo(onReset, [props.quiz, props.rng]);
 
-  function onNext(
-    result: [number, number],
-    explained: boolean,
-    correct: boolean
-  ) {
+  function onNext(result: RecordOf<IQuestionResult>) {
     const current = state.current.unwrapOr(0),
-      newState = state.update("results", (results) =>
-        results.push(
-          QuestionResult({
-            result,
-            correct,
-            explained,
-          })
-        )
-      );
+      newState = state.update("results", (results) => results.push(result));
 
     if (current + 1 >= newState.questions.size) {
       setState(newState.set("done", true));
@@ -98,61 +74,6 @@ export function Quiz(props: IQuizProps) {
           ))
           .unwrapOr(null as any)
       )}
-    </View>
-  );
-}
-
-interface IResultsProps<T = any> {
-  quiz: QuizClass;
-  state: RecordOf<IQuizState<T>>;
-  onReset(): void;
-}
-
-const resultStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 16,
-    marginBottom: 16,
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
-  },
-  button: {
-    marginTop: 16,
-  },
-});
-
-function Results<T = any>(props: IResultsProps<T>) {
-  return (
-    <View style={resultStyles.container}>
-      <Title>
-        Points -{" "}
-        {props.state.results.reduce(
-          (count, result) => count + result.result[0],
-          0
-        )}
-        {" / "}
-        {props.state.results.reduce(
-          (count, result) => count + result.result[1],
-          0
-        )}
-      </Title>
-      <Title>
-        Correct -{" "}
-        {props.state.results.reduce(
-          (count, result) => (result.correct ? count + 1 : count),
-          0
-        )}
-        {" / "}
-        {props.state.results.size}
-      </Title>
-      <Button
-        mode="contained"
-        style={resultStyles.button}
-        onPress={props.onReset}
-      >
-        Reset
-      </Button>
     </View>
   );
 }

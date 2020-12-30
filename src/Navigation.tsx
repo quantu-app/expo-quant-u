@@ -21,11 +21,23 @@ export type ParamList = {
   [QUIZZES_SCREEN]: undefined;
 };
 
+export const linking = {
+  prefixes: ["https://mathcafe.com", "mathcafe://"],
+  config: {
+    screens: {
+      [HOME_SCREEN]: "",
+      [QUIZZES_SCREEN]: "/quizzes",
+    },
+  },
+};
+
 export const DrawerNavigator = createDrawerNavigator<ParamList>();
 
 export function Navigation() {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      linking={"electron" in process.versions ? undefined : linking}
+    >
       <AppDrawer />
     </NavigationContainer>
   );

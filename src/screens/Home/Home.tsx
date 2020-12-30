@@ -1,19 +1,28 @@
-import { StyleSheet, Image, View } from "react-native";
+import { StyleSheet, Image, View, useWindowDimensions } from "react-native";
 import { Button, Headline, Subheading } from "react-native-paper";
 import bg from "../../../assets/bg.jpg";
 import { Layout } from "../../Layout";
 import { useNavigation } from "@react-navigation/native";
 import { QUIZZES_SCREEN } from "../../Navigation";
+import { isSmallScreen } from "../../screens";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  gird: {
+  content: {
+    flex: 1,
     flexDirection: "row",
   },
-  half: {
+  contentSmall: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  grid: {
     padding: 16,
+    flex: 1,
+  },
+  space: {
     flex: 1,
   },
   button: {
@@ -25,13 +34,20 @@ const styles = StyleSheet.create({
 });
 
 export function Home() {
-  const navigation = useNavigation();
+  const windowDimensions = useWindowDimensions(),
+    navigation = useNavigation();
 
   return (
     <Layout>
       <View style={styles.container}>
-        <View style={styles.gird}>
-          <View style={styles.half}>
+        <View
+          style={
+            isSmallScreen(windowDimensions.width)
+              ? styles.contentSmall
+              : styles.content
+          }
+        >
+          <View style={styles.grid}>
             <Headline>Lifelong Learning</Headline>
             <Subheading>
               With our open platform designed for deep thinkers and lifelong
@@ -46,10 +62,11 @@ export function Home() {
               Quizzes
             </Button>
           </View>
-          <View style={styles.half}>
+          <View style={styles.grid}>
             <Image source={bg} style={styles.image} resizeMode="contain" />
           </View>
         </View>
+        <View style={styles.space} />
       </View>
     </Layout>
   );

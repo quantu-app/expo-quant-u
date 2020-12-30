@@ -1,12 +1,12 @@
 import { Range } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
-import { Title } from "react-native-paper";
 import {
   Input,
   IQuestionConfig,
   IQuestionConfiguredGenerator,
   Question,
 } from "../../../src/quizlib";
+import { Latex } from "../../../src/Latex";
 
 export interface IAdditionConfig {
   magnitude: number;
@@ -44,7 +44,7 @@ export const generator: IQuestionConfiguredGenerator<
       1,
       "number"
     ),
-    <Title>{variables.join(" + ")} = ?</Title>,
-    <Title>= {sum}</Title>
+    <Latex>{variables.join(" + ")} = x</Latex>,
+    <Latex>x = {sum}</Latex>
   );
 };

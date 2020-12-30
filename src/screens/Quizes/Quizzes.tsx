@@ -5,13 +5,13 @@ import { XorShiftRng } from "@aicacia/rand";
 import { Async } from "@aicacia/async_component-react";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
-import additionQuizJSON from "../../../quizzes/math/basic/addition.json";
+import quizJSON from "../../../quizzes/math/basic/addition.json";
 
 export function Quizzes() {
   return (
     <Layout>
       <Async
-        promise={QuizClass.fromJSON(additionQuizJSON)}
+        promise={QuizClass.fromJSON(quizJSON)}
         onSuccess={(quiz) => (
           <Quiz rng={XorShiftRng.fromSeed(Date.now())} quiz={quiz} />
         )}

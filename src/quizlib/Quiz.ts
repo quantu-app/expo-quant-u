@@ -42,16 +42,14 @@ class QuestionGeneratorQuizItem extends QuizItem {
 }
 
 export class Quiz {
-  protected quizItems: QuizItem[] = [];
+  protected items: QuizItem[] = [];
 
   addQuestion(question: Question) {
-    this.quizItems.push(new QuestionQuizItem(question));
+    this.items.push(new QuestionQuizItem(question));
     return this;
   }
   addQuestionGenerator(questionGenerator: IQuestionGenerator, count = 1) {
-    this.quizItems.push(
-      new QuestionGeneratorQuizItem(questionGenerator, count)
-    );
+    this.items.push(new QuestionGeneratorQuizItem(questionGenerator, count));
     return this;
   }
   addQuestionConfiguredGenerator<C = any>(
@@ -59,14 +57,14 @@ export class Quiz {
     config: C = {} as any,
     count = 1
   ) {
-    this.quizItems.push(
+    this.items.push(
       new QuestionGeneratorQuizItem(questionConfiguredGenerator(config), count)
     );
     return this;
   }
 
   getQuestions(rng: Rng): Question[] {
-    return this.quizItems.reduce<Question[]>((questions, quizItem) => {
+    return this.items.reduce<Question[]>((questions, quizItem) => {
       questions.push(...quizItem.getQuestions(rng));
       return questions;
     }, []);
@@ -74,8 +72,8 @@ export class Quiz {
 
   static async fromJSON(json: IJSONObject) {
     const quiz = new Quiz();
-    if (isJSONArray(json.quizItems)) {
-      for (const quizItem of json.quizItems) {
+    if (isJSONArray(json.items)) {
+      for (const quizItem of json.items) {
         if (isJSONObject(quizItem)) {
           const generator = await getQuestionGenerator(
             quizItem.generator as string

@@ -1,0 +1,10 @@
+{
+  "name": "ABC",
+  "items": [
+    {
+      "generator": "mathcafe.math.basic.abc",
+      "config": {},
+      "count": 1
+    }
+  ]
+}

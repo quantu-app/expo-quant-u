@@ -1,3 +1,4 @@
+import { Option } from "@aicacia/core";
 import { AbstractInput } from "./Question";
 
 export class Choice {
@@ -14,6 +15,10 @@ export class Choice {
   }
   getKey() {
     return this.key;
+  }
+  setCorrect(correct = true) {
+    this.correct = correct;
+    return this;
   }
   isCorrect() {
     return this.correct;
@@ -32,11 +37,18 @@ export class MultipleChoice extends AbstractInput<string[]> {
   protected allOrNothing = false;
   protected choices: Choice[] = [];
 
+  setAllOrNothing(allOrNothing = true) {
+    this.allOrNothing = allOrNothing;
+    return this;
+  }
   hasMultipleAnswers() {
     return this.choices.filter((choice) => choice.isCorrect()).length > 1;
   }
   getChoices(): ReadonlyArray<Choice> {
     return this.choices;
+  }
+  getChoice(key: string): Option<Choice> {
+    return Option.from(this.choices.find((choice) => choice.getKey() === key));
   }
 
   getTotalPoints() {
