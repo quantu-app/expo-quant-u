@@ -2,11 +2,10 @@ import { Record, RecordOf } from "immutable";
 import { useState } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { Divider, Button } from "react-native-paper";
-import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../quizlib";
 import { isSmallScreen } from "../screens";
 import { Input } from "./Input";
-import { useTheme } from "@react-navigation/native";
 import { theme } from "../theme";
 
 export interface IQuestionProps<T = any> {

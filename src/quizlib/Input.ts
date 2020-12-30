@@ -35,7 +35,7 @@ export class Input extends AbstractInput<string> {
   async getTotalPoints() {
     return this.totalPoints;
   }
-  check(answer: string = "") {
+  check(answer = "") {
     return this.checker(answer);
   }
 }

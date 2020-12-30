@@ -14,11 +14,13 @@
     "build.ios": "expo build:ios",
     "build.web": "expo build:web",
     "build.desktop": "electron-webpack && electron-builder --dir -c.compression=store -c.mac.identity=null",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "prettier": "prettier --ignore-path ./.eslintignore --ignore-unknown --write .",
+    "sync": "ts-node ./scripts/sync.ts"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "npm run sync && npm run prettier && npm run lint"
     }
   },
   "devDependencies": {
@@ -30,8 +32,8 @@
     "@types/react-native": "0.63",
     "@typescript-eslint/eslint-plugin": "4",
     "@typescript-eslint/parser": "4",
-    "electron-builder": "22.9",
     "electron": "11.1",
+    "electron-builder": "22.9",
     "eslint": "7",
     "eslint-config-prettier": "7",
     "eslint-plugin-prettier": "3",
@@ -39,6 +41,7 @@
     "husky": "4",
     "prettier": "2",
     "react-refresh": "0.9",
+    "ts-node": "^9.1.1",
     "typescript": "4.1"
   },
   "dependencies": {

@@ -1,12 +1,23 @@
-import { XorShiftRng } from "@aicacia/rand";
 import { Layout } from "../../Layout";
+import { Quiz as QuizClass } from "../../quizlib";
 import { Quiz } from "../../Quiz";
-import { additionQuiz } from "../../quizzes/math/basic/additionQuiz";
+import additionQuizJSON from "../../../quizzes/math/basic/addition.json";
+import { XorShiftRng } from "@aicacia/rand";
+import { Async } from "@aicacia/async_component-react";
+import { JSError } from "../../JSError";
+import { Loading } from "../../Loading";
 
 export function Quizzes() {
   return (
     <Layout>
-      <Quiz rng={XorShiftRng.fromSeed(Date.now())} quiz={additionQuiz} />
+      <Async
+        promise={QuizClass.fromJSON(additionQuizJSON)}
+        onSuccess={(quiz) => (
+          <Quiz rng={XorShiftRng.fromSeed(Date.now())} quiz={quiz} />
+        )}
+        onPending={() => <Loading />}
+        onError={(error) => <JSError error={error} />}
+      />
     </Layout>
   );
 }

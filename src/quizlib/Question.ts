@@ -1,5 +1,4 @@
 import { none, Option } from "@aicacia/core";
-import type { Rng } from "@aicacia/rand";
 
 export abstract class AbstractInput<T = any> {
   abstract getTotalPoints(): Promise<number>;
@@ -37,9 +36,3 @@ export class Question<T = any> {
     return this.explanation;
   }
 }
-
-export type IQuestionConfiguredGenerator<C = any, T = any> = (
-  config?: C
-) => IQuestionGenerator<T>;
-
-export type IQuestionGenerator<T = any> = (rng: Rng) => Question<T>;

@@ -2,7 +2,6 @@
 .vscode/
 assets/
 dist/
-src/
 node_modules/
 web-build
 electron/webpack.config.js

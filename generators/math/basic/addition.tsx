@@ -3,20 +3,27 @@ import { Rng } from "@aicacia/rand";
 import { Title } from "react-native-paper";
 import {
   Input,
+  IQuestionConfig,
   IQuestionConfiguredGenerator,
   Question,
-} from "../../../quizlib";
+} from "../../../src/quizlib";
 
-export interface IAdditionQuestionGeneratorConfig {
+export interface IAdditionConfig {
   magnitude: number;
   negatives: boolean;
   variables: number;
 }
 
-export const createAdditionQuestionGenerator: IQuestionConfiguredGenerator<
-  Partial<IAdditionQuestionGeneratorConfig>,
+export const config: IQuestionConfig<IAdditionConfig> = {
+  magnitude: "integer",
+  negatives: "boolean",
+  variables: "integer",
+};
+
+export const generator: IQuestionConfiguredGenerator<
+  IAdditionConfig,
   number
-> = (config: Partial<IAdditionQuestionGeneratorConfig> = {}) => (rng: Rng) => {
+> = (config: Partial<IAdditionConfig> = {}) => (rng: Rng) => {
   const magnitude =
       !config.magnitude || config.magnitude < 1 ? 1 : config.magnitude,
     min = (config.negatives ? -1 : 1) * (magnitude * 10),

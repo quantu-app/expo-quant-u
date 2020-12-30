@@ -1,10 +1,10 @@
 import { Range } from "@aicacia/core";
+import { IJSONObject, isJSONArray, isJSONObject } from "@aicacia/json";
 import { Rng } from "@aicacia/rand";
-import {
-  Question,
-  IQuestionGenerator,
-  IQuestionConfiguredGenerator,
-} from "./Question";
+import { IQuestionConfiguredGenerator } from "./IQuestionConfiguredGenerator";
+import { IQuestionGenerator } from "./IQuestionGenerator";
+import { Question } from "./Question";
+import { getQuestionGenerator } from "./questionGenerators";
 
 abstract class QuizItem {
   abstract getQuestions(rng: Rng): Question[];
@@ -70,5 +70,25 @@ export class Quiz {
       questions.push(...quizItem.getQuestions(rng));
       return questions;
     }, []);
+  }
+
+  static async fromJSON(json: IJSONObject) {
+    const quiz = new Quiz();
+    if (isJSONArray(json.quizItems)) {
+      for (const quizItem of json.quizItems) {
+        if (isJSONObject(quizItem)) {
+          const generator = await getQuestionGenerator(
+            quizItem.generator as string
+          );
+          quiz.addQuestionConfiguredGenerator(
+            generator.generator,
+            quizItem.config as IJSONObject,
+            quizItem.count as number
+          );
+        }
+      }
+    }
+    console.log(quiz);
+    return quiz;
   }
 }

@@ -1,0 +1,10 @@
+{
+  "name": "Addition",
+  "quizItems": [
+    {
+      "generator": "mathcafe.math.basic.addition",
+      "config": {},
+      "count": 10
+    }
+  ]
+}

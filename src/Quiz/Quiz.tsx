@@ -1,4 +1,4 @@
-import { none, Option, some } from "@aicacia/core";
+import { none, Option } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
 import { List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
@@ -82,6 +82,8 @@ export function Quiz(props: IQuizProps) {
     }
   }
 
+  console.log(state.toJS());
+
   return (
     <View>
       {state.done ? (
@@ -89,7 +91,13 @@ export function Quiz(props: IQuizProps) {
       ) : (
         state.current
           .flatMap((index) => Option.from(state.questions.get(index)))
-          .map((question) => <Question question={question} onNext={onNext} />)
+          .map((question) => (
+            <Question
+              key={state.current.unwrap()}
+              question={question}
+              onNext={onNext}
+            />
+          ))
           .unwrapOr(null as any)
       )}
     </View>
