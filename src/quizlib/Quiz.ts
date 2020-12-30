@@ -88,7 +88,6 @@ export class Quiz {
         }
       }
     }
-    console.log(quiz);
     return quiz;
   }
 }

@@ -3,8 +3,10 @@
   "quizItems": [
     {
       "generator": "mathcafe.math.basic.addition",
-      "config": {},
-      "count": 10
+      "config": {
+        "magnitude": 2
+      },
+      "count": 5
     }
   ]
 }

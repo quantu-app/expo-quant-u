@@ -52,7 +52,7 @@ export function Quiz(props: IQuizProps) {
     setState(QuizState().set("questions", questions).set("current", current));
   }
 
-  useMemo(onReset, [props.quiz]);
+  useMemo(onReset, [props.quiz, props.rng]);
 
   function onNext(
     result: [number, number],
@@ -81,8 +81,6 @@ export function Quiz(props: IQuizProps) {
       );
     }
   }
-
-  console.log(state.toJS());
 
   return (
     <View>

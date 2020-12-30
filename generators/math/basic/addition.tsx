@@ -26,7 +26,7 @@ export const generator: IQuestionConfiguredGenerator<
 > = (config: Partial<IAdditionConfig> = {}) => (rng: Rng) => {
   const magnitude =
       !config.magnitude || config.magnitude < 1 ? 1 : config.magnitude,
-    min = (config.negatives ? -1 : 1) * (magnitude * 10),
+    min = (config.negatives === true ? -1 : 0) * (magnitude * 10),
     max = magnitude * 10,
     uniformRng = rng.uniformIntRng(min, max),
     variables = new Range(

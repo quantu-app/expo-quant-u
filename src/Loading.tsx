@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
 export function Loading() {
   return (
     <View style={styles.container}>
-      <ActivityIndicator animating />
+      <ActivityIndicator animating size={64} />
     </View>
   );
 }

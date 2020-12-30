@@ -1,11 +1,11 @@
 import { Layout } from "../../Layout";
 import { Quiz as QuizClass } from "../../quizlib";
 import { Quiz } from "../../Quiz";
-import additionQuizJSON from "../../../quizzes/math/basic/addition.json";
 import { XorShiftRng } from "@aicacia/rand";
 import { Async } from "@aicacia/async_component-react";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
+import additionQuizJSON from "../../../quizzes/math/basic/addition.json";
 
 export function Quizzes() {
   return (
