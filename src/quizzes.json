@@ -1,0 +1,30 @@
+{
+  "math": {
+    "basic": [
+      {
+        "name": "ABC",
+        "items": [
+          {
+            "generator": "mathcafe.math.basic.abc",
+            "config": {},
+            "count": 1
+          }
+        ],
+        "tags": ["mathcafe", "math", "basic"]
+      },
+      {
+        "name": "Addition",
+        "items": [
+          {
+            "generator": "mathcafe.math.basic.addition",
+            "config": {
+              "magnitude": 2
+            },
+            "count": 1
+          }
+        ],
+        "tags": ["mathcafe", "math", "basic"]
+      }
+    ]
+  }
+}

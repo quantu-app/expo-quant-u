@@ -2,7 +2,7 @@ import * as forms from "./lib/forms";
 export {
   state,
   Provider,
-  useState,
+  useMapStateToProps,
   Consumer,
   Context,
   connect,

@@ -9,6 +9,7 @@ const mathcafeMathBasicAbc = import("../generators/math/basic/abc").then(
   })
 );
 addQuestionGenerator("mathcafe.math.basic.abc", mathcafeMathBasicAbc);
+
 const mathcafeMathBasicAddition = import(
   "../generators/math/basic/addition"
 ).then(({ config, generator }) => ({

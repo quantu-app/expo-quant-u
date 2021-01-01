@@ -19,13 +19,13 @@ export async function syncGenerators() {
     const relativePath = relative(GENERATORS_PATH, filepath),
       relativeImportPath = relative(dirname(OUT_PATH), filepath),
       name = basename(relativeImportPath, extname(relativeImportPath)),
-      tags = ["mathcafe", ...dirname(relativePath).split(sep), name],
+      tags = new Set(["mathcafe", ...dirname(relativePath).split(sep), name]),
       path = join(dirname(relativeImportPath), name);
 
     generators.push({
       path,
-      name: tags.join("."),
-      tags,
+      name: Array.from(tags.values()).join("."),
+      tags: Array.from(tags.values()),
     });
   }
 
@@ -50,7 +50,7 @@ export async function syncGenerators() {
     );
     await promises.appendFile(
       OUT_PATH,
-      `addQuestionGenerator("${generator.name}", ${varName});${EOL}`
+      `addQuestionGenerator("${generator.name}", ${varName});${EOL}${EOL}`
     );
   }
 }

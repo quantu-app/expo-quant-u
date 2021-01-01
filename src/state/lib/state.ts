@@ -1,5 +1,5 @@
 import { initReduxDevTools, IStateTypeOf, State } from "@aicacia/state";
-import { createContext, createUseState } from "@aicacia/state-react";
+import { createContext, createUseMapStateToProps } from "@aicacia/state-react";
 import {
   FormsFromJSON,
   INITIAL_STATE as forms,
@@ -20,7 +20,7 @@ export const { Provider, Consumer, connect, Context } = createContext<IState>(
   state.getCurrent()
 );
 
-export const useState = createUseState<IState>(Context);
+export const useMapStateToProps = createUseMapStateToProps<IState>(Context);
 
 if (process.env.NODE_ENV !== "production") {
   initReduxDevTools(state);
