@@ -1,5 +1,6 @@
 import { Option } from "@aicacia/core";
-import { AbstractInput } from "./Question";
+import { ReactNode } from "react";
+import { Question } from "./Question";
 
 export class Choice {
   protected children: JSX.Element;
@@ -33,9 +34,19 @@ export class Choice {
   }
 }
 
-export class MultipleChoice extends AbstractInput<string[]> {
+export class MultipleChoice extends Question<string[]> {
+  protected prompt: ReactNode;
   protected allOrNothing = false;
   protected choices: Choice[] = [];
+
+  constructor(prompt: ReactNode, explanation?: ReactNode) {
+    super(explanation);
+    this.prompt = prompt;
+  }
+
+  getPrompt() {
+    return this.prompt;
+  }
 
   setAllOrNothing(allOrNothing = true) {
     this.allOrNothing = allOrNothing;
@@ -56,7 +67,7 @@ export class MultipleChoice extends AbstractInput<string[]> {
       this.choices.filter((choice) => choice.isCorrect()).length
     );
   }
-  check(answer: string[] = []): Promise<number> {
+  checkAnswer(answer: string[] = []): Promise<number> {
     const correctChoices = this.choices.filter((choice) => choice.isCorrect());
 
     const correct = correctChoices.reduce(

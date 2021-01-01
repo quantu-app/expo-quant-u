@@ -1,38 +1,21 @@
-import { none, Option } from "@aicacia/core";
+import { Option } from "@aicacia/core";
+import { ReactNode } from "react";
 
-export abstract class AbstractInput<T = any> {
-  abstract getTotalPoints(): Promise<number>;
-  abstract check(answer: T): Promise<number>;
-}
+export abstract class Question<T = any> {
+  protected explanation: Option<ReactNode>;
 
-export class Question<T = any> {
-  protected prompt: JSX.Element;
-  protected input: AbstractInput<T>;
-  protected explanation: Option<JSX.Element> = none();
-
-  constructor(
-    input: AbstractInput,
-    prompt: JSX.Element,
-    explanation?: JSX.Element
-  ) {
-    this.prompt = prompt;
-    this.input = input;
-    if (explanation) {
-      this.explanation.replace(explanation);
-    }
+  constructor(explanation?: ReactNode) {
+    this.explanation = Option.from(explanation);
   }
 
-  async check(answer: T): Promise<[number, number]> {
-    return [await this.input.check(answer), await this.input.getTotalPoints()];
-  }
-
-  getPrompt() {
-    return this.prompt;
-  }
-  getInput() {
-    return this.input;
-  }
   getExplanation() {
     return this.explanation;
   }
+  setExplanation(explanation?: ReactNode) {
+    this.explanation.from(explanation);
+    return this;
+  }
+
+  abstract getTotalPoints(): Promise<number>;
+  abstract checkAnswer(answer: T): Promise<number>;
 }

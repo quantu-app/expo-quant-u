@@ -1,19 +1,28 @@
-import { AbstractInput } from "./Question";
+import { ReactNode } from "react";
+import { Question } from "./Question";
 
-export class Input extends AbstractInput<string> {
+export class Input extends Question<string> {
+  protected prompt: ReactNode;
   protected type;
   protected checker: (answer: string) => Promise<number>;
   protected totalPoints: number;
 
   constructor(
+    prompt: ReactNode,
     checker: (answer: string) => Promise<number>,
     totalPoints: number,
-    type: string
+    type: string,
+    explanation?: ReactNode
   ) {
-    super();
+    super(explanation);
+    this.prompt = prompt;
     this.checker = checker;
     this.totalPoints = totalPoints;
     this.type = type;
+  }
+
+  getPrompt() {
+    return this.prompt;
   }
 
   setType(type: string) {
@@ -35,7 +44,7 @@ export class Input extends AbstractInput<string> {
   async getTotalPoints() {
     return this.totalPoints;
   }
-  check(answer = "") {
+  checkAnswer(answer = "") {
     return this.checker(answer);
   }
 }

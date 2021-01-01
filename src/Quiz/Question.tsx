@@ -1,5 +1,5 @@
 import { Record, RecordOf } from "immutable";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Surface } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -18,7 +18,8 @@ export interface IQuestionResult<T = any> {
   value?: T;
   explained: boolean;
   correct: boolean;
-  result: [number, number];
+  total: number;
+  result: number;
 }
 
 const QuestionResult = Record<IQuestionResult>({
@@ -27,7 +28,8 @@ const QuestionResult = Record<IQuestionResult>({
   value: null,
   explained: false,
   correct: false,
-  result: [0, 0],
+  total: 0,
+  result: 0,
 });
 
 interface IQuestionState<T = any> extends IQuestionResult<T> {
@@ -88,38 +90,29 @@ export function Question<T = any>(props: IQuestionProps<T>) {
     QuestionState()
   );
 
+  useMemo(async () => {
+    const total = await props.question.getTotalPoints();
+    setState(state.set("total", total));
+  }, [props.question]);
+
   function onInputChange(value: any) {
     setState(state.set("value", value).set("changed", true));
   }
 
   async function onCheck() {
     setState(state.set("loading", true));
-    const result = await props.question.check(state.value as any);
+    const result = await props.question.checkAnswer(state.value as any);
     setState(
       state
         .set("loading", false)
         .set("done", true)
         .set("result", result)
-        .set("correct", result[0] === result[1] && result[1] > 0)
+        .set("correct", result === state.total && state.total > 0)
     );
   }
 
   async function onExplain() {
-    setState(state.set("loading", true));
-
-    let newState = state
-      .set("done", true)
-      .set("explained", true)
-      .set("loading", false);
-
-    if (!newState.correct) {
-      newState = newState.set("result", [
-        0,
-        await props.question.getInput().getTotalPoints(),
-      ]);
-    }
-
-    setState(newState);
+    setState(state.set("done", true).set("explained", true));
   }
 
   function onNext() {
