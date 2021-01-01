@@ -8,6 +8,7 @@ import { Appbar } from "react-native-paper";
 import app from "../app.json";
 import { LARGE_WIDTH } from "./screens";
 import { ParamList } from "./Navigation";
+import { ReactNode } from "react";
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
 });
 
 export interface ILayoutProps {
-  children: JSX.Element | Array<JSX.Element>;
+  children: ReactNode;
 }
 
 export function Layout(props: ILayoutProps) {

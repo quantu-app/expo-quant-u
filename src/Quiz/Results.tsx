@@ -1,15 +1,16 @@
 import { RecordOf } from "immutable";
 import { StyleSheet, View } from "react-native";
-import { Button, Divider, Title, Card } from "react-native-paper";
+import { Button, Title, Card } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { IQuestionResult } from "./Question";
 import { theme } from "../theme";
 import { Quiz } from "../quizlib";
 import { IQuizState } from "./Quiz";
+import { IQuestionResult } from "./QuestionResult";
+import { QuestionComponent } from "./QuestionComponent";
 
-interface IResultsProps<T = any> {
+interface IResultsProps {
   quiz: Quiz;
-  state: RecordOf<IQuizState<T>>;
+  state: RecordOf<IQuizState>;
   onReset(): void;
 }
 
@@ -19,8 +20,21 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 16,
   },
-  card: {
+  result: {
+    flexDirection: "row",
     marginTop: 16,
+    marginBottom: 16,
+  },
+  question: {
+    flex: 11,
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  points: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
   buttons: {
     alignItems: "center",
@@ -29,22 +43,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Results<T = any>(props: IResultsProps<T>) {
+export function Results(props: IResultsProps) {
   return (
     <View style={styles.container}>
       <View>
         {props.state.questions.map((question, index) => {
           const questionResult = props.state.results.get(
             index
-          ) as IQuestionResult;
+          ) as RecordOf<IQuestionResult>;
 
           return (
-            <Card key={index} style={styles.card}>
-              <Card.Content>
-                {question.getPrompt()}
-                <Divider />
-                <View>
-                  <Title>{questionResult.value}</Title>
+            <View key={index} style={styles.result}>
+              <View style={styles.question}>
+                <QuestionComponent
+                  {...questionResult.toJS()}
+                  question={question}
+                  onChange={() => null}
+                />
+              </View>
+              <View style={styles.points}>
+                <Title>
                   {questionResult.correct ? (
                     <MaterialCommunityIcons
                       name="check"
@@ -58,12 +76,10 @@ export function Results<T = any>(props: IResultsProps<T>) {
                       color={theme.colors.error}
                     />
                   )}
-                  <Title>
-                    {questionResult.result[0]} / {questionResult.result[1]}
-                  </Title>
-                </View>
-              </Card.Content>
-            </Card>
+                  {questionResult.points} / {questionResult.total}
+                </Title>
+              </View>
+            </View>
           );
         })}
       </View>
@@ -72,12 +88,12 @@ export function Results<T = any>(props: IResultsProps<T>) {
           <Title>
             Points -{" "}
             {props.state.results.reduce(
-              (count, questionResult) => count + questionResult.result[0],
+              (count, questionResult) => count + questionResult.points,
               0
             )}
             {" / "}
             {props.state.results.reduce(
-              (count, questionResult) => count + questionResult.result[1],
+              (count, questionResult) => count + questionResult.total,
               0
             )}
           </Title>

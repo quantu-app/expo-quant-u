@@ -1,19 +1,18 @@
+import { View } from "react-native";
 import { Checkbox, List } from "react-native-paper";
-import type {
-  MultipleChoice as MultipleChoiceClass,
-  Choice,
+import {
+  MultipleChoiceQuestion as MultipleChoiceQuestionClass,
+  MultipleChoiceQuestionOption,
 } from "../../quizlib";
-import { IInputState } from "./IInputState";
+import { IQuestionComponentProps } from "./IQuestionComponentProps";
 
-export interface IMultipleChoiceProps extends IInputState<string[]> {
-  multipleChoice: MultipleChoiceClass;
-}
-
-export function MultipleChoice(props: IMultipleChoiceProps) {
-  const isMultiple = props.multipleChoice.hasMultipleAnswers(),
+export function MultipleChoiceQuestion(
+  props: IQuestionComponentProps<string[], MultipleChoiceQuestionClass>
+) {
+  const isMultiple = props.question.hasMultipleAnswers(),
     selected = props.value || [];
 
-  function onSelect(choice: Choice) {
+  function onSelect(choice: MultipleChoiceQuestionOption) {
     const index = selected.indexOf(choice.getKey()),
       newSelected = isMultiple ? selected.slice(0) : [];
 
@@ -26,8 +25,8 @@ export function MultipleChoice(props: IMultipleChoiceProps) {
     return props.onChange(newSelected);
   }
 
-  function renderItem(selected: boolean, choice: Choice) {
-    const checkAnswerInputElement = (
+  function renderItem(selected: boolean, choice: MultipleChoiceQuestionOption) {
+    const checkAnswerQuestionElement = (
       <Checkbox
         status={
           (props.done && choice.isCorrect()) || selected
@@ -44,7 +43,7 @@ export function MultipleChoice(props: IMultipleChoiceProps) {
         return (
           <List.Item
             key={choice.getKey()}
-            left={() => checkAnswerInputElement}
+            left={() => checkAnswerQuestionElement}
             title={choice.getChildren()}
           />
         );
@@ -52,7 +51,7 @@ export function MultipleChoice(props: IMultipleChoiceProps) {
         return (
           <List.Item
             key={choice.getKey()}
-            left={() => checkAnswerInputElement}
+            left={() => checkAnswerQuestionElement}
             title={choice.getChildren()}
           />
         );
@@ -60,7 +59,7 @@ export function MultipleChoice(props: IMultipleChoiceProps) {
         return (
           <List.Item
             key={choice.getKey()}
-            left={() => checkAnswerInputElement}
+            left={() => checkAnswerQuestionElement}
             title={choice.getChildren()}
           />
         );
@@ -69,7 +68,7 @@ export function MultipleChoice(props: IMultipleChoiceProps) {
       return (
         <List.Item
           key={choice.getKey()}
-          left={() => checkAnswerInputElement}
+          left={() => checkAnswerQuestionElement}
           title={choice.getChildren()}
         />
       );
@@ -77,12 +76,17 @@ export function MultipleChoice(props: IMultipleChoiceProps) {
   }
 
   return (
-    <List.Section>
-      {props.multipleChoice
-        .getChoices()
-        .map((choice) =>
-          renderItem(selected.includes(choice.getKey()), choice)
-        )}
-    </List.Section>
+    <>
+      <View>{props.question.getPrompt()}</View>
+      <View>
+        <List.Section>
+          {props.question
+            .getChoices()
+            .map((choice) =>
+              renderItem(selected.includes(choice.getKey()), choice)
+            )}
+        </List.Section>
+      </View>
+    </>
   );
 }

@@ -2,12 +2,12 @@ import { Option } from "@aicacia/core";
 import { ReactNode } from "react";
 import { Question } from "./Question";
 
-export class Choice {
-  protected children: JSX.Element;
+export class MultipleChoiceQuestionOption {
+  protected children: ReactNode;
   protected key = "";
   protected correct = false;
 
-  constructor(children: JSX.Element) {
+  constructor(children: ReactNode) {
     this.children = children;
   }
 
@@ -34,16 +34,17 @@ export class Choice {
   }
 }
 
-export class MultipleChoice extends Question<string[]> {
-  protected prompt: ReactNode;
+export class MultipleChoiceQuestion extends Question<string[]> {
+  static Option = MultipleChoiceQuestionOption;
+
+  protected prompt: ReactNode = null;
   protected allOrNothing = false;
-  protected choices: Choice[] = [];
+  protected choices: MultipleChoiceQuestionOption[] = [];
 
-  constructor(prompt: ReactNode, explanation?: ReactNode) {
-    super(explanation);
+  setPrompt(prompt: ReactNode) {
     this.prompt = prompt;
+    return this;
   }
-
   getPrompt() {
     return this.prompt;
   }
@@ -55,11 +56,19 @@ export class MultipleChoice extends Question<string[]> {
   hasMultipleAnswers() {
     return this.choices.filter((choice) => choice.isCorrect()).length > 1;
   }
-  getChoices(): ReadonlyArray<Choice> {
+
+  getChoices(): ReadonlyArray<MultipleChoiceQuestionOption> {
     return this.choices;
   }
-  getChoice(key: string): Option<Choice> {
+  getChoice(key: string): Option<MultipleChoiceQuestionOption> {
     return Option.from(this.choices.find((choice) => choice.getKey() === key));
+  }
+  addChoice(...choices: ReadonlyArray<MultipleChoiceQuestionOption>) {
+    choices.forEach((choice) => {
+      choice.UNSAFE_setKey(this.choices.length.toString(36));
+      this.choices.push(choice);
+    });
+    return this;
   }
 
   getTotalPoints() {
@@ -81,16 +90,5 @@ export class MultipleChoice extends Question<string[]> {
     } else {
       return Promise.resolve(correct);
     }
-  }
-
-  addChoice(...choices: ReadonlyArray<Choice>) {
-    return this.addChoices(choices);
-  }
-  addChoices(choices: ReadonlyArray<Choice>) {
-    choices.forEach((choice) => {
-      choice.UNSAFE_setKey(this.choices.length.toString(36));
-      this.choices.push(choice);
-    });
-    return this;
   }
 }

@@ -1,21 +1,17 @@
-import { Option } from "@aicacia/core";
+import { Option, none } from "@aicacia/core";
 import { ReactNode } from "react";
 
 export abstract class Question<T = any> {
-  protected explanation: Option<ReactNode>;
+  protected explanation: Option<ReactNode> = none();
 
-  constructor(explanation?: ReactNode) {
-    this.explanation = Option.from(explanation);
-  }
-
-  getExplanation() {
-    return this.explanation;
-  }
   setExplanation(explanation?: ReactNode) {
     this.explanation.from(explanation);
     return this;
   }
+  getExplanation() {
+    return this.explanation;
+  }
 
   abstract getTotalPoints(): Promise<number>;
-  abstract checkAnswer(answer: T): Promise<number>;
+  abstract checkAnswer(answer?: T): Promise<number>;
 }

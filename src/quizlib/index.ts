@@ -1,9 +1,12 @@
-export { Input } from "./Input";
+export { TextQuestion } from "./TextQuestion";
 export { IQuestionConfig } from "./IQuestionConfig";
 export { IQuestionConfiguredGenerator } from "./IQuestionConfiguredGenerator";
 export { IQuestionGenerator } from "./IQuestionGenerator";
-export { MultipleChoice, Choice } from "./MultipleChoice";
-export { AbstractInput, Question } from "./Question";
+export {
+  MultipleChoiceQuestion,
+  MultipleChoiceQuestionOption,
+} from "./MultipleChoiceQuestion";
+export { Question } from "./Question";
 export {
   IQuestionGeneratorSource,
   addQuestionGenerator,

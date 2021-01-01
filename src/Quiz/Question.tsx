@@ -4,33 +4,14 @@ import { StyleSheet, View } from "react-native";
 import { Button, Surface } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../quizlib";
-import { Input } from "./Input";
+import { QuestionComponent } from "./QuestionComponent";
 import { theme } from "../theme";
+import { QuestionResult, IQuestionResult } from "./QuestionResult";
 
 export interface IQuestionProps<T = any> {
   onNext(result: RecordOf<IQuestionResult<T>>): void;
   question: QuestionClass<T>;
 }
-
-export interface IQuestionResult<T = any> {
-  done: boolean;
-  changed: boolean;
-  value?: T;
-  explained: boolean;
-  correct: boolean;
-  total: number;
-  result: number;
-}
-
-const QuestionResult = Record<IQuestionResult>({
-  done: false,
-  changed: false,
-  value: null,
-  explained: false,
-  correct: false,
-  total: 0,
-  result: 0,
-});
 
 interface IQuestionState<T = any> extends IQuestionResult<T> {
   loading: boolean;
@@ -51,16 +32,12 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  prompt: {
+  question: {
     flex: 1,
     paddingTop: 8,
     paddingBottom: 8,
     paddingLeft: 16,
     paddingRight: 16,
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  input: {
     marginTop: 16,
     marginBottom: 16,
   },
@@ -101,13 +78,13 @@ export function Question<T = any>(props: IQuestionProps<T>) {
 
   async function onCheck() {
     setState(state.set("loading", true));
-    const result = await props.question.checkAnswer(state.value as any);
+    const points = await props.question.checkAnswer(state.value as any);
     setState(
       state
         .set("loading", false)
         .set("done", true)
-        .set("result", result)
-        .set("correct", result === state.total && state.total > 0)
+        .set("points", points)
+        .set("correct", points === state.total && state.total > 0)
     );
   }
 
@@ -121,13 +98,10 @@ export function Question<T = any>(props: IQuestionProps<T>) {
 
   return (
     <>
-      <Surface style={styles.prompt}>{props.question.getPrompt()}</Surface>
-      <View style={styles.input}>
-        <Input
-          input={props.question.getInput()}
-          value={state.value}
-          done={state.done}
-          result={state.result}
+      <View style={styles.question}>
+        <QuestionComponent
+          {...state.toJS()}
+          question={props.question}
           onChange={onInputChange}
         />
       </View>

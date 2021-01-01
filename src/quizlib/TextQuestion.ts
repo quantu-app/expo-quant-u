@@ -1,26 +1,23 @@
 import { ReactNode } from "react";
 import { Question } from "./Question";
 
-export class Input extends Question<string> {
-  protected prompt: ReactNode;
-  protected type;
-  protected checker: (answer: string) => Promise<number>;
-  protected totalPoints: number;
+async function DEFAULT_CHECKER(_answer: string) {
+  throw TypeError(
+    "TextQuestion.check: must use setChecker() to set function for validating status"
+  );
+  return 0;
+}
 
-  constructor(
-    prompt: ReactNode,
-    checker: (answer: string) => Promise<number>,
-    totalPoints: number,
-    type: string,
-    explanation?: ReactNode
-  ) {
-    super(explanation);
+export class TextQuestion extends Question<string> {
+  protected prompt: ReactNode = null;
+  protected type = "text";
+  protected totalPoints = 0;
+  protected checker: (answer: string) => Promise<number> = DEFAULT_CHECKER;
+
+  setPrompt(prompt: ReactNode) {
     this.prompt = prompt;
-    this.checker = checker;
-    this.totalPoints = totalPoints;
-    this.type = type;
+    return this;
   }
-
   getPrompt() {
     return this.prompt;
   }
@@ -41,6 +38,10 @@ export class Input extends Question<string> {
     return this;
   }
 
+  setTotalPoints(totalPoints: number) {
+    this.totalPoints = totalPoints;
+    return this;
+  }
   async getTotalPoints() {
     return this.totalPoints;
   }

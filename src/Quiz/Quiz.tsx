@@ -4,7 +4,8 @@ import { List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 import type { Question as QuestionClass, Quiz as QuizClass } from "../quizlib";
-import { IQuestionResult, Question } from "./Question";
+import { Question } from "./Question";
+import { IQuestionResult } from "./QuestionResult";
 import { Results } from "./Results";
 
 export interface IQuizProps {
@@ -12,10 +13,10 @@ export interface IQuizProps {
   quiz: QuizClass;
 }
 
-export interface IQuizState<T = any> {
+export interface IQuizState {
   done: boolean;
   current: Option<number>;
-  questions: List<QuestionClass<T>>;
+  questions: List<QuestionClass>;
   results: List<RecordOf<IQuestionResult>>;
 }
 
@@ -64,14 +65,11 @@ export function Quiz(props: IQuizProps) {
         <Results state={state} quiz={props.quiz} onReset={onReset} />
       ) : (
         state.current
-          .flatMap((index) => Option.from(state.questions.get(index)))
-          .map((question) => (
-            <Question
-              key={state.current.unwrap()}
-              question={question}
-              onNext={onNext}
-            />
-          ))
+          .flatMap((index) =>
+            Option.from(state.questions.get(index)).map((question) => (
+              <Question key={index} question={question} onNext={onNext} />
+            ))
+          )
           .unwrapOr(null as any)
       )}
     </View>

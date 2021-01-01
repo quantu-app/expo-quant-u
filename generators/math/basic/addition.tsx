@@ -1,10 +1,9 @@
 import { Range } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
 import {
-  Input,
+  TextQuestion,
   IQuestionConfig,
   IQuestionConfiguredGenerator,
-  Question,
 } from "../../../src/quizlib";
 import { Latex } from "../../../src/Latex";
 
@@ -22,7 +21,7 @@ export const config: IQuestionConfig<IAdditionConfig> = {
 
 export const generator: IQuestionConfiguredGenerator<
   IAdditionConfig,
-  number
+  string
 > = (config: Partial<IAdditionConfig> = {}) => (rng: Rng) => {
   const magnitude =
       !config.magnitude || config.magnitude < 1 ? 1 : config.magnitude,
@@ -38,13 +37,10 @@ export const generator: IQuestionConfiguredGenerator<
       .toArray(),
     sum = variables.reduce((sum, variable) => sum + variable);
 
-  return new Question(
-    new Input(
-      async (answer) => (parseInt(answer) === sum ? 1 : 0),
-      1,
-      "number"
-    ),
-    <Latex>{variables.join(" + ")} = x</Latex>,
-    <Latex>x = {sum}</Latex>
-  );
+  return new TextQuestion()
+    .setChecker(async (answer) => (parseInt(answer) === sum ? 1 : 0))
+    .setTotalPoints(1)
+    .setType("number")
+    .setPrompt(<Latex>{variables.join(" + ")} = x</Latex>)
+    .setExplanation(<Latex>x = {sum}</Latex>);
 };
