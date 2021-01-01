@@ -8,7 +8,7 @@ import {
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { QuizzesScreen } from "./screens/Quizes/QuizzesScreen";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { Drawer } from "react-native-paper";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 
@@ -21,16 +21,20 @@ export type ParamList = {
   [QUIZZES_SCREEN]: undefined;
 };
 
+// TODO: remove after not hosting on github pages
+export const DISABLE_LINKING =
+  "electron" in process.versions || Platform.OS === "web";
+
 export const linking = {
   prefixes: [
     "https://mathcafe.com",
     "mathcafe://",
-    "https://aicacia.gitlab.io/expo-mathcafe/",
+    "https://aicacia.github.io/expo-mathcafe/",
   ],
   config: {
     screens: {
       [HOME_SCREEN]: "",
-      [QUIZZES_SCREEN]: "/quizzes",
+      [QUIZZES_SCREEN]: "quizzes",
     },
   },
 };
@@ -39,9 +43,7 @@ export const DrawerNavigator = createDrawerNavigator<ParamList>();
 
 export function Navigation() {
   return (
-    <NavigationContainer
-      linking={"electron" in process.versions ? undefined : linking}
-    >
+    <NavigationContainer linking={DISABLE_LINKING ? undefined : linking}>
       <AppDrawer />
     </NavigationContainer>
   );
