@@ -14,11 +14,3 @@ export async function* walk(dir: string): AsyncGenerator<string> {
     }
   }
 }
-
-export function capitalize(string: string): string {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-export function lowercase(string: string): string {
-  return string.charAt(0).toLowerCase() + string.slice(1);
-}

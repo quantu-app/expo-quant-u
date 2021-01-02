@@ -9,10 +9,16 @@ export interface IQuizScreenProps {
 }
 
 export function QuizScreen(props: IQuizScreenProps) {
+  console.log(props.route.params);
   return (
     <Async
       promise={import("./Quiz")}
-      onSuccess={({ Quiz }) => <Quiz name={props.route.params.name} />}
+      onSuccess={({ Quiz }) => (
+        <Quiz
+          path={props.route.params.path.split("/")}
+          index={props.route.params.index}
+        />
+      )}
       onPending={() => <Loading />}
       onError={(error) => <JSError error={error} />}
     />

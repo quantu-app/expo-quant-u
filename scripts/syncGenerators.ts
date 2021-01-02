@@ -1,7 +1,9 @@
 import { EOL } from "os";
 import { promises } from "fs";
 import { join, relative, basename, extname, dirname, sep } from "path";
-import { ROOT_PATH, walk, capitalize, lowercase } from "./shared";
+import { camelCase } from "camel-case";
+import { pascalCase } from "pascal-case";
+import { ROOT_PATH, walk } from "./shared";
 
 const GENERATORS_PATH = join(ROOT_PATH, "generators"),
   OUT_PATH = join(ROOT_PATH, "src", "generators.ts");
@@ -35,7 +37,9 @@ export async function syncGenerators() {
   );
 
   for (const generator of generators) {
-    const varName = lowercase(generator.tags.map(capitalize).join(""));
+    const varName = camelCase(
+      generator.tags.map((tag) => pascalCase(tag)).join("")
+    );
 
     await promises.appendFile(
       OUT_PATH,

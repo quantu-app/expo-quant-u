@@ -12,6 +12,7 @@ import { QuizScreen } from "./screens/Quiz/QuizScreen";
 import { StyleSheet, View, Platform } from "react-native";
 import { Drawer } from "react-native-paper";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
+import { Loading } from "./Loading";
 
 export const HOME_SCREEN = "Home",
   QUIZZES_SCREEN = "Quizzes",
@@ -21,7 +22,7 @@ export const HOME_SCREEN = "Home",
 export type ParamList = {
   [HOME_SCREEN]: undefined;
   [QUIZZES_SCREEN]: undefined;
-  [QUIZ_SCREEN]: { name: string };
+  [QUIZ_SCREEN]: { path: string; index: number };
 };
 
 // TODO: remove after not hosting on github pages
@@ -32,13 +33,13 @@ export const linking = {
   prefixes: [
     "https://mathcafe.com",
     "mathcafe://",
-    "https://aicacia.github.io/expo-mathcafe/",
+    "https://aicacia.github.io/expo-mathcafe",
   ],
   config: {
     screens: {
       [HOME_SCREEN]: "",
       [QUIZZES_SCREEN]: "quizzes",
-      [QUIZ_SCREEN]: "quizzes/:name",
+      [QUIZ_SCREEN]: "quizzes/:path/:index",
     },
   },
 };
@@ -47,7 +48,10 @@ export const DrawerNavigator = createDrawerNavigator<ParamList>();
 
 export function Navigation() {
   return (
-    <NavigationContainer linking={DISABLE_LINKING ? undefined : linking}>
+    <NavigationContainer
+      linking={DISABLE_LINKING ? undefined : linking}
+      fallback={<Loading />}
+    >
       <AppDrawer />
     </NavigationContainer>
   );
