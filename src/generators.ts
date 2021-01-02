@@ -1,21 +1,21 @@
 import { addQuestionGenerator } from "./quizlib";
 
-const mathcafeMathBasicAbc = import("../generators/math/basic/abc").then(
+const quantUMathBasicAbc = import("../generators/math/basic/abc").then(
   ({ config, generator }) => ({
-    name: "mathcafe.math.basic.abc",
-    tags: ["mathcafe", "math", "basic", "abc"],
+    name: "quant-u.math.basic.abc",
+    tags: ["quant-u", "math", "basic", "abc"],
     config,
     generator,
   })
 );
-addQuestionGenerator("mathcafe.math.basic.abc", mathcafeMathBasicAbc);
+addQuestionGenerator("quant-u.math.basic.abc", quantUMathBasicAbc);
 
-const mathcafeMathBasicAddition = import(
+const quantUMathBasicAddition = import(
   "../generators/math/basic/addition"
 ).then(({ config, generator }) => ({
-  name: "mathcafe.math.basic.addition",
-  tags: ["mathcafe", "math", "basic", "addition"],
+  name: "quant-u.math.basic.addition",
+  tags: ["quant-u", "math", "basic", "addition"],
   config,
   generator,
 }));
-addQuestionGenerator("mathcafe.math.basic.addition", mathcafeMathBasicAddition);
+addQuestionGenerator("quant-u.math.basic.addition", quantUMathBasicAddition);

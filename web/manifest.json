@@ -2,8 +2,8 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "lang": "en",
-  "name": "MathCafe",
-  "short_name": "MathCafe",
+  "name": "QuantU",
+  "short_name": "QuantU",
   "start_url": "/?utm_source=web_app_manifest",
   "orientation": "portrait"
 }

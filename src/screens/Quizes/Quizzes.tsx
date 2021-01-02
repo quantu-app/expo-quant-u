@@ -8,6 +8,7 @@ import { sections } from "../../quizzes.json";
 import { IQuizSection } from "./IQuizSection";
 
 const styles = StyleSheet.create({
+  section: { marginTop: 16 },
   title: {
     paddingTop: 8,
     paddingBottom: 8,
@@ -33,7 +34,7 @@ export function Quizzes() {
     <Layout>
       {Object.entries(sections).map(
         ([key, quizSection]: [string, IQuizSection]) => (
-          <View key={key}>
+          <View key={key} style={styles.section}>
             <QuizSection
               navigation={navigation}
               path={[key]}

@@ -26,7 +26,7 @@ export async function syncQuizzes() {
       ),
       relativePath = relative(QUIZZES_PATH, filepath),
       path = dirname(relativePath).split(sep),
-      tags = new Set(["mathcafe", ...path, ...(json.tags || [])]);
+      tags = new Set(["quant-u", ...path, ...(json.tags || [])]);
 
     quizzes.push({
       path,

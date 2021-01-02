@@ -2,7 +2,7 @@
   "name": "ABC",
   "items": [
     {
-      "generator": "mathcafe.math.basic.abc",
+      "generator": "quant-u.math.basic.abc",
       "config": {},
       "count": 1
     }

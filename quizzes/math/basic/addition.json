@@ -2,7 +2,7 @@
   "name": "Addition",
   "items": [
     {
-      "generator": "mathcafe.math.basic.addition",
+      "generator": "quant-u.math.basic.addition",
       "config": {
         "magnitude": 2
       },

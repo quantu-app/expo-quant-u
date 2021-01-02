@@ -31,9 +31,9 @@ export const DISABLE_LINKING =
 
 export const linking = {
   prefixes: [
-    "https://mathcafe.com",
-    "mathcafe://",
-    "https://aicacia.github.io/expo-mathcafe",
+    "https://quant-u.com",
+    "quant-u://",
+    "https://quantu-app.github.io/expo-quant-u",
   ],
   config: {
     screens: {

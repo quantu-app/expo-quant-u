@@ -32,7 +32,7 @@ jobs:
 
       - run: npm ci
       - run: npm install expo-cli json -g
-      - run: json -I -f package.json -e 'this.homepage="https://aicacia.gitlab.io/expo-mathcafe/"'
+      - run: json -I -f package.json -e 'this.homepage="https://quantu-app.gitlab.io/expo-quant-u/"'
       - run: npm run build.web
 
       - name: Deploy

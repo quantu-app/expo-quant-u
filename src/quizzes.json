@@ -11,10 +11,10 @@
           "quizzes": [
             {
               "name": "ABC",
-              "tags": ["mathcafe", "math", "basic"],
+              "tags": ["quant-u", "math", "basic"],
               "items": [
                 {
-                  "generator": "mathcafe.math.basic.abc",
+                  "generator": "quant-u.math.basic.abc",
                   "config": {},
                   "count": 1
                 }
@@ -22,10 +22,10 @@
             },
             {
               "name": "Addition",
-              "tags": ["mathcafe", "math", "basic"],
+              "tags": ["quant-u", "math", "basic"],
               "items": [
                 {
-                  "generator": "mathcafe.math.basic.addition",
+                  "generator": "quant-u.math.basic.addition",
                   "config": {
                     "magnitude": 2
                   },

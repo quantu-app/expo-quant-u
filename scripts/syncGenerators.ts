@@ -21,7 +21,7 @@ export async function syncGenerators() {
     const relativePath = relative(GENERATORS_PATH, filepath),
       relativeImportPath = relative(dirname(OUT_PATH), filepath),
       name = basename(relativeImportPath, extname(relativeImportPath)),
-      tags = new Set(["mathcafe", ...dirname(relativePath).split(sep), name]),
+      tags = new Set(["quant-u", ...dirname(relativePath).split(sep), name]),
       path = join(dirname(relativeImportPath), name);
 
     generators.push({
