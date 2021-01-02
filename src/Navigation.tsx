@@ -8,17 +8,20 @@ import {
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { QuizzesScreen } from "./screens/Quizes/QuizzesScreen";
+import { QuizScreen } from "./screens/Quiz/QuizScreen";
 import { StyleSheet, View, Platform } from "react-native";
 import { Drawer } from "react-native-paper";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 
 export const HOME_SCREEN = "Home",
   QUIZZES_SCREEN = "Quizzes",
+  QUIZ_SCREEN = "Quiz",
   DEFAULT_SCREEN = QUIZZES_SCREEN;
 
 export type ParamList = {
   [HOME_SCREEN]: undefined;
   [QUIZZES_SCREEN]: undefined;
+  [QUIZ_SCREEN]: { name: string };
 };
 
 // TODO: remove after not hosting on github pages
@@ -35,6 +38,7 @@ export const linking = {
     screens: {
       [HOME_SCREEN]: "",
       [QUIZZES_SCREEN]: "quizzes",
+      [QUIZ_SCREEN]: "quizzes/:name",
     },
   },
 };
@@ -58,6 +62,7 @@ export function AppDrawer() {
     >
       <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
       <DrawerNavigator.Screen name={QUIZZES_SCREEN} component={QuizzesScreen} />
+      <DrawerNavigator.Screen name={QUIZ_SCREEN} component={QuizScreen} />
     </DrawerNavigator.Navigator>
   );
 }
@@ -83,14 +88,14 @@ function DrawerContent(
               <MaterialCommunityIcons name="home" color={color} size={size} />
             )}
             label={HOME_SCREEN}
-            onPress={() => props.navigation.jumpTo(HOME_SCREEN)}
+            onPress={() => props.navigation.navigate(HOME_SCREEN)}
           />
           <DrawerItem
             icon={({ color, size }) => (
               <Foundation name="page-multiple" color={color} size={size} />
             )}
             label={QUIZZES_SCREEN}
-            onPress={() => props.navigation.jumpTo(QUIZZES_SCREEN)}
+            onPress={() => props.navigation.navigate(QUIZZES_SCREEN)}
           />
         </Drawer.Section>
       </View>

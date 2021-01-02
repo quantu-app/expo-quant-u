@@ -1,29 +1,20 @@
-import { List, Map } from "immutable";
-import { IJSONObject } from "@aicacia/json";
 import { promises } from "fs";
 import { join, relative, dirname, sep } from "path";
+import {
+  IQuizItemJSON,
+  IQuizJSON,
+  IQuizSection,
+} from "../src/screens/Quizes/IQuizSection";
 import { ROOT_PATH, walk } from "./shared";
 
 const QUIZZES_PATH = join(ROOT_PATH, "quizzes"),
   OUT_PATH = join(ROOT_PATH, "src", "quizzes.json");
 
-interface IQuizItemJSON {
-  generator: string;
-  config: IJSONObject;
-  count: number;
-}
-
-interface IQuizJSON {
-  name: string;
-  items: IQuizItemJSON[];
-  tags?: string[];
-}
-
 interface IQuiz {
   path: string[];
   name: string;
-  items: IQuizItemJSON[];
   tags: string[];
+  items: IQuizItemJSON[];
 }
 
 export async function syncQuizzes() {
@@ -45,17 +36,32 @@ export async function syncQuizzes() {
     });
   }
 
-  const quizzesMap = quizzes.reduce(
-    (map, quiz) =>
-      map.updateIn(quiz.path, List(), (list) =>
-        list.push({
-          name: quiz.name,
-          items: quiz.items,
-          tags: quiz.tags,
-        })
-      ),
-    Map<string, any>()
-  );
+  const json = quizzes.reduce<IQuizSection>((json, quiz) => {
+    const section = getOrCreateQuizSection(json, quiz.path);
+    section.quizzes.push({
+      name: quiz.name,
+      tags: quiz.tags,
+      items: quiz.items,
+    });
+    return json;
+  }, createQuizSection("root"));
 
-  await promises.writeFile(OUT_PATH, JSON.stringify(quizzesMap, null, 2));
+  await promises.writeFile(OUT_PATH, JSON.stringify(json, null, 2));
+}
+
+function createQuizSection(name: string): IQuizSection {
+  return {
+    name,
+    quizzes: [],
+    sections: {},
+  };
+}
+
+function getOrCreateQuizSection(json: Record<string, any>, path: string[]) {
+  let current = json;
+  for (const key of path) {
+    current =
+      current.sections[key] || (current.sections[key] = createQuizSection(key));
+  }
+  return current;
 }
