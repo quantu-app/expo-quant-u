@@ -1,7 +1,7 @@
 import {
   TextQuestion as TextQuestionClass,
   MultipleChoiceQuestion as MultipleChoiceQuestionClass,
-} from "../../quizlib";
+} from "../../../course-lib";
 import { IQuestionComponentProps } from "./IQuestionComponentProps";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 import { TextQuestion } from "./TextQuestion";

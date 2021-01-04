@@ -7,22 +7,22 @@ import {
   DrawerContentOptions,
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
-import { QuizzesScreen } from "./screens/Quizes/QuizzesScreen";
-import { QuizScreen } from "./screens/Quiz/QuizScreen";
+import { CoursesScreen } from "./screens/Courses/CoursesScreen";
+import { CourseScreen } from "./screens/Course/CourseScreen";
 import { StyleSheet, View, Platform } from "react-native";
 import { Drawer } from "react-native-paper";
 import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { Loading } from "./Loading";
 
 export const HOME_SCREEN = "Home",
-  QUIZZES_SCREEN = "Quizzes",
-  QUIZ_SCREEN = "Quiz",
-  DEFAULT_SCREEN = QUIZZES_SCREEN;
+  COURSES_SCREEN = "Courses",
+  COURSE_SCREEN = "Course",
+  DEFAULT_SCREEN = COURSES_SCREEN;
 
 export type ParamList = {
   [HOME_SCREEN]: undefined;
-  [QUIZZES_SCREEN]: undefined;
-  [QUIZ_SCREEN]: { path: string; index: number };
+  [COURSES_SCREEN]: undefined;
+  [COURSE_SCREEN]: { name: string };
 };
 
 // TODO: remove after not hosting on github pages
@@ -38,8 +38,8 @@ export const linking = {
   config: {
     screens: {
       [HOME_SCREEN]: "",
-      [QUIZZES_SCREEN]: "quizzes",
-      [QUIZ_SCREEN]: "quizzes/:path/:index",
+      [COURSES_SCREEN]: "courses",
+      [COURSE_SCREEN]: "courses/:name",
     },
   },
 };
@@ -65,8 +65,8 @@ export function AppDrawer() {
       drawerContent={DrawerContent}
     >
       <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
-      <DrawerNavigator.Screen name={QUIZZES_SCREEN} component={QuizzesScreen} />
-      <DrawerNavigator.Screen name={QUIZ_SCREEN} component={QuizScreen} />
+      <DrawerNavigator.Screen name={COURSES_SCREEN} component={CoursesScreen} />
+      <DrawerNavigator.Screen name={COURSE_SCREEN} component={CourseScreen} />
     </DrawerNavigator.Navigator>
   );
 }
@@ -98,8 +98,8 @@ function DrawerContent(
             icon={({ color, size }) => (
               <Foundation name="page-multiple" color={color} size={size} />
             )}
-            label={QUIZZES_SCREEN}
-            onPress={() => props.navigation.navigate(QUIZZES_SCREEN)}
+            label={COURSES_SCREEN}
+            onPress={() => props.navigation.navigate(COURSES_SCREEN)}
           />
         </Drawer.Section>
       </View>

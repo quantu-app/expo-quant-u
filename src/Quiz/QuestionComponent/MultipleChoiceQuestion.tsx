@@ -3,7 +3,7 @@ import { Checkbox, List } from "react-native-paper";
 import {
   MultipleChoiceQuestion as MultipleChoiceQuestionClass,
   MultipleChoiceQuestionOption,
-} from "../../quizlib";
+} from "../../../course-lib";
 import { IQuestionComponentProps } from "./IQuestionComponentProps";
 
 export function MultipleChoiceQuestion(

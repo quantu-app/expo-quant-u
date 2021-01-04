@@ -3,12 +3,12 @@ import { StyleSheet, View } from "react-native";
 import { Button, Title, Card } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from "../theme";
-import { Quiz } from "../quizlib";
+import { Quiz } from "../../course-lib";
 import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
 import { QuestionComponent } from "./QuestionComponent";
 import { useNavigation } from "@react-navigation/native";
-import { QUIZZES_SCREEN } from "../Navigation";
+import { COURSES_SCREEN } from "../Navigation";
 
 interface IResultsProps {
   quiz: Quiz;
@@ -117,7 +117,7 @@ export function Results(props: IResultsProps) {
         </Button>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate(QUIZZES_SCREEN)}
+          onPress={() => navigation.navigate(COURSES_SCREEN)}
         >
           Quizzes
         </Button>

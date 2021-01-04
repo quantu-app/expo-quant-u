@@ -3,7 +3,10 @@ import { Rng } from "@aicacia/rand";
 import { List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
-import type { Question as QuestionClass, Quiz as QuizClass } from "../quizlib";
+import type {
+  Question as QuestionClass,
+  Quiz as QuizClass,
+} from "../../course-lib";
 import { Question } from "./Question";
 import { IQuestionResult } from "./QuestionResult";
 import { Results } from "./Results";

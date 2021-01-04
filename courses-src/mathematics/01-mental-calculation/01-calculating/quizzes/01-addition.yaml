@@ -1,0 +1,6 @@
+name: Addition
+items:
+  - generator: quant-u.math.basic.addition
+    count: 1
+    config:
+      magnitude: 2

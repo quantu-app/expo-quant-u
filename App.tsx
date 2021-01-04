@@ -4,7 +4,9 @@ import { createStateProvider } from "@aicacia/state-react";
 import { Provider as PaperProvider } from "react-native-paper";
 import { Provider as ReactProvider, state } from "./src/state";
 import { theme } from "./src/theme";
-import "./src/generators";
+
+import "./generators";
+import "./courses";
 
 const StateProvider = createStateProvider(state, ReactProvider);
 

@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Surface, TextInput } from "react-native-paper";
-import type { TextQuestion as TextQuestionClass } from "../../quizlib";
+import type { TextQuestion as TextQuestionClass } from "../../../course-lib";
 import { IQuestionComponentProps } from "./IQuestionComponentProps";
 
 const styles = StyleSheet.create({

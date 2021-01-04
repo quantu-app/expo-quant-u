@@ -1,36 +1,37 @@
-import { StyleSheet } from "react-native";
-import { Modal, Portal, Title, IconButton, Surface } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { Portal, Title, IconButton, Surface } from "react-native-paper";
 import { SMALL_WIDTH } from "./screens";
-
-let windowObjectReference: Window | null = null,
-  previousUrl: string | null = null;
-
-function receiveMessage(event: MessageEvent) {
-  console.log(event);
-}
-
-async function signInExternal(url: string) {
-  const name = "Sign in";
-  window.removeEventListener("message", receiveMessage);
-
-  const strWindowFeatures = "toolbar=no, menubar=no, width=600, height=700";
-
-  if (windowObjectReference === null || windowObjectReference.closed) {
-    windowObjectReference = window.open(url, name, strWindowFeatures);
-  } else if (previousUrl !== url) {
-    windowObjectReference = window.open(url, name, strWindowFeatures) as Window;
-    windowObjectReference.focus();
-  } else {
-    windowObjectReference.focus();
-  }
-
-  window.addEventListener("message", receiveMessage, false);
-  previousUrl = url;
-}
+import { signInWithGithub } from "./state/auth";
+import { theme } from "./theme";
 
 const styles = StyleSheet.create({
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: theme.colors.backdrop,
+  },
+  wrapper: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "transparent",
+  },
   modal: {
-    maxWidth: SMALL_WIDTH,
+    width: SMALL_WIDTH * 0.5,
+  },
+  header: {
+    flex: 1,
+    alignContent: "space-between",
+    justifyContent: "space-between",
+    flexDirection: "row",
+  },
+  title: {
+    marginTop: 8,
+    marginLeft: 8,
+  },
+  content: {
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
@@ -41,22 +42,24 @@ export interface ISignInProps {
 }
 
 export function SignIn(props: ISignInProps) {
-  async function signInWithGithub() {
-    await signInExternal("GITHUB_URL");
-  }
-
   return (
     <Portal>
-      <Modal
-        visible={props.open}
-        onDismiss={props.onClose}
-        contentContainerStyle={styles.modal}
-      >
-        <Surface>
-          <Title>Sign in</Title>
-          <IconButton icon="github" onPress={signInWithGithub} />
-        </Surface>
-      </Modal>
+      {props.open ? (
+        <>
+          <View style={styles.backdrop} />
+          <View style={styles.wrapper}>
+            <Surface style={styles.modal}>
+              <View style={styles.header}>
+                <Title style={styles.title}>Sign in</Title>
+                <IconButton icon="close" onPress={props.onClose} />
+              </View>
+              <View style={styles.content}>
+                <IconButton icon="github" onPress={signInWithGithub} />
+              </View>
+            </Surface>
+          </View>
+        </>
+      ) : null}
     </Portal>
   );
 }

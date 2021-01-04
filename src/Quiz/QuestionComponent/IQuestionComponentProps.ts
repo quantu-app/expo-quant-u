@@ -1,4 +1,4 @@
-import { Question } from "../../quizlib";
+import { Question } from "../../../course-lib";
 import { IQuestionResult } from "../QuestionResult";
 
 export interface IQuestionComponentProps<

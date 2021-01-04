@@ -1,5 +1,5 @@
 import { syncGenerators } from "./syncGenerators";
-import { syncQuizzes } from "./syncQuizzes";
+import { syncCourses } from "./syncCourses";
 
 syncGenerators();
-syncQuizzes();
+syncCourses();

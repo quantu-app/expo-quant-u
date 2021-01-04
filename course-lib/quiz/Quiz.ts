@@ -1,8 +1,14 @@
 import { Range } from "@aicacia/core";
 import { IJSONObject, isJSONArray, isJSONObject } from "@aicacia/json";
 import { Rng } from "@aicacia/rand";
-import { IQuestionConfiguredGenerator } from "./IQuestionConfiguredGenerator";
-import { IQuestionGenerator } from "./IQuestionGenerator";
+import {
+  IConfiguredQuestionGeneratorFn,
+  isConfiguredQuestionGenerator,
+} from "./IConfiguredQuestionGenerator";
+import {
+  IQuestionGeneratorFn,
+  isQuestionGenerator,
+} from "./IQuestionGenerator";
 import { Question } from "./Question";
 import { getQuestionGenerator } from "./questionGenerators";
 
@@ -24,10 +30,10 @@ class QuestionQuizItem extends QuizItem {
 }
 
 class QuestionGeneratorQuizItem extends QuizItem {
-  private questionGenerator: IQuestionGenerator;
+  private questionGenerator: IQuestionGeneratorFn;
   private count: number;
 
-  constructor(questionGenerator: IQuestionGenerator, count: number) {
+  constructor(questionGenerator: IQuestionGeneratorFn, count: number) {
     super();
     this.questionGenerator = questionGenerator;
     this.count = count < 1 ? 1 : count;
@@ -48,13 +54,13 @@ export class Quiz {
     this.items.push(new QuestionQuizItem(question));
     return this;
   }
-  addQuestionGenerator(questionGenerator: IQuestionGenerator, count = 1) {
+  addQuestionGenerator(questionGenerator: IQuestionGeneratorFn, count = 1) {
     this.items.push(new QuestionGeneratorQuizItem(questionGenerator, count));
     return this;
   }
-  addQuestionConfiguredGenerator<C = any>(
-    questionConfiguredGenerator: IQuestionConfiguredGenerator<C>,
-    config: C = {} as any,
+  addConfiguredQuestionGenerator<C = any>(
+    questionConfiguredGenerator: IConfiguredQuestionGeneratorFn<C>,
+    config: C,
     count = 1
   ) {
     this.items.push(
@@ -70,19 +76,29 @@ export class Quiz {
     }, []);
   }
 
-  static async fromJSON(json: IJSONObject) {
+  static fromJSON(json: IJSONObject) {
     const quiz = new Quiz();
     if (isJSONArray(json.items)) {
       for (const quizItem of json.items) {
         if (isJSONObject(quizItem)) {
-          const generator = await getQuestionGenerator(
-            quizItem.generator as string
-          );
-          quiz.addQuestionConfiguredGenerator(
-            generator.generator,
-            quizItem.config as IJSONObject,
-            quizItem.count as number
-          );
+          const generator = getQuestionGenerator(quizItem.generator as string);
+
+          if (isConfiguredQuestionGenerator(generator)) {
+            quiz.addConfiguredQuestionGenerator(
+              generator.configuredQuestionGenerator,
+              quizItem.config as IJSONObject,
+              quizItem.count as number
+            );
+          } else if (isQuestionGenerator(generator)) {
+            quiz.addQuestionGenerator(
+              generator.questionGenerator,
+              quizItem.count as number
+            );
+          } else {
+            throw new TypeError(
+              `Invalid Question Generator ${JSON.stringify(generator, null, 2)}`
+            );
+          }
         }
       }
     }

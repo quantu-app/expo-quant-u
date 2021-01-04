@@ -3,7 +3,7 @@ import { Button, Headline, Subheading } from "react-native-paper";
 import bg from "../../../assets/bg.jpg";
 import { Layout } from "../../Layout";
 import { useNavigation } from "@react-navigation/native";
-import { QUIZZES_SCREEN } from "../../Navigation";
+import { COURSES_SCREEN } from "../../Navigation";
 import { isSmallScreen } from "../../screens";
 
 const styles = StyleSheet.create({
@@ -57,7 +57,7 @@ export function Home() {
             <Button
               style={styles.button}
               mode="contained"
-              onPress={() => navigation.navigate(QUIZZES_SCREEN)}
+              onPress={() => navigation.navigate(COURSES_SCREEN)}
             >
               Quizzes
             </Button>

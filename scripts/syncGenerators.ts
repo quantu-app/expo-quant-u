@@ -1,17 +1,20 @@
 import { EOL } from "os";
 import { promises } from "fs";
 import { join, relative, basename, extname, dirname, sep } from "path";
-import { camelCase } from "camel-case";
-import { pascalCase } from "pascal-case";
+import { snakeCase } from "snake-case";
 import { ROOT_PATH, walk } from "./shared";
 
 const GENERATORS_PATH = join(ROOT_PATH, "generators"),
-  OUT_PATH = join(ROOT_PATH, "src", "generators.ts");
+  OUT_PATH = join(ROOT_PATH, "generators.ts"),
+  IS_CONFIGURED_QUESTION_GENERATOR_RE = /export default createConfiguredQuestionGenerator/gi,
+  IS_QUESTION_GENERATOR_RE = /export default createQuestionGenerator/gi;
 
 interface IGenerator {
   path: string;
-  name: string;
-  tags: string[];
+  absoluteNamePath: string[];
+  tags: Set<string>;
+  isConfiguredQuestionGenerator: boolean;
+  isQuestionGenerator: boolean;
 }
 
 export async function syncGenerators() {
@@ -21,40 +24,80 @@ export async function syncGenerators() {
     const relativePath = relative(GENERATORS_PATH, filepath),
       relativeImportPath = relative(dirname(OUT_PATH), filepath),
       name = basename(relativeImportPath, extname(relativeImportPath)),
-      tags = new Set(["quant-u", ...dirname(relativePath).split(sep), name]),
-      path = join(dirname(relativeImportPath), name);
+      absoluteNamePath = [
+        "quant-u",
+        ...dirname(relativePath).split(sep),
+        name,
+      ].map((tag) => snakeCase(tag).replace("_", "-")),
+      tags = new Set(absoluteNamePath),
+      path = "." + sep + join(dirname(relativeImportPath), name),
+      isConfiguredQuestionGenerator = await isConfiguredQuestionGeneratorFile(
+        filepath
+      ),
+      isQuestionGenerator = await isQuestionGeneratorFile(filepath);
+
+    if (isConfiguredQuestionGenerator === isQuestionGenerator) {
+      throw new Error(`Invalid Question Generator for ${filepath}`);
+    }
 
     generators.push({
       path,
-      name: Array.from(tags.values()).join("."),
-      tags: Array.from(tags.values()),
+      absoluteNamePath,
+      tags: tags,
+      isConfiguredQuestionGenerator,
+      isQuestionGenerator,
     });
   }
 
-  await promises.writeFile(
-    OUT_PATH,
-    `import { addQuestionGenerator } from "./quizlib";${EOL}${EOL}`
-  );
+  const courseLibImports: string[] = [];
+
+  if (generators.some((generator) => generator.isQuestionGenerator)) {
+    courseLibImports.push("addQuestionGenerator");
+  }
+  if (generators.some((generator) => generator.isConfiguredQuestionGenerator)) {
+    courseLibImports.push("addConfiguredQuestionGenerator");
+  }
+
+  if (courseLibImports.length) {
+    await promises.writeFile(
+      OUT_PATH,
+      `import { ${courseLibImports.join(
+        ", "
+      )} } from "./course-lib";${EOL}${EOL}`
+    );
+  } else {
+    return;
+  }
 
   for (const generator of generators) {
-    const varName = camelCase(
-      generator.tags.map((tag) => pascalCase(tag)).join("")
-    );
+    const absoluteName = getAbsoluteName(generator.absoluteNamePath);
 
-    await promises.appendFile(
-      OUT_PATH,
-      `const ${varName} = import("${
-        generator.path
-      }").then(({ config, generator }) => ({
-      name: "${generator.name}",
-      tags: ${JSON.stringify(generator.tags)},
-      config,
-      generator,
-    }));${EOL}`
-    );
-    await promises.appendFile(
-      OUT_PATH,
-      `addQuestionGenerator("${generator.name}", ${varName});${EOL}${EOL}`
-    );
+    if (generator.isConfiguredQuestionGenerator) {
+      await promises.appendFile(
+        OUT_PATH,
+        `addConfiguredQuestionGenerator("${absoluteName}", import("${generator.path}"));${EOL}`
+      );
+    } else if (generator.isQuestionGenerator) {
+      await promises.appendFile(
+        OUT_PATH,
+        `addQuestionGenerator("${absoluteName}", import("${generator.path}"));${EOL}`
+      );
+    }
   }
+}
+
+function getAbsoluteName(absoluteNamePath: string[]) {
+  return absoluteNamePath.join(".");
+}
+
+async function isConfiguredQuestionGeneratorFile(filepath: string) {
+  return IS_CONFIGURED_QUESTION_GENERATOR_RE.test(
+    await promises.readFile(filepath, { encoding: "utf-8" })
+  );
+}
+
+async function isQuestionGeneratorFile(filepath: string) {
+  return IS_QUESTION_GENERATOR_RE.test(
+    await promises.readFile(filepath, { encoding: "utf-8" })
+  );
 }

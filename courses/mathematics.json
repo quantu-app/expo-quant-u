@@ -1,0 +1,34 @@
+{
+  "name": "Mathematics",
+  "description": "Mathematics includes the study of such topics as quantity, structure, space, and change. \nIt has no generally accepted definition. Mathematicians seek and use patterns to \nformulate new conjectures; they resolve the truth or falsity of such by mathematical proof.",
+  "tags": [],
+  "chapters": [
+    {
+      "name": "Mental Calculation",
+      "description": "Mental calculation consists of arithmetical calculations using only the human brain, \nwith no help from any supplies or devices such as a calculator. People use mental \ncalculation when computing tools are not available, when it is faster than other means \nof calculation, or even in a competitive context.",
+      "tags": [],
+      "units": [
+        {
+          "name": "Calculating",
+          "description": "A calculation is a deliberate process that transforms one or more inputs into one or more results.",
+          "tags": [],
+          "quizzes": [
+            {
+              "name": "Addition",
+              "tags": [],
+              "items": [
+                {
+                  "generator": "quant-u.math.basic.addition",
+                  "count": 1,
+                  "config": {
+                    "magnitude": 2
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

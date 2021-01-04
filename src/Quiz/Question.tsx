@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Surface } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import type { Question as QuestionClass } from "../quizlib";
+import type { Question as QuestionClass } from "../../course-lib";
 import { QuestionComponent } from "./QuestionComponent";
 import { theme } from "../theme";
 import { QuestionResult, IQuestionResult } from "./QuestionResult";
