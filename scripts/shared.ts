@@ -15,7 +15,7 @@ export async function* walk(dir: string, recur = true): AsyncGenerator<string> {
   }
 }
 
-export async function* walkDirectoriesIn(dir: string): AsyncGenerator<string> {
+export async function* walkDirectories(dir: string): AsyncGenerator<string> {
   for await (const d of await promises.opendir(dir)) {
     const entry = join(dir, d.name);
 

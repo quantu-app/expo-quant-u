@@ -76,12 +76,14 @@ export class Quiz {
     }, []);
   }
 
-  static fromJSON(json: IJSONObject) {
+  static async fromJSON(json: IJSONObject) {
     const quiz = new Quiz();
     if (isJSONArray(json.items)) {
       for (const quizItem of json.items) {
         if (isJSONObject(quizItem)) {
-          const generator = getQuestionGenerator(quizItem.generator as string);
+          const { default: generator } = await getQuestionGenerator(
+            quizItem.generator as string
+          );
 
           if (isConfiguredQuestionGenerator(generator)) {
             quiz.addConfiguredQuestionGenerator(

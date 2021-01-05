@@ -1,4 +1,4 @@
-import { RecordOf } from "immutable";
+import { RecordOf, OrderedSet } from "immutable";
 import { ICourse } from "./Course";
 
 const COURSES: Record<string, Promise<RecordOf<ICourse>>> =
@@ -22,4 +22,8 @@ export function getCourse(name: string): Promise<RecordOf<ICourse>> {
   } else {
     throw new Error(`${name} doesn't exists`);
   }
+}
+
+export function getCourses(): OrderedSet<RecordOf<ICourse>> {
+  return COURSES[name];
 }
