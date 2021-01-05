@@ -8,15 +8,15 @@ import { writeFile } from "./utils/writeFile";
 import { writeJSON } from "./utils/writeJSON";
 import { camelCase } from "camel-case";
 import { stripOrdering } from "./utils/stripOrdering";
-import { Chapter } from "./Chapter";
+import { Course } from "./Course";
 import { appendFile } from "./utils/appendFile";
 
-export class Course {
+export class Category {
   name = "";
   url = "";
   tags: string[] = [];
   content = "";
-  chapters: Chapter[] = [];
+  courses: Course[] = [];
 
   async parse(dirname: string): Promise<this> {
     const tasks: Promise<any>[] = [];
@@ -24,19 +24,19 @@ export class Course {
     this.url = stripOrdering(basename(dirname));
 
     tasks.push(
-      fileExists(join(dirname, "course.md")).then(
+      fileExists(join(dirname, "category.md")).then(
         (content) => (this.content = content)
       ),
-      readYaml(join(dirname, "course")).then((json) => {
+      readYaml(join(dirname, "category")).then((json) => {
         this.name = json.name as string;
         this.tags = (json.tags as Array<string>) || [];
       })
     );
 
-    for await (const chapterDir of walkDirectories(dirname)) {
-      const chapter = new Chapter();
-      this.chapters.push(chapter);
-      tasks.push(chapter.parse(chapterDir));
+    for await (const courseDir of walkDirectories(dirname)) {
+      const course = new Course();
+      this.courses.push(course);
+      tasks.push(course.parse(courseDir));
     }
 
     await Promise.all(tasks);
@@ -53,34 +53,32 @@ export class Course {
       )
     );
 
-    const chapters: [string, Chapter][] = this.chapters.map(
-      (chapter, index) => {
-        const chapterDir = join(dirname, `${index}-${chapter.url}`);
-        tasks.push(chapter.write(chapterDir, courselibDir));
-        return ["." + sep + relative(dirname, chapterDir), chapter];
-      }
-    );
+    const courses: [string, Course][] = this.courses.map((course, index) => {
+      const courseDir = join(dirname, `${index}-${course.url}`);
+      tasks.push(course.write(courseDir, courselibDir));
+      return ["." + sep + relative(dirname, courseDir), course];
+    });
 
     tasks.push(
       writeFile(
         join(dirname, "index.ts"),
-        `import { ICourse } from "${
+        `import { ICategory } from "${
           "." + sep + relative(dirname, courselibDir)
-        }";${EOL}${chapters
+        }";${EOL}${courses
           .map(
-            ([path, chapter]) =>
-              `import { chapter as ${camelCase(chapter.url)} } from "${path}";`
+            ([path, course]) =>
+              `import { course as ${camelCase(course.url)} } from "${path}";`
           )
           .join(EOL)}${EOL}`
       ).then((filepath) =>
         appendFile(
           filepath,
-          `export const course: ICourse = {${EOL}\tname: "${
+          `export const category: ICategory = {${EOL}\tname: "${
             this.name
           }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
             this.tags
-          )},${EOL}\tcontent: import("./content.json").then(({ markdown }) => markdown),${EOL}\tchapters: [${chapters.map(
-            ([_path, chapter]) => camelCase(chapter.url)
+          )},${EOL}\tcontent: import("./content.json").then(({ markdown }) => markdown),${EOL}\tcourses: [${courses.map(
+            ([_path, course]) => camelCase(course.url)
           )}],${EOL}};`
         )
       )

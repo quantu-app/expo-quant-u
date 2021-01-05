@@ -1,6 +1,9 @@
-export default {
-  name: "mathematics",
-  tags: ["math"],
-  content: import("./content.json"),
-  chapters: [import("./0-mental-calculation")],
+import { ICategory } from "./../../course-lib";
+import { course as mentalMath } from "./0-mental-math";
+export const category: ICategory = {
+  name: "Mathematics",
+  url: "mathematics",
+  tags: ["mathematics"],
+  content: import("./content.json").then(({ markdown }) => markdown),
+  courses: [mentalMath],
 };

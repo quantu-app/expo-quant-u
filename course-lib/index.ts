@@ -19,20 +19,16 @@ export {
   TextQuestion,
 } from "./quiz";
 export {
+  ICategory,
   IQuiz,
   IQuizItem,
   IChapter,
   ICourse,
   IUnit,
-  Chapter,
-  Course,
-  Unit,
-  Quiz as CourseQuiz,
-  QuizItem,
-  QuizItemFromJSON,
-  QuizFromJSON,
-  UnitFromJSON,
-  ChapterFromJSON,
-  CourseFromJSON,
-} from "./Course";
-export { getCourse, addCourse, hasCourse } from "./courses";
+} from "./interfaces";
+export {
+  getCategories,
+  addCategory,
+  hasCategory,
+  getCategory,
+} from "./categories";

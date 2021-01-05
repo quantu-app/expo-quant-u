@@ -3,6 +3,7 @@ import { promises } from "fs";
 import { join, relative, basename, extname, dirname, sep } from "path";
 import { snakeCase } from "snake-case";
 import { ROOT_PATH, walk } from "./shared";
+import { appendFile } from "../course-lib/parser/utils/appendFile";
 
 const GENERATORS_PATH = join(ROOT_PATH, "generators"),
   OUT_PATH = join(ROOT_PATH, "generators.ts"),
@@ -73,12 +74,12 @@ export async function syncGenerators() {
     const absoluteName = getAbsoluteName(generator.absoluteNamePath);
 
     if (generator.isConfiguredQuestionGenerator) {
-      await promises.appendFile(
+      await appendFile(
         OUT_PATH,
         `addConfiguredQuestionGenerator("${absoluteName}", import("${generator.path}"));${EOL}`
       );
     } else if (generator.isQuestionGenerator) {
-      await promises.appendFile(
+      await appendFile(
         OUT_PATH,
         `addQuestionGenerator("${absoluteName}", import("${generator.path}"));${EOL}`
       );

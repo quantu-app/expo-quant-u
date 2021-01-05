@@ -43,3 +43,9 @@ export function getQuestionGenerator<C = any, T = any>(
     throw new Error(`${name} doesn't exists`);
   }
 }
+
+export function getQuestionGenerators(): Promise<{
+  default: IQuestionGenerator | IConfiguredQuestionGenerator;
+}>[] {
+  return Object.values(QUESTION_GENERATORS);
+}

@@ -59,7 +59,7 @@ export function Home() {
               mode="contained"
               onPress={() => navigation.navigate(COURSES_SCREEN)}
             >
-              Quizzes
+              Courses
             </Button>
           </View>
           <View style={styles.grid}>

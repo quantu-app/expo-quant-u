@@ -6,6 +6,6 @@ export { walk } from "./utils/walk";
 export { walkDirectories } from "./utils/walkDirectories";
 export { Chapter } from "./Chapter";
 export { Course } from "./Course";
-export { Parser } from "./Parser";
+export { Category } from "./Category";
 export { Quiz, QuizItem } from "./Quiz";
 export { Unit } from "./Unit";

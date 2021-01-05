@@ -1,6 +1,0 @@
-name: addition
-items:
-  - generator: quant-u.mathematics.mental-calculation.addition
-    count: 1
-    config:
-      magnitude: 2

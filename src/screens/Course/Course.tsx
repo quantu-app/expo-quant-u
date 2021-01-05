@@ -1,4 +1,5 @@
 import { Title } from "react-native-paper";
+import { getCourse } from "../../../course-lib";
 import { Layout } from "../../Layout";
 
 export interface ICourseProps {
@@ -6,9 +7,11 @@ export interface ICourseProps {
 }
 
 export function Course(props: ICourseProps) {
+  const course = getCourse(props.name);
+
   return (
     <Layout>
-      <Title>{props.name}</Title>
+      <Title>{course.name}</Title>
     </Layout>
   );
 }
