@@ -13,7 +13,12 @@ export function CourseScreen(props: ICourseScreenProps) {
   return (
     <Async
       promise={import("./Course")}
-      onSuccess={({ Course }) => <Course name={props.route.params.name} />}
+      onSuccess={({ Course }) => (
+        <Course
+          category={props.route.params.category}
+          course={props.route.params.course}
+        />
+      )}
       onPending={() => <Loading />}
       onError={(error) => <JSError error={error} />}
     />

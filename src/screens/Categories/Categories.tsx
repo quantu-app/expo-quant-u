@@ -3,20 +3,23 @@ import { View } from "react-native";
 import { Card, Title, Button } from "react-native-paper";
 import { getCategories } from "../../../course-lib/categories";
 import { Layout } from "../../Layout";
-import { COURSE_SCREEN } from "../../Navigation";
+import { CATEGORY_SCREEN } from "../../Navigation";
 
-export function Courses() {
+export function Categories() {
   const navigation = useNavigation();
+
   return (
     <Layout>
       <View>
-        {getCategories().map((course) => (
-          <Card key={course.name}>
+        {getCategories().map((category) => (
+          <Card key={category.name}>
             <Card.Content>
-              <Title>{course.name}</Title>
+              <Title>{category.name}</Title>
               <Button
                 onPress={() =>
-                  navigation.navigate(COURSE_SCREEN, { name: course.name })
+                  navigation.navigate(CATEGORY_SCREEN, {
+                    category: category.name,
+                  })
                 }
               >
                 Start
