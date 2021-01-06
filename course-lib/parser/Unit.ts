@@ -13,6 +13,7 @@ import { appendFile } from "./utils/appendFile";
 
 export class Unit {
   name = "";
+  description = "";
   url = "";
   tags: string[] = [];
   content = "";
@@ -29,6 +30,7 @@ export class Unit {
       ),
       readYaml(join(dirname, "unit")).then((json) => {
         this.name = json.name as string;
+        this.description = json.description as string;
         this.tags = (json.tags as Array<string>) || [];
       })
     );
@@ -77,8 +79,10 @@ export class Unit {
             this.name
           }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
             this.tags
-          )},${EOL}\tcontent: import("./content"),${EOL}\tquizzes: [${quizzes.map(
-            ([_path, quiz]) => camelCase(quiz.url)
+          )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
+            this.description
+          )},${EOL}\tquizzes: [${quizzes.map(([_path, quiz]) =>
+            camelCase(quiz.url)
           )}],${EOL}\tquizMap: {${EOL}${quizzes
             .map(
               ([_path, quiz]) =>

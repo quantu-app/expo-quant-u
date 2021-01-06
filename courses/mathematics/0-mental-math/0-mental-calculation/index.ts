@@ -5,6 +5,8 @@ export const chapter: IChapter = {
   url: "mental-calculation",
   tags: ["mental", "calculation"],
   content: import("./content"),
+  description:
+    "Mental calculation consists of arithmetical calculations using only the human brain,\nwith no help from any supplies or devices such as a calculator.\n",
   units: [calculating],
   unitMap: {
     calculating: calculating,

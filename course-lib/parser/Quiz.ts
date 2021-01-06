@@ -17,6 +17,7 @@ export class QuizItem {
 
 export class Quiz {
   name = "";
+  description = "";
   url = "";
   tags: string[] = [];
   content = "";
@@ -33,6 +34,7 @@ export class Quiz {
       ),
       readYaml(join(dirname, "quiz")).then((json) => {
         this.name = json.name as string;
+        this.description = json.description as string;
         this.tags = (json.tags as Array<string>) || [];
         this.items = ((json.items as Array<IJSONObject>) || []).map((json) => {
           const quizItem = new QuizItem();
@@ -68,9 +70,9 @@ export class Quiz {
           this.name
         }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
           this.tags
-        )},${EOL}\tcontent: import("./content"),${EOL}\titems: ${JSON.stringify(
-          this.items
-        )},${EOL}};`
+        )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
+          this.description
+        )},${EOL}\titems: ${JSON.stringify(this.items)},${EOL}};`
       )
     );
 

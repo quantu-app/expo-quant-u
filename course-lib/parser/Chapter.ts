@@ -13,6 +13,7 @@ import { appendFile } from "./utils/appendFile";
 
 export class Chapter {
   name = "";
+  description = "";
   url = "";
   tags: string[] = [];
   content = "";
@@ -29,6 +30,7 @@ export class Chapter {
       ),
       readYaml(join(dirname, "chapter")).then((json) => {
         this.name = json.name as string;
+        this.description = json.description as string;
         this.tags = (json.tags as Array<string>) || [];
       })
     );
@@ -77,8 +79,10 @@ export class Chapter {
             this.name
           }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
             this.tags
-          )},${EOL}\tcontent: import("./content"),${EOL}\tunits: [${units.map(
-            ([_path, unit]) => camelCase(unit.url)
+          )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
+            this.description
+          )},${EOL}\tunits: [${units.map(([_path, unit]) =>
+            camelCase(unit.url)
           )}],${EOL}\tunitMap: {${EOL}${units
             .map(
               ([_path, unit]) =>

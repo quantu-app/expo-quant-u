@@ -1,4 +1,5 @@
 import { EOL } from "os";
+import { rmdirSync } from "fs";
 import { join, relative, sep } from "path";
 import { Category, walkDirectories } from "../course-lib/parser";
 import { ROOT_PATH } from "./shared";
@@ -8,11 +9,15 @@ import { camelCase } from "camel-case";
 
 const CATEGORIES_PATH = join(ROOT_PATH, "courses-src"),
   OUT_DIR = join(ROOT_PATH, "courses"),
+  OUT_ASSETS_DIR = join(ROOT_PATH, "assets/courses"),
   COURSE_LIB_DIR = join(ROOT_PATH, "course-lib"),
   OUT_PATH = join(ROOT_PATH, "courses.ts");
 
 export async function syncCourses() {
   const categories: Category[] = [];
+
+  rmdirSync(OUT_DIR, { recursive: true });
+  rmdirSync(OUT_ASSETS_DIR, { recursive: true });
 
   await writeFile(
     OUT_PATH,

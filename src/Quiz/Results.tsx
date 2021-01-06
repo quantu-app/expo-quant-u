@@ -1,6 +1,6 @@
 import { RecordOf } from "immutable";
 import { StyleSheet, View } from "react-native";
-import { Button, Title, Card } from "react-native-paper";
+import { Button, Title } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from "../theme";
 import { Quiz } from "../../course-lib";
@@ -87,22 +87,20 @@ export function Results(props: IResultsProps) {
           );
         })}
       </View>
-      <Card style={{ marginTop: 16 }}>
-        <Card.Content>
-          <Title>
-            Points -{" "}
-            {props.state.results.reduce(
-              (count, questionResult) => count + questionResult.points,
-              0
-            )}
-            {" / "}
-            {props.state.results.reduce(
-              (count, questionResult) => count + questionResult.total,
-              0
-            )}
-          </Title>
-        </Card.Content>
-      </Card>
+      <View style={{ marginTop: 16 }}>
+        <Title>
+          Points -{" "}
+          {props.state.results.reduce(
+            (count, questionResult) => count + questionResult.points,
+            0
+          )}
+          {" / "}
+          {props.state.results.reduce(
+            (count, questionResult) => count + questionResult.total,
+            0
+          )}
+        </Title>
+      </View>
       <View style={styles.buttons}>
         <Button
           mode="contained"

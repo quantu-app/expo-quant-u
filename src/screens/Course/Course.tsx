@@ -1,15 +1,24 @@
 import { useNavigation } from "@react-navigation/native";
-import { View } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   Title,
-  Button,
-  Surface,
   Divider,
+  Surface,
+  List,
   Subheading,
+  Paragraph,
 } from "react-native-paper";
 import { getCategory } from "../../../course-lib/categories";
 import { Layout } from "../../Layout";
 import { CHAPTER_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 16,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+});
 
 export function Course(props: ParamList[typeof COURSE_SCREEN]) {
   const navigation = useNavigation(),
@@ -17,24 +26,27 @@ export function Course(props: ParamList[typeof COURSE_SCREEN]) {
 
   return (
     <Layout>
-      <Surface>
+      <Surface style={styles.container}>
         <Title>{course.name}</Title>
+        <Paragraph>{course.description}</Paragraph>
         <Divider />
-        {course.chapters.map((chapter) => (
-          <View key={chapter.url}>
-            <Subheading>{chapter.name}</Subheading>
-            <Button
+        <Subheading>Chapters</Subheading>
+        <Divider />
+        <List.Section>
+          {course.chapters.map((chapter) => (
+            <List.Item
+              key={course.url}
+              title={chapter.name}
+              description={chapter.description}
               onPress={() =>
                 navigation.navigate(CHAPTER_SCREEN, {
                   ...props,
                   chapter: chapter.url,
                 })
               }
-            >
-              Start
-            </Button>
-          </View>
-        ))}
+            />
+          ))}
+        </List.Section>
       </Surface>
     </Layout>
   );

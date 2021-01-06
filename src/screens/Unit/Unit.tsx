@@ -1,15 +1,24 @@
 import { useNavigation } from "@react-navigation/native";
-import { View } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   Title,
-  Button,
-  Surface,
   Divider,
+  Surface,
+  List,
   Subheading,
+  Paragraph,
 } from "react-native-paper";
 import { getCategory } from "../../../course-lib";
 import { Layout } from "../../Layout";
 import { ParamList, QUIZ_SCREEN, UNIT_SCREEN } from "../../Navigation";
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 16,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+});
 
 export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
   const navigation = useNavigation(),
@@ -19,24 +28,27 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
 
   return (
     <Layout>
-      <Surface>
+      <Surface style={styles.container}>
         <Title>{unit.name}</Title>
+        <Paragraph>{unit.description}</Paragraph>
         <Divider />
-        {unit.quizzes.map((quiz) => (
-          <View key={quiz.url}>
-            <Subheading>{quiz.name}</Subheading>
-            <Button
+        <Subheading>Quizzes</Subheading>
+        <Divider />
+        <List.Section>
+          {unit.quizzes.map((quiz) => (
+            <List.Item
+              key={quiz.url}
+              title={quiz.name}
+              description={quiz.description}
               onPress={() =>
                 navigation.navigate(QUIZ_SCREEN, {
                   ...props,
                   quiz: quiz.url,
                 })
               }
-            >
-              Start
-            </Button>
-          </View>
-        ))}
+            />
+          ))}
+        </List.Section>
       </Surface>
     </Layout>
   );

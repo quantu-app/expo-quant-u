@@ -6,6 +6,7 @@ export interface IContent {
 
 export interface ICategory {
   name: string;
+  description: string;
   url: string;
   tags: string[];
   content: Promise<{ default: IContent }>;
@@ -15,6 +16,7 @@ export interface ICategory {
 
 export interface ICourse {
   name: string;
+  description: string;
   url: string;
   tags: string[];
   content: Promise<{ default: IContent }>;
@@ -24,6 +26,7 @@ export interface ICourse {
 
 export interface IChapter {
   name: string;
+  description: string;
   url: string;
   tags: string[];
   content: Promise<{ default: IContent }>;
@@ -33,6 +36,7 @@ export interface IChapter {
 
 export interface IUnit {
   name: string;
+  description: string;
   url: string;
   tags: string[];
   content: Promise<{ default: IContent }>;
@@ -42,6 +46,7 @@ export interface IUnit {
 
 export interface IQuiz {
   name: string;
+  description: string;
   url: string;
   tags: string[];
   content: Promise<{ default: IContent }>;

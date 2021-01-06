@@ -1,7 +1,7 @@
 import { Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, Surface } from "react-native-paper";
+import { Button } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../../course-lib";
 import { QuestionComponent } from "./QuestionComponent";
@@ -153,9 +153,9 @@ export function Question<T = any>(props: IQuestionProps<T>) {
         props.question
           .getExplanation()
           .map((explanation) => (
-            <Surface key={0} style={styles.explanation}>
+            <View key={0} style={styles.explanation}>
               {explanation}
-            </Surface>
+            </View>
           ))
           .unwrapOr(null as any)}
     </>

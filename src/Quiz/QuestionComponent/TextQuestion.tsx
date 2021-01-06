@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { Surface, TextInput } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import type { TextQuestion as TextQuestionClass } from "../../../course-lib";
 import { IQuestionComponentProps } from "./IQuestionComponentProps";
 
@@ -18,7 +18,7 @@ export function TextQuestion(
 ) {
   return (
     <>
-      <Surface style={styles.prompt}>{props.question.getPrompt()}</Surface>
+      <View style={styles.prompt}>{props.question.getPrompt()}</View>
       <View>
         <TextInput
           label="Answer"

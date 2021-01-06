@@ -5,6 +5,8 @@ export const category: ICategory = {
   url: "mathematics",
   tags: ["mathematics"],
   content: import("./content"),
+  description:
+    "Mathematics includes the study of such topics as quantity, structure,\nspace, and change.\n",
   courses: [mentalMath],
   courseMap: {
     "mental-math": mentalMath,
