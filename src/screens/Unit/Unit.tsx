@@ -10,7 +10,7 @@ import {
 } from "react-native-paper";
 import { getCategory } from "../../../course-lib";
 import { Layout } from "../../Layout";
-import { ParamList, QUIZ_SCREEN, UNIT_SCREEN } from "../../Navigation";
+import { ParamList, START_QUIZ_SCREEN, UNIT_SCREEN } from "../../Navigation";
 
 const styles = StyleSheet.create({
   container: {
@@ -41,7 +41,7 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
               title={quiz.name}
               description={quiz.description}
               onPress={() =>
-                navigation.navigate(QUIZ_SCREEN, {
+                navigation.navigate(START_QUIZ_SCREEN, {
                   ...props,
                   quiz: quiz.url,
                 })

@@ -9,7 +9,7 @@ export const quiz: IQuiz = {
   items: [
     {
       generator: "quant-u.mathematics.mental-calculation.addition",
-      count: 1,
+      count: 20,
       config: { magnitude: 2 },
     },
   ],

@@ -17,6 +17,7 @@ import { CategoriesScreen } from "./screens/Categories/CategoriesScreen";
 import { ChapterScreen } from "./screens/Chapter/ChapterScreen";
 import { UnitScreen } from "./screens/Unit/UnitScreen";
 import { QuizScreen } from "./screens/Quiz/QuizScreen";
+import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
 
 export const HOME_SCREEN = "Home",
   CATEGORIES_SCREEN = "Categories",
@@ -24,6 +25,7 @@ export const HOME_SCREEN = "Home",
   COURSE_SCREEN = "Course",
   CHAPTER_SCREEN = "Chapter",
   UNIT_SCREEN = "Unit",
+  START_QUIZ_SCREEN = "Start Quiz",
   QUIZ_SCREEN = "Quiz",
   DEFAULT_SCREEN = CATEGORIES_SCREEN;
 
@@ -39,12 +41,20 @@ export type ParamList = {
     chapter: string;
     unit: string;
   };
+  [START_QUIZ_SCREEN]: {
+    category: string;
+    course: string;
+    chapter: string;
+    unit: string;
+    quiz: string;
+  };
   [QUIZ_SCREEN]: {
     category: string;
     course: string;
     chapter: string;
     unit: string;
     quiz: string;
+    seed: number;
   };
 };
 
@@ -67,7 +77,14 @@ export const linking = {
       [COURSE_SCREEN]: ":category/:course",
       [CHAPTER_SCREEN]: ":category/:course/:chapter",
       [UNIT_SCREEN]: ":category/:course/:chapter/:unit",
-      [QUIZ_SCREEN]: ":category/:course/:chapter/:unit/quizzes/:quiz",
+      [START_QUIZ_SCREEN]:
+        ":category/:course/:chapter/:unit/quizzes/:quiz/start",
+      [QUIZ_SCREEN]: {
+        path: ":category/:course/:chapter/:unit/quizzes/:quiz",
+        parse: {
+          seed: Number,
+        },
+      },
     },
   },
 };
@@ -110,6 +127,10 @@ export function AppDrawer() {
       <DrawerNavigator.Screen name={COURSE_SCREEN} component={CourseScreen} />
       <DrawerNavigator.Screen name={CHAPTER_SCREEN} component={ChapterScreen} />
       <DrawerNavigator.Screen name={UNIT_SCREEN} component={UnitScreen} />
+      <DrawerNavigator.Screen
+        name={START_QUIZ_SCREEN}
+        component={StartQuizScreen}
+      />
       <DrawerNavigator.Screen name={QUIZ_SCREEN} component={QuizScreen} />
     </DrawerNavigator.Navigator>
   );

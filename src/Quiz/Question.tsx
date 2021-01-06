@@ -1,4 +1,4 @@
-import { Record, RecordOf } from "immutable";
+import { RecordOf } from "immutable";
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
@@ -6,21 +6,18 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../../course-lib";
 import { QuestionComponent } from "./QuestionComponent";
 import { theme } from "../theme";
-import { QuestionResult, IQuestionResult } from "./QuestionResult";
+import { IQuestionResult } from "./QuestionResult";
 
 export interface IQuestionProps<T = any> {
-  onNext(result: RecordOf<IQuestionResult<T>>): void;
+  result: RecordOf<IQuestionResult<T>>;
   question: QuestionClass<T>;
+  update(
+    updater: (
+      result: RecordOf<IQuestionResult<T>>
+    ) => RecordOf<IQuestionResult<T>>
+  ): void;
+  onNext(): void;
 }
-
-interface IQuestionState<T = any> extends IQuestionResult<T> {
-  loading: boolean;
-}
-
-const QuestionState = Record<IQuestionState>({
-  ...QuestionResult().toJS(),
-  loading: false,
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -63,58 +60,52 @@ const styles = StyleSheet.create({
 });
 
 export function Question<T = any>(props: IQuestionProps<T>) {
-  const [state, setState] = useState<RecordOf<IQuestionState<T>>>(
-    QuestionState()
-  );
+  const [loading, setLoading] = useState(false);
 
   useMemo(async () => {
     const total = await props.question.getTotalPoints();
-    setState(state.set("total", total));
+    props.update((result) => result.set("total", total));
   }, [props.question]);
 
   function onInputChange(value: any) {
-    setState(state.set("value", value).set("changed", true));
+    props.update((result) => result.set("value", value).set("changed", true));
   }
 
   async function onCheck() {
-    setState(state.set("loading", true));
-    const points = await props.question.checkAnswer(state.value as any);
-    setState(
-      state
-        .set("loading", false)
+    setLoading(true);
+    const points = await props.question.checkAnswer(props.result.value as any);
+    props.update((result) =>
+      result
         .set("done", true)
         .set("points", points)
-        .set("correct", points === state.total && state.total > 0)
+        .set("correct", points === props.result.total && props.result.total > 0)
     );
+    setLoading(false);
   }
 
   async function onExplain() {
-    setState(state.set("done", true).set("explained", true));
-  }
-
-  function onNext() {
-    props.onNext(QuestionResult(state.toJS()));
+    props.update((result) => result.set("done", true).set("explained", true));
   }
 
   return (
     <>
       <View style={styles.question}>
         <QuestionComponent
-          {...state.toJS()}
+          {...props.result.toJS()}
           question={props.question}
           onChange={onInputChange}
         />
       </View>
       <View style={styles.buttons}>
-        {state.done ? (
-          <Button mode="contained" onPress={onNext} style={styles.button}>
+        {props.result.done ? (
+          <Button mode="contained" onPress={props.onNext} style={styles.button}>
             Next
           </Button>
         ) : (
           <Button
             mode="contained"
-            loading={state.loading}
-            disabled={!state.changed || state.loading}
+            loading={loading}
+            disabled={!props.result.changed || loading}
             style={styles.button}
             onPress={onCheck}
           >
@@ -124,8 +115,8 @@ export function Question<T = any>(props: IQuestionProps<T>) {
         {props.question.getExplanation().isSome() && (
           <Button
             mode="outlined"
-            loading={state.loading}
-            disabled={state.explained || state.loading}
+            loading={loading}
+            disabled={props.result.explained || loading}
             style={styles.button}
             onPress={onExplain}
           >
@@ -134,14 +125,14 @@ export function Question<T = any>(props: IQuestionProps<T>) {
         )}
       </View>
       <View style={styles.results}>
-        {state.done && state.correct && (
+        {props.result.done && props.result.correct && (
           <MaterialCommunityIcons
             name="check"
             size={32}
             color={theme.colors.primary}
           />
         )}
-        {state.done && !state.correct && (
+        {props.result.done && !props.result.correct && (
           <MaterialCommunityIcons
             name="window-close"
             size={32}
@@ -149,7 +140,7 @@ export function Question<T = any>(props: IQuestionProps<T>) {
           />
         )}
       </View>
-      {state.explained &&
+      {props.result.explained &&
         props.question
           .getExplanation()
           .map((explanation) => (
