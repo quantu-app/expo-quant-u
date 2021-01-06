@@ -4,6 +4,13 @@
 [![site](https://img.shields.io/badge/www-quantu-blue.svg)](https://quantu-app.github.io/expo-quant-u/)
 [![build](https://github.com/quantu-app/expo-quant-u/workflows/Test/badge.svg)](https://github.com/quantu-app/expo-quant-u/actions?query=workflow%3ATest)
 
+## Tech
+
+- [Expo](https://docs.expo.io/)/[React Native](https://reactnative.dev/docs/getting-started)
+- [react-native-paper](https://callstack.github.io/react-native-paper/index.html)
+- [Electron](https://www.electronjs.org/)
+- [Icons](https://icons.expo.fyi/)
+
 ## Getting Started
 
 Install deps and start the dev server
@@ -13,15 +20,10 @@ npm install
 npm start
 ```
 
-Run in dev with electron for desktop
+### Writing Courses
 
-```bash
-npm run desktop
-```
+`courses-src` contains the categories and their course, use `npm run syncCourses` to regenerate the courses
 
-## Tech
+### Writing Generators
 
-- [Expo](https://docs.expo.io/)/[React Native](https://reactnative.dev/docs/getting-started)
-- [react-native-paper](https://callstack.github.io/react-native-paper/index.html)
-- [Electron](https://www.electronjs.org/)
-- [Icons](https://icons.expo.fyi/)
+`generators-src` contains generator funtions, use `npm run syncGenerators` to regenerate the generators

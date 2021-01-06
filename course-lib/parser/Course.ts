@@ -1,5 +1,6 @@
 import { EOL } from "os";
 import { join, basename, relative, sep } from "path";
+import { none, Option } from "@aicacia/core";
 import { fileExists } from "./utils/fileExists";
 import { readYaml } from "./utils/readYaml";
 import { walkDirectories } from "./utils/walkDirectories";
@@ -10,10 +11,13 @@ import { camelCase } from "camel-case";
 import { stripOrdering } from "./utils/stripOrdering";
 import { Chapter } from "./Chapter";
 import { appendFile } from "./utils/appendFile";
+import { createAsset } from "./utils/createAsset";
+import { findImage } from "./utils/findImage";
 
 export class Course {
   name = "";
   description = "";
+  logo: Option<string> = none();
   url = "";
   tags: string[] = [];
   content = "";
@@ -25,6 +29,7 @@ export class Course {
     this.url = stripOrdering(basename(dirname));
 
     tasks.push(
+      findImage(join(dirname, "course")).then((logo) => (this.logo = logo)),
       fileExists(join(dirname, "course.md")).then(
         (content) => (this.content = content)
       ),
@@ -46,8 +51,17 @@ export class Course {
     return this;
   }
 
-  async write(dirname: string, courselibDir: string): Promise<void> {
+  async write(
+    dirname: string,
+    courselibDir: string,
+    assetsDir: string
+  ): Promise<void> {
     const tasks: Promise<any>[] = [];
+
+    let logo: string | null = null;
+    if (this.logo.isSome()) {
+      logo = await createAsset(this.logo.unwrap(), assetsDir, "image");
+    }
 
     tasks.push(
       readFile(this.content).then((content) =>
@@ -58,7 +72,7 @@ export class Course {
     const chapters: [string, Chapter][] = this.chapters.map(
       (chapter, index) => {
         const chapterDir = join(dirname, `${index}-${chapter.url}`);
-        tasks.push(chapter.write(chapterDir, courselibDir));
+        tasks.push(chapter.write(chapterDir, courselibDir, assetsDir));
         return ["." + sep + relative(dirname, chapterDir), chapter];
       }
     );
@@ -79,7 +93,9 @@ export class Course {
           filepath,
           `export const course: ICourse = {${EOL}\tname: "${
             this.name
-          }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
+          }",${EOL}\turl: "${this.url}",${EOL}${
+            logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
+          }\ttags: ${JSON.stringify(
             this.tags
           )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
             this.description

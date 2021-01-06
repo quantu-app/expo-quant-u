@@ -3,6 +3,7 @@ import { chapter as mentalCalculation } from "./0-mental-calculation";
 export const course: ICourse = {
   name: "Mental Math",
   url: "mental-math",
+  logo: require("../../../assets/courses/image/22fc87e38d6e178b3b16c068e5eab9d8.png"),
   tags: ["mental", "math"],
   content: import("./content"),
   description:

@@ -7,9 +7,9 @@ export const store = state.getStore(STORE_NAME);
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    signIn(user);
+    signUserIn(user);
   } else {
-    signOut();
+    signUserOut();
   }
 });
 
@@ -22,14 +22,16 @@ githubAuthProvider.setCustomParameters({
 firebase
   .auth()
   .getRedirectResult()
-  .then(function (authData) {
-    console.log(authData);
+  .then((authData) => {
+    if (authData.user) {
+      signUserIn(authData.user);
+    }
   })
-  .catch(function (error) {
-    console.log(error);
+  .catch((error) => {
+    console.error(error);
   });
 
-export function signIn(user: firebase.User) {
+function signUserIn(user: firebase.User) {
   return store.update((state) =>
     state.set(
       "user",
@@ -47,8 +49,13 @@ export function signIn(user: firebase.User) {
   );
 }
 
-export function signOut() {
+function signUserOut() {
   return store.update((state) => state.set("user", none()));
+}
+
+export async function signOut() {
+  await firebase.auth().signOut();
+  return signUserOut();
 }
 
 export async function signInWithGithub() {
@@ -57,7 +64,7 @@ export async function signInWithGithub() {
     .signInWithPopup(githubAuthProvider)
     .then((result) => {
       if (result.user) {
-        signIn(result.user);
+        signUserIn(result.user);
       } else {
         throw new Error(JSON.stringify(result, null, 2));
       }

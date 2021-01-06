@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Portal, Title, IconButton, Surface } from "react-native-paper";
+import { Portal, Title, IconButton, Button, Surface } from "react-native-paper";
 import { SMALL_WIDTH } from "./screens";
 import { signInWithGithub } from "./state/auth";
 import { theme } from "./theme";
@@ -38,10 +39,22 @@ const styles = StyleSheet.create({
 export interface ISignInProps {
   open: boolean;
   onClose(): void;
-  onSignIn(): void;
 }
 
 export function SignIn(props: ISignInProps) {
+  const [loading, setLoading] = useState(false);
+
+  async function signIn(signInFn: () => Promise<void>) {
+    setLoading(true);
+    try {
+      await signInFn();
+      props.onClose();
+    } catch (error) {
+      setLoading(false);
+      throw error;
+    }
+  }
+
   return (
     <Portal>
       {props.open ? (
@@ -54,7 +67,15 @@ export function SignIn(props: ISignInProps) {
                 <IconButton icon="close" onPress={props.onClose} />
               </View>
               <View style={styles.content}>
-                <IconButton icon="github" onPress={signInWithGithub} />
+                <Button
+                  icon="github"
+                  mode="contained"
+                  color="#24292e"
+                  disabled={loading}
+                  onPress={() => signIn(signInWithGithub)}
+                >
+                  Github
+                </Button>
               </View>
             </Surface>
           </View>

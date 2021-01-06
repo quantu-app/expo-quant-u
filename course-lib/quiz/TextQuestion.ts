@@ -11,7 +11,7 @@ async function DEFAULT_CHECKER(_answer: string) {
 export class TextQuestion extends Question<string> {
   protected prompt: ReactNode = null;
   protected type = "text";
-  protected totalPoints = 0;
+  protected totalPoints = 1;
   protected checker: (answer: string) => Promise<number> = DEFAULT_CHECKER;
 
   setPrompt(prompt: ReactNode) {

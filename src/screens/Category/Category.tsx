@@ -1,13 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
-import {
-  Card,
-  Title,
-  Button,
-  Surface,
-  Paragraph,
-  Divider,
-} from "react-native-paper";
+import { Image, StyleSheet } from "react-native";
+import { Card, Title, Button, Surface, Paragraph } from "react-native-paper";
 import { getCategory } from "../../../course-lib/categories";
 import { Layout } from "../../Layout";
 import { CATEGORY_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
@@ -31,13 +24,20 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
     <Layout>
       <Surface style={styles.title}>
         <Title>{category.name}</Title>
-        <Divider />
         <Paragraph>{category.description}</Paragraph>
       </Surface>
       {category.courses.map((course) => (
         <Card key={course.url} style={styles.card}>
           <Card.Content>
             <Title>{course.name}</Title>
+            {course.logo && (
+              <Image
+                source={course.logo}
+                resizeMode="contain"
+                style={{ height: 128 }}
+              />
+            )}
+            <Paragraph>{course.description}</Paragraph>
             <Button
               mode="contained"
               onPress={() =>

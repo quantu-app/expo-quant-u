@@ -2,12 +2,15 @@ import { EOL } from "os";
 import { IJSONObject } from "@aicacia/json";
 import { Schema } from "js-yaml";
 import { join, basename, relative } from "path";
+import { none, Option } from "@aicacia/core";
 import { fileExists } from "./utils/fileExists";
 import { readFile } from "./utils/readFile";
 import { readYaml } from "./utils/readYaml";
 import { writeFile } from "./utils/writeFile";
 import { writeJSON } from "./utils/writeJSON";
 import { stripOrdering } from "./utils/stripOrdering";
+import { createAsset } from "./utils/createAsset";
+import { findImage } from "./utils/findImage";
 
 export class QuizItem {
   generator = "";
@@ -18,6 +21,7 @@ export class QuizItem {
 export class Quiz {
   name = "";
   description = "";
+  logo: Option<string> = none();
   url = "";
   tags: string[] = [];
   content = "";
@@ -29,6 +33,7 @@ export class Quiz {
     this.url = stripOrdering(basename(dirname));
 
     tasks.push(
+      findImage(join(dirname, "quiz")).then((logo) => (this.logo = logo)),
       fileExists(join(dirname, "quiz.md")).then(
         (content) => (this.content = content)
       ),
@@ -51,8 +56,17 @@ export class Quiz {
     return this;
   }
 
-  async write(dirname: string, courselibDir: string): Promise<void> {
+  async write(
+    dirname: string,
+    courselibDir: string,
+    assetsDir: string
+  ): Promise<void> {
     const tasks: Promise<any>[] = [];
+
+    let logo: string | null = null;
+    if (this.logo.isSome()) {
+      logo = await createAsset(this.logo.unwrap(), assetsDir, "image");
+    }
 
     tasks.push(
       readFile(this.content).then((content) =>
@@ -68,7 +82,9 @@ export class Quiz {
           courselibDir
         )}";${EOL}${EOL}export const quiz: IQuiz = {${EOL}\tname: "${
           this.name
-        }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
+        }",${EOL}\turl: "${this.url}",${EOL}${
+          logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
+        }\ttags: ${JSON.stringify(
           this.tags
         )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
           this.description

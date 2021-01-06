@@ -63,11 +63,7 @@ export function Layout(props: ILayoutProps) {
             />
           ))}
       </Appbar.Header>
-      <SignIn
-        open={signInOpen}
-        onClose={() => setSignInOpen(false)}
-        onSignIn={signOut}
-      />
+      <SignIn open={signInOpen} onClose={() => setSignInOpen(false)} />
       <View style={styles.container}>
         <View style={styles.layout}>{props.children}</View>
       </View>

@@ -2,16 +2,16 @@ import { EOL } from "os";
 import { rmdirSync } from "fs";
 import { join, relative, sep } from "path";
 import { Category, walkDirectories } from "../course-lib/parser";
-import { ROOT_PATH } from "./shared";
 import { writeFile } from "../course-lib/parser/utils/writeFile";
 import { appendFile } from "../course-lib/parser/utils/appendFile";
 import { camelCase } from "camel-case";
 
-const CATEGORIES_PATH = join(ROOT_PATH, "courses-src"),
-  OUT_DIR = join(ROOT_PATH, "courses"),
-  OUT_ASSETS_DIR = join(ROOT_PATH, "assets/courses"),
-  COURSE_LIB_DIR = join(ROOT_PATH, "course-lib"),
-  OUT_PATH = join(ROOT_PATH, "courses.ts");
+const ROOT_DIR = join(__dirname, ".."),
+  CATEGORIES_PATH = join(ROOT_DIR, "courses-src"),
+  OUT_DIR = join(ROOT_DIR, "courses"),
+  OUT_ASSETS_DIR = join(ROOT_DIR, "assets/courses"),
+  COURSE_LIB_DIR = join(ROOT_DIR, "course-lib"),
+  OUT_PATH = join(ROOT_DIR, "courses.ts");
 
 export async function syncCourses() {
   const categories: Category[] = [];
@@ -22,14 +22,18 @@ export async function syncCourses() {
   await writeFile(
     OUT_PATH,
     `import { addCategory } from "${
-      "." + sep + relative(ROOT_PATH, COURSE_LIB_DIR)
+      "." + sep + relative(ROOT_DIR, COURSE_LIB_DIR)
     }";${EOL}`
   );
 
   for await (const categoryDir of walkDirectories(CATEGORIES_PATH)) {
     categories.push(
       await new Category().parse(categoryDir).then((category) => {
-        category.write(join(OUT_DIR, category.url), COURSE_LIB_DIR);
+        category.write(
+          join(OUT_DIR, category.url),
+          COURSE_LIB_DIR,
+          OUT_ASSETS_DIR
+        );
         return category;
       })
     );
@@ -40,7 +44,7 @@ export async function syncCourses() {
       appendFile(
         OUT_PATH,
         `import { category as ${camelCase(category.url)} } from "${
-          "." + sep + relative(ROOT_PATH, join(OUT_DIR, category.url))
+          "." + sep + relative(ROOT_DIR, join(OUT_DIR, category.url))
         }";${EOL}`
       )
     )
@@ -52,3 +56,5 @@ export async function syncCourses() {
     )
   );
 }
+
+syncCourses();

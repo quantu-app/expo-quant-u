@@ -9,7 +9,7 @@ export async function* walk(
     const entry = join(dir, d.name);
 
     if (recur && d.isDirectory()) {
-      yield* walk(entry);
+      yield* walk(entry, recur);
     } else if (d.isFile()) {
       yield entry;
     }

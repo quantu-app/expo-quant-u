@@ -2,11 +2,12 @@ import { EOL } from "os";
 import { promises } from "fs";
 import { join, relative, basename, extname, dirname, sep } from "path";
 import { snakeCase } from "snake-case";
-import { ROOT_PATH, walk } from "./shared";
 import { appendFile } from "../course-lib/parser/utils/appendFile";
+import { walk } from "../course-lib/parser";
 
-const GENERATORS_PATH = join(ROOT_PATH, "generators"),
-  OUT_PATH = join(ROOT_PATH, "generators.ts"),
+const ROOT_DIR = join(__dirname, ".."),
+  GENERATORS_PATH = join(ROOT_DIR, "generators-src"),
+  OUT_PATH = join(ROOT_DIR, "generators.ts"),
   IS_CONFIGURED_QUESTION_GENERATOR_RE = /export default createConfiguredQuestionGenerator/gi,
   IS_QUESTION_GENERATOR_RE = /export default createQuestionGenerator/gi;
 
@@ -18,10 +19,26 @@ interface IGenerator {
   isQuestionGenerator: boolean;
 }
 
+function getAbsoluteName(absoluteNamePath: string[]) {
+  return absoluteNamePath.join(".");
+}
+
+async function isConfiguredQuestionGeneratorFile(filepath: string) {
+  return IS_CONFIGURED_QUESTION_GENERATOR_RE.test(
+    await promises.readFile(filepath, { encoding: "utf-8" })
+  );
+}
+
+async function isQuestionGeneratorFile(filepath: string) {
+  return IS_QUESTION_GENERATOR_RE.test(
+    await promises.readFile(filepath, { encoding: "utf-8" })
+  );
+}
+
 export async function syncGenerators() {
   const generators: IGenerator[] = [];
 
-  for await (const filepath of walk(GENERATORS_PATH)) {
+  for await (const filepath of walk(GENERATORS_PATH, true)) {
     const relativePath = relative(GENERATORS_PATH, filepath),
       relativeImportPath = relative(dirname(OUT_PATH), filepath),
       name = basename(relativeImportPath, extname(relativeImportPath)),
@@ -76,29 +93,15 @@ export async function syncGenerators() {
     if (generator.isConfiguredQuestionGenerator) {
       await appendFile(
         OUT_PATH,
-        `addConfiguredQuestionGenerator("${absoluteName}", import("${generator.path}"));${EOL}`
+        `addConfiguredQuestionGenerator(${EOL}\t"${absoluteName}",${EOL}\timport("${generator.path}")${EOL});${EOL}`
       );
     } else if (generator.isQuestionGenerator) {
       await appendFile(
         OUT_PATH,
-        `addQuestionGenerator("${absoluteName}", import("${generator.path}"));${EOL}`
+        `addQuestionGenerator(${EOL}\t"${absoluteName}",${EOL}\timport("${generator.path}")${EOL});${EOL}`
       );
     }
   }
 }
 
-function getAbsoluteName(absoluteNamePath: string[]) {
-  return absoluteNamePath.join(".");
-}
-
-async function isConfiguredQuestionGeneratorFile(filepath: string) {
-  return IS_CONFIGURED_QUESTION_GENERATOR_RE.test(
-    await promises.readFile(filepath, { encoding: "utf-8" })
-  );
-}
-
-async function isQuestionGeneratorFile(filepath: string) {
-  return IS_QUESTION_GENERATOR_RE.test(
-    await promises.readFile(filepath, { encoding: "utf-8" })
-  );
-}
+syncGenerators();

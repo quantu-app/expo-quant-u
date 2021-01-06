@@ -1,5 +1,6 @@
 import { EOL } from "os";
 import { join, basename, relative, sep } from "path";
+import { none, Option } from "@aicacia/core";
 import { fileExists } from "./utils/fileExists";
 import { readYaml } from "./utils/readYaml";
 import { walkDirectories } from "./utils/walkDirectories";
@@ -10,10 +11,13 @@ import { camelCase } from "camel-case";
 import { stripOrdering } from "./utils/stripOrdering";
 import { Course } from "./Course";
 import { appendFile } from "./utils/appendFile";
+import { findImage } from "./utils/findImage";
+import { createAsset } from "./utils/createAsset";
 
 export class Category {
   name = "";
   description = "";
+  logo: Option<string> = none();
   url = "";
   tags: string[] = [];
   content = "";
@@ -25,6 +29,7 @@ export class Category {
     this.url = stripOrdering(basename(dirname));
 
     tasks.push(
+      findImage(join(dirname, "category")).then((logo) => (this.logo = logo)),
       fileExists(join(dirname, "category.md")).then(
         (content) => (this.content = content)
       ),
@@ -46,8 +51,17 @@ export class Category {
     return this;
   }
 
-  async write(dirname: string, courselibDir: string): Promise<void> {
+  async write(
+    dirname: string,
+    courselibDir: string,
+    assetsDir: string
+  ): Promise<void> {
     const tasks: Promise<any>[] = [];
+
+    let logo: string | null = null;
+    if (this.logo.isSome()) {
+      logo = await createAsset(this.logo.unwrap(), assetsDir, "image");
+    }
 
     tasks.push(
       readFile(this.content).then((content) =>
@@ -57,7 +71,7 @@ export class Category {
 
     const courses: [string, Course][] = this.courses.map((course, index) => {
       const courseDir = join(dirname, `${index}-${course.url}`);
-      tasks.push(course.write(courseDir, courselibDir));
+      tasks.push(course.write(courseDir, courselibDir, assetsDir));
       return ["." + sep + relative(dirname, courseDir), course];
     });
 
@@ -77,7 +91,9 @@ export class Category {
           filepath,
           `export const category: ICategory = {${EOL}\tname: "${
             this.name
-          }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
+          }",${EOL}\turl: "${this.url}",${EOL}${
+            logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
+          }\ttags: ${JSON.stringify(
             this.tags
           )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
             this.description

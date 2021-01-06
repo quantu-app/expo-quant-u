@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import {
   Title,
   Divider,
@@ -37,6 +37,16 @@ export function Course(props: ParamList[typeof COURSE_SCREEN]) {
             <List.Item
               key={course.url}
               title={chapter.name}
+              left={
+                chapter.logo &&
+                (() => (
+                  <Image
+                    source={chapter.logo}
+                    style={{ width: 64 }}
+                    resizeMode="contain"
+                  />
+                ))
+              }
               description={chapter.description}
               onPress={() =>
                 navigation.navigate(CHAPTER_SCREEN, {

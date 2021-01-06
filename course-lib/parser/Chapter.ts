@@ -1,5 +1,6 @@
 import { EOL } from "os";
 import { join, basename, relative, sep } from "path";
+import { none, Option } from "@aicacia/core";
 import { fileExists } from "./utils/fileExists";
 import { readYaml } from "./utils/readYaml";
 import { walkDirectories } from "./utils/walkDirectories";
@@ -10,10 +11,13 @@ import { camelCase } from "camel-case";
 import { stripOrdering } from "./utils/stripOrdering";
 import { Unit } from "./Unit";
 import { appendFile } from "./utils/appendFile";
+import { createAsset } from "./utils/createAsset";
+import { findImage } from "./utils/findImage";
 
 export class Chapter {
   name = "";
   description = "";
+  logo: Option<string> = none();
   url = "";
   tags: string[] = [];
   content = "";
@@ -25,6 +29,7 @@ export class Chapter {
     this.url = stripOrdering(basename(dirname));
 
     tasks.push(
+      findImage(join(dirname, "chapter")).then((logo) => (this.logo = logo)),
       fileExists(join(dirname, "chapter.md")).then(
         (content) => (this.content = content)
       ),
@@ -46,8 +51,17 @@ export class Chapter {
     return this;
   }
 
-  async write(dirname: string, courselibDir: string): Promise<void> {
+  async write(
+    dirname: string,
+    courselibDir: string,
+    assetsDir: string
+  ): Promise<void> {
     const tasks: Promise<any>[] = [];
+
+    let logo: string | null = null;
+    if (this.logo.isSome()) {
+      logo = await createAsset(this.logo.unwrap(), assetsDir, "image");
+    }
 
     tasks.push(
       readFile(this.content).then((content) =>
@@ -57,7 +71,7 @@ export class Chapter {
 
     const units: [string, Unit][] = this.units.map((unit, index) => {
       const unitDir = join(dirname, `${index}-${unit.url}`);
-      tasks.push(unit.write(unitDir, courselibDir));
+      tasks.push(unit.write(unitDir, courselibDir, assetsDir));
       return ["." + sep + relative(dirname, unitDir), unit];
     });
 
@@ -77,7 +91,9 @@ export class Chapter {
           filepath,
           `export const chapter: IChapter = {${EOL}\tname: "${
             this.name
-          }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
+          }",${EOL}\turl: "${this.url}",${EOL}${
+            logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
+          }\ttags: ${JSON.stringify(
             this.tags
           )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
             this.description

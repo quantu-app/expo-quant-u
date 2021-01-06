@@ -3,6 +3,7 @@ import { course as mentalMath } from "./0-mental-math";
 export const category: ICategory = {
   name: "Mathematics",
   url: "mathematics",
+  logo: require("../../assets/courses/image/22fc87e38d6e178b3b16c068e5eab9d8.png"),
   tags: ["mathematics"],
   content: import("./content"),
   description:

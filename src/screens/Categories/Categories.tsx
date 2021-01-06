@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { Card, Title, Button, Surface, Paragraph } from "react-native-paper";
 import { getCategories } from "../../../course-lib/categories";
 import { Layout } from "../../Layout";
@@ -28,6 +28,13 @@ export function Categories() {
         <Card key={category.url} style={styles.card}>
           <Card.Content>
             <Title>{category.name}</Title>
+            {category.logo && (
+              <Image
+                source={category.logo}
+                resizeMode="contain"
+                style={{ height: 128 }}
+              />
+            )}
             <Paragraph>{category.description}</Paragraph>
             <Button
               mode="contained"
