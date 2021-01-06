@@ -7,8 +7,6 @@ import { Quiz } from "../../course-lib";
 import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
 import { QuestionComponent } from "./QuestionComponent";
-import { useNavigation } from "@react-navigation/native";
-import { COURSES_SCREEN } from "../Navigation";
 
 interface IResultsProps {
   quiz: Quiz;
@@ -50,8 +48,6 @@ const styles = StyleSheet.create({
 });
 
 export function Results(props: IResultsProps) {
-  const navigation = useNavigation();
-
   return (
     <View style={styles.container}>
       <View>
@@ -114,12 +110,6 @@ export function Results(props: IResultsProps) {
           onPress={props.onReset}
         >
           Reset
-        </Button>
-        <Button
-          mode="contained"
-          onPress={() => navigation.navigate(COURSES_SCREEN)}
-        >
-          Quizzes
         </Button>
       </View>
     </View>

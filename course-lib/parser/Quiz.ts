@@ -54,7 +54,7 @@ export class Quiz {
 
     tasks.push(
       readFile(this.content).then((content) =>
-        writeJSON(join(dirname, "content.json"), { markdown: content })
+        writeJSON(join(dirname, "content.ts"), { markdown: content })
       )
     );
 
@@ -68,7 +68,7 @@ export class Quiz {
           this.name
         }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
           this.tags
-        )},${EOL}\tcontent: import("./content.json").then(({ markdown }) => markdown),${EOL}\titems: ${JSON.stringify(
+        )},${EOL}\tcontent: import("./content"),${EOL}\titems: ${JSON.stringify(
           this.items
         )},${EOL}};`
       )

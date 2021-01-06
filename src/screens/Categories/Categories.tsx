@@ -12,13 +12,13 @@ export function Categories() {
     <Layout>
       <View>
         {getCategories().map((category) => (
-          <Card key={category.name}>
+          <Card key={category.url}>
             <Card.Content>
               <Title>{category.name}</Title>
               <Button
                 onPress={() =>
                   navigation.navigate(CATEGORY_SCREEN, {
-                    category: category.name,
+                    category: category.url,
                   })
                 }
               >

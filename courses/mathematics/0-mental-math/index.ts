@@ -4,6 +4,9 @@ export const course: ICourse = {
   name: "Mental Math",
   url: "mental-math",
   tags: ["mental", "math"],
-  content: import("./content.json").then(({ markdown }) => markdown),
+  content: import("./content"),
   chapters: [mentalCalculation],
+  chapterMap: {
+    "mental-calculation": mentalCalculation,
+  },
 };

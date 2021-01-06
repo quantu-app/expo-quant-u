@@ -49,7 +49,7 @@ export class Course {
 
     tasks.push(
       readFile(this.content).then((content) =>
-        writeJSON(join(dirname, "content.json"), { markdown: content })
+        writeJSON(join(dirname, "content.ts"), { markdown: content })
       )
     );
 
@@ -79,9 +79,14 @@ export class Course {
             this.name
           }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
             this.tags
-          )},${EOL}\tcontent: import("./content.json").then(({ markdown }) => markdown),${EOL}\tchapters: [${chapters.map(
+          )},${EOL}\tcontent: import("./content"),${EOL}\tchapters: [${chapters.map(
             ([_path, chapter]) => camelCase(chapter.url)
-          )}],${EOL}};`
+          )}],${EOL}\tchapterMap: {${EOL}${chapters
+            .map(
+              ([_path, chapter]) =>
+                `\t\t"${chapter.url}": ${camelCase(chapter.url)},${EOL}`
+            )
+            .join("")}\t},${EOL}};`
         )
       )
     );

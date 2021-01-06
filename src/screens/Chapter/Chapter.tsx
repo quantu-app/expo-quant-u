@@ -7,27 +7,29 @@ import {
   Divider,
   Subheading,
 } from "react-native-paper";
-import { getCategory } from "../../../course-lib/categories";
+import { getCategory } from "../../../course-lib";
 import { Layout } from "../../Layout";
-import { CHAPTER_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
+import { CHAPTER_SCREEN, ParamList, UNIT_SCREEN } from "../../Navigation";
 
-export function Course(props: ParamList[typeof COURSE_SCREEN]) {
+export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
   const navigation = useNavigation(),
-    course = getCategory(props.category).courseMap[props.course];
+    chapter = getCategory(props.category).courseMap[props.course].chapterMap[
+      props.chapter
+    ];
 
   return (
     <Layout>
       <Surface>
-        <Title>{course.name}</Title>
+        <Title>{chapter.name}</Title>
         <Divider />
-        {course.chapters.map((chapter) => (
-          <View key={chapter.url}>
-            <Subheading>{chapter.name}</Subheading>
+        {chapter.units.map((unit) => (
+          <View key={unit.url}>
+            <Subheading>{unit.name}</Subheading>
             <Button
               onPress={() =>
-                navigation.navigate(CHAPTER_SCREEN, {
+                navigation.navigate(UNIT_SCREEN, {
                   ...props,
-                  chapter: chapter.url,
+                  unit: unit.url,
                 })
               }
             >

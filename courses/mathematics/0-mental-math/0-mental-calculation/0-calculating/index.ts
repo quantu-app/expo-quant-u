@@ -4,6 +4,9 @@ export const unit: IUnit = {
   name: "Calculating",
   url: "calculating",
   tags: ["calculating"],
-  content: import("./content.json").then(({ markdown }) => markdown),
+  content: import("./content"),
   quizzes: [addition],
+  quizMap: {
+    addition: addition,
+  },
 };

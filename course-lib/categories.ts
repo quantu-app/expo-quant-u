@@ -5,21 +5,21 @@ const CATEGORIES: Record<string, ICategory> =
   ((global as any).__GLOBAL_CATEGORIES_INSTANCE__ = {});
 
 export function addCategory(category: ICategory) {
-  if (hasCategory(category.name)) {
-    throw new Error(`${category.name} already exists`);
+  if (hasCategory(category.url)) {
+    throw new Error(`${category.url} already exists`);
   }
-  CATEGORIES[category.name] = category;
+  CATEGORIES[category.url] = category;
 }
 
-export function hasCategory(name: string): boolean {
-  return CATEGORIES.hasOwnProperty(name);
+export function hasCategory(url: string): boolean {
+  return CATEGORIES.hasOwnProperty(url);
 }
 
-export function getCategory(name: string): ICategory {
-  if (hasCategory(name)) {
-    return CATEGORIES[name];
+export function getCategory(url: string): ICategory {
+  if (hasCategory(url)) {
+    return CATEGORIES[url];
   } else {
-    throw new Error(`${name} doesn't exists`);
+    throw new Error(`${url} doesn't exists`);
   }
 }
 

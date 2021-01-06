@@ -4,6 +4,9 @@ export const category: ICategory = {
   name: "Mathematics",
   url: "mathematics",
   tags: ["mathematics"],
-  content: import("./content.json").then(({ markdown }) => markdown),
+  content: import("./content"),
   courses: [mentalMath],
+  courseMap: {
+    "mental-math": mentalMath,
+  },
 };

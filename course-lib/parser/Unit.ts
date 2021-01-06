@@ -49,7 +49,7 @@ export class Unit {
 
     tasks.push(
       readFile(this.content).then((content) =>
-        writeJSON(join(dirname, "content.json"), { markdown: content })
+        writeJSON(join(dirname, "content.ts"), { markdown: content })
       )
     );
 
@@ -77,9 +77,14 @@ export class Unit {
             this.name
           }",${EOL}\turl: "${this.url}",${EOL}\ttags: ${JSON.stringify(
             this.tags
-          )},${EOL}\tcontent: import("./content.json").then(({ markdown }) => markdown),${EOL}\tquizzes: [${quizzes.map(
+          )},${EOL}\tcontent: import("./content"),${EOL}\tquizzes: [${quizzes.map(
             ([_path, quiz]) => camelCase(quiz.url)
-          )}]${EOL}}`
+          )}],${EOL}\tquizMap: {${EOL}${quizzes
+            .map(
+              ([_path, quiz]) =>
+                `\t\t"${quiz.url}": ${camelCase(quiz.url)},${EOL}`
+            )
+            .join("")}\t},${EOL}}`
         )
       )
     );

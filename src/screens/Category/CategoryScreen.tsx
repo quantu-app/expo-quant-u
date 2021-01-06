@@ -12,9 +12,7 @@ export function CategoryScreen(props: ICategoryScreenProps) {
   return (
     <Async
       promise={import("./Category")}
-      onSuccess={({ Category }) => (
-        <Category category={props.route.params.category} />
-      )}
+      onSuccess={({ Category }) => <Category {...props.route.params} />}
       onPending={() => <Loading />}
       onError={(error) => <JSError error={error} />}
     />

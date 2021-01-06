@@ -25,6 +25,7 @@ export {
   IChapter,
   ICourse,
   IUnit,
+  IContent,
 } from "./interfaces";
 export {
   getCategories,

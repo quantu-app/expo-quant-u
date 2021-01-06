@@ -1,38 +1,41 @@
 import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
-import { Card, Title, Button } from "react-native-paper";
+import {
+  Title,
+  Button,
+  Surface,
+  Subheading,
+  Divider,
+} from "react-native-paper";
 import { getCategory } from "../../../course-lib/categories";
 import { Layout } from "../../Layout";
-import { COURSE_SCREEN } from "../../Navigation";
+import { CATEGORY_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
 
-export interface ICategoryProps {
-  category: string;
-}
-
-export function Category(props: ICategoryProps) {
-  const navigation = useNavigation();
+export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
+  const navigation = useNavigation(),
+    category = getCategory(props.category);
 
   return (
     <Layout>
-      <View>
-        {getCategory(props.category).courses.map((course) => (
-          <Card key={course.name}>
-            <Card.Content>
-              <Title>{course.name}</Title>
-              <Button
-                onPress={() =>
-                  navigation.navigate(COURSE_SCREEN, {
-                    category: props.category,
-                    course: course.name,
-                  })
-                }
-              >
-                Start
-              </Button>
-            </Card.Content>
-          </Card>
+      <Surface>
+        <Title>{category.name}</Title>
+        <Divider />
+        {category.courses.map((course) => (
+          <View key={course.url}>
+            <Subheading>{course.name}</Subheading>
+            <Button
+              onPress={() =>
+                navigation.navigate(COURSE_SCREEN, {
+                  ...props,
+                  course: course.url,
+                })
+              }
+            >
+              Start
+            </Button>
+          </View>
         ))}
-      </View>
+      </Surface>
     </Layout>
   );
 }

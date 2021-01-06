@@ -4,7 +4,7 @@ export const quiz: IQuiz = {
   name: "Addition",
   url: "addition",
   tags: [],
-  content: import("./content.json").then(({ markdown }) => markdown),
+  content: import("./content"),
   items: [
     {
       generator: "quant-u.mathematics.mental-calculation.addition",

@@ -2,17 +2,17 @@ import { Async } from "@aicacia/async_component-react";
 import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
-import { ParamList, COURSE_SCREEN } from "../../Navigation";
+import { ParamList, QUIZ_SCREEN } from "../../Navigation";
 
-export interface ICourseScreenProps {
-  route: RouteProp<ParamList, typeof COURSE_SCREEN>;
+export interface IQuizScreenProps {
+  route: RouteProp<ParamList, typeof QUIZ_SCREEN>;
 }
 
-export function CourseScreen(props: ICourseScreenProps) {
+export function QuizScreen(props: IQuizScreenProps) {
   return (
     <Async
-      promise={import("./Course")}
-      onSuccess={({ Course }) => <Course {...props.route.params} />}
+      promise={import("./Quiz")}
+      onSuccess={({ Quiz }) => <Quiz {...props.route.params} />}
       onPending={() => <Loading />}
       onError={(error) => <JSError error={error} />}
     />
