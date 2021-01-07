@@ -72,16 +72,31 @@ export function Quiz(props: IQuizProps) {
 
   function onNext() {
     const current = state.current.unwrapOr(0);
+    let next = -1;
 
-    if (current + 1 >= state.questions.size) {
+    for (let i = current, il = state.results.size; i < il; i++) {
+      const result = state.results.get(i) as RecordOf<IQuestionResult>;
+
+      if (!result.done) {
+        next = i;
+        break;
+      }
+    }
+    if (next === -1) {
+      for (let i = 0, il = current; i < il; i++) {
+        const result = state.results.get(i) as RecordOf<IQuestionResult>;
+
+        if (!result.done) {
+          next = i;
+          break;
+        }
+      }
+    }
+
+    if (next === -1) {
       setState(state.set("done", true));
     } else {
-      setState(
-        state.set(
-          "current",
-          state.current.map((index) => index + 1)
-        )
-      );
+      setState(state.set("current", some(next)));
     }
   }
 
