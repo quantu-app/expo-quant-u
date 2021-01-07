@@ -13,9 +13,6 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "packagerOpts": {
-      "assetExts": ["md"]
-    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true

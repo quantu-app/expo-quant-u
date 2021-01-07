@@ -1,8 +1,0 @@
-name: Addition
-description: |
-  This is a quiz to test your skills with basic addition.
-items:
-  - generator: quant-u.mathematics.mental-calculation.addition
-    count: 20
-    config:
-      magnitude: 2
