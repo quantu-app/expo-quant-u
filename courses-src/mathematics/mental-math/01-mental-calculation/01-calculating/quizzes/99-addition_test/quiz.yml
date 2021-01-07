@@ -1,0 +1,8 @@
+name: Addition
+description: |
+  This is a quiz to test your skills with basic addition.
+items:
+  - generator: mathematics.mental-calculation.addition
+    count: 5
+    config:
+      magnitude: 2

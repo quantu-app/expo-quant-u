@@ -1,31 +1,20 @@
-import { IConfiguredQuestionGenerator } from "./IConfiguredQuestionGenerator";
 import { IQuestionGenerator } from "./IQuestionGenerator";
 
 const QUESTION_GENERATORS: Record<
   string,
-  Promise<{ default: IQuestionGenerator | IConfiguredQuestionGenerator }>
+  Promise<{ default: IQuestionGenerator }>
 > =
   (global as any).__GLOBAL_QUESTION_GENERATORS_INSTANCE__ ||
   ((global as any).__GLOBAL_QUESTION_GENERATORS_INSTANCE__ = {});
 
-export function addQuestionGenerator<T = any>(
+export function addQuestionGenerator<C = any, T = any>(
   name: string,
-  generator: Promise<{ default: IQuestionGenerator<T> }>
+  generator: Promise<{ default: IQuestionGenerator<C, T> }>
 ) {
   if (hasQuestionGenerator(name)) {
     throw new Error(`${name} already exists`);
   }
   QUESTION_GENERATORS[name] = generator;
-}
-
-export function addConfiguredQuestionGenerator<C = any, T = any>(
-  name: string,
-  configuredGenerator: Promise<{ default: IConfiguredQuestionGenerator<C, T> }>
-) {
-  if (hasQuestionGenerator(name)) {
-    throw new Error(`${name} already exists`);
-  }
-  QUESTION_GENERATORS[name] = configuredGenerator;
 }
 
 export function hasQuestionGenerator(name: string): boolean {
@@ -35,7 +24,7 @@ export function hasQuestionGenerator(name: string): boolean {
 export function getQuestionGenerator<C = any, T = any>(
   name: string
 ): Promise<{
-  default: IQuestionGenerator<T> | IConfiguredQuestionGenerator<C, T>;
+  default: IQuestionGenerator<C, T>;
 }> {
   if (hasQuestionGenerator(name)) {
     return QUESTION_GENERATORS[name];
@@ -45,7 +34,7 @@ export function getQuestionGenerator<C = any, T = any>(
 }
 
 export function getQuestionGenerators(): Promise<{
-  default: IQuestionGenerator | IConfiguredQuestionGenerator;
+  default: IQuestionGenerator;
 }>[] {
   return Object.values(QUESTION_GENERATORS);
 }

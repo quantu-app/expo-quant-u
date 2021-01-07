@@ -1,16 +1,11 @@
 import { IJSONObject } from "@aicacia/json";
 
-export interface IContent {
-  markdown: string;
-}
-
 export interface ICategory {
   name: string;
   description: string;
-  logo: any;
-  url?: string;
+  logo?: any;
+  url: string;
   tags: string[];
-  content: Promise<{ default: IContent }>;
   courses: ICourse[];
   courseMap: Record<string, ICourse>;
 }
@@ -18,10 +13,9 @@ export interface ICategory {
 export interface ICourse {
   name: string;
   description: string;
-  logo: any;
-  url?: string;
+  logo?: any;
+  url: string;
   tags: string[];
-  content: Promise<{ default: IContent }>;
   chapters: IChapter[];
   chapterMap: Record<string, IChapter>;
 }
@@ -29,10 +23,9 @@ export interface ICourse {
 export interface IChapter {
   name: string;
   description: string;
-  logo: any;
-  url?: string;
+  logo?: any;
+  url: string;
   tags: string[];
-  content: Promise<{ default: IContent }>;
   units: IUnit[];
   unitMap: Record<string, IUnit>;
 }
@@ -40,10 +33,9 @@ export interface IChapter {
 export interface IUnit {
   name: string;
   description: string;
-  logo: any;
-  url?: string;
+  logo?: any;
+  url: string;
   tags: string[];
-  content: Promise<{ default: IContent }>;
   quizzes: IQuiz[];
   quizMap: Record<string, IQuiz>;
 }
@@ -51,9 +43,9 @@ export interface IUnit {
 export interface IQuiz {
   name: string;
   description: string;
-  url?: string;
+  logo?: any;
+  url: string;
   tags: string[];
-  content: Promise<{ default: IContent }>;
   items: IQuizItem[];
 }
 

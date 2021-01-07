@@ -1,16 +1,14 @@
 import { EOL } from "os";
 import { IJSONObject } from "@aicacia/json";
 import { Schema } from "js-yaml";
-import { join, basename, relative } from "path";
+import { join, basename, relative, sep } from "path";
 import { none, Option } from "@aicacia/core";
-import { fileExists } from "./utils/fileExists";
-import { readFile } from "./utils/readFile";
 import { readYaml } from "./utils/readYaml";
 import { writeFile } from "./utils/writeFile";
-import { writeJSON } from "./utils/writeJSON";
 import { stripOrdering } from "./utils/stripOrdering";
 import { createAsset } from "./utils/createAsset";
 import { findImage } from "./utils/findImage";
+import { createTSImport } from "./utils/createTSImport";
 
 export class QuizItem {
   generator = "";
@@ -24,7 +22,6 @@ export class Quiz {
   logo: Option<string> = none();
   url = "";
   tags: string[] = [];
-  content = "";
   items: QuizItem[] = [];
 
   async parse(dirname: string): Promise<this> {
@@ -34,9 +31,6 @@ export class Quiz {
 
     tasks.push(
       findImage(join(dirname, "quiz")).then((logo) => (this.logo = logo)),
-      fileExists(join(dirname, "quiz.md")).then(
-        (content) => (this.content = content)
-      ),
       readYaml(join(dirname, "quiz")).then((json) => {
         this.name = json.name as string;
         this.description = json.description as string;
@@ -69,24 +63,17 @@ export class Quiz {
     }
 
     tasks.push(
-      readFile(this.content).then((content) =>
-        writeJSON(join(dirname, "content.ts"), { markdown: content })
-      )
-    );
-
-    tasks.push(
       writeFile(
         join(dirname, "index.ts"),
-        `import { IQuiz } from "${relative(
-          dirname,
-          courselibDir
+        `import { IQuiz } from "${createTSImport(
+          "." + sep + relative(dirname, courselibDir)
         )}";${EOL}${EOL}export const quiz: IQuiz = {${EOL}\tname: "${
           this.name
         }",${EOL}\turl: "${this.url}",${EOL}${
           logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
         }\ttags: ${JSON.stringify(
           this.tags
-        )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
+        )},${EOL}\tdescription: ${JSON.stringify(
           this.description
         )},${EOL}\titems: ${JSON.stringify(this.items)},${EOL}};`
       )

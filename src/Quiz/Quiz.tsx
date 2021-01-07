@@ -2,7 +2,6 @@ import { none, Option, some } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
 import { List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
-import { View } from "react-native";
 import type {
   Question as QuestionClass,
   Quiz as QuizClass,
@@ -34,12 +33,12 @@ export const QuizState = Record<IQuizState>({
 export function Quiz(props: IQuizProps) {
   const [state, setState] = useState(QuizState());
 
-  function onReset() {
-    const questions = List(props.quiz.getQuestions(props.rng)),
+  async function onReset() {
+    const questions = List(await props.quiz.getQuestions(props.rng)),
       results = questions.map(() => QuestionResult()),
       current = none<number>();
 
-    if (questions.size) {
+    if (!questions.isEmpty()) {
       current.replace(0);
     }
 
@@ -94,36 +93,34 @@ export function Quiz(props: IQuizProps) {
     }
 
     if (next === -1) {
-      setState(state.set("done", true));
+      setState(state.set("done", true).set("current", none()));
     } else {
       setState(state.set("current", some(next)));
     }
   }
 
-  return (
-    <View>
+  return state.done ? (
+    <Results state={state} quiz={props.quiz} onReset={onReset} />
+  ) : (
+    <>
       <Status
-        current={state.current.unwrapOr(0)}
+        current={state.current.unwrapOr(-1)}
         state={state}
         onSelectQuestion={onSelectQuestion}
       />
-      {state.done ? (
-        <Results state={state} quiz={props.quiz} onReset={onReset} />
-      ) : (
-        state.current
-          .flatMap((index) =>
-            Option.from(state.questions.get(index)).map((question) => (
-              <Question
-                key={index}
-                result={state.results.get(index) as RecordOf<IQuestionResult>}
-                question={question}
-                onNext={onNext}
-                update={updateCurrent}
-              />
-            ))
-          )
-          .unwrapOr(null as any)
-      )}
-    </View>
+      {state.current
+        .flatMap((index) =>
+          Option.from(state.questions.get(index)).map((question) => (
+            <Question
+              key={index}
+              result={state.results.get(index) as RecordOf<IQuestionResult>}
+              question={question}
+              onNext={onNext}
+              update={updateCurrent}
+            />
+          ))
+        )
+        .unwrapOr(null as any)}
+    </>
   );
 }

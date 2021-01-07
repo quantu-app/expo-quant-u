@@ -17,7 +17,7 @@
     "syncGenerators": "ts-node ./scripts/syncGenerators.ts",
     "syncCourses": "ts-node ./scripts/syncCourses.ts",
     "sync": "npm run syncGenerators && npm run syncCourses",
-    "preCommit": "npm run sync && npm run prettier && npm run lint"
+    "preCommit": "npm run prettier && npm run lint"
   },
   "husky": {
     "hooks": {
@@ -39,11 +39,12 @@
     "eslint-plugin-prettier": "3",
     "eslint-plugin-react": "7",
     "husky": "4",
-    "is-image": "^3.0.0",
+    "is-image": "3",
     "js-yaml": "4",
-    "md5-file": "^5.0.0",
+    "md5-file": "5",
     "prettier": "2",
     "react-refresh": "0.9",
+    "slash": "3",
     "snake-case": "3",
     "ts-node": "9",
     "tslib": "2",

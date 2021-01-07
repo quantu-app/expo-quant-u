@@ -1,22 +1,16 @@
 export {
-  IConfiguredQuestionGenerator,
-  IConfiguredQuestionGeneratorFn,
-  createConfiguredQuestionGenerator,
-  isConfiguredQuestionGenerator,
   IQuestionGenerator,
   IQuestionGeneratorFn,
   createQuestionGenerator,
   isQuestionGenerator,
-  IQuestionConfig,
   MultipleChoiceQuestion,
   MultipleChoiceQuestionOption,
   Question,
-  addConfiguredQuestionGenerator,
+  Quiz,
+  TextQuestion,
   addQuestionGenerator,
   getQuestionGenerator,
   hasQuestionGenerator,
-  Quiz,
-  TextQuestion,
 } from "./quiz";
 export {
   ICategory,
@@ -25,7 +19,6 @@ export {
   IChapter,
   ICourse,
   IUnit,
-  IContent,
 } from "./interfaces";
 export {
   getCategories,

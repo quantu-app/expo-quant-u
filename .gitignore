@@ -27,3 +27,9 @@ web-build/
 # electron-webpack
 /dist
 # @end @expo/electron-adapter
+
+# generated
+assets/courses/
+courses/
+courses.ts
+/generators.ts

@@ -1,18 +1,16 @@
 import { EOL } from "os";
 import { join, basename, relative, sep } from "path";
 import { none, Option } from "@aicacia/core";
-import { fileExists } from "./utils/fileExists";
 import { readYaml } from "./utils/readYaml";
 import { walkDirectories } from "./utils/walkDirectories";
-import { readFile } from "./utils/readFile";
 import { writeFile } from "./utils/writeFile";
-import { writeJSON } from "./utils/writeJSON";
 import { camelCase } from "camel-case";
 import { stripOrdering } from "./utils/stripOrdering";
 import { Chapter } from "./Chapter";
 import { appendFile } from "./utils/appendFile";
 import { createAsset } from "./utils/createAsset";
 import { findImage } from "./utils/findImage";
+import { createTSImport } from "./utils/createTSImport";
 
 export class Course {
   name = "";
@@ -20,7 +18,6 @@ export class Course {
   logo: Option<string> = none();
   url = "";
   tags: string[] = [];
-  content = "";
   chapters: Chapter[] = [];
 
   async parse(dirname: string): Promise<this> {
@@ -30,9 +27,6 @@ export class Course {
 
     tasks.push(
       findImage(join(dirname, "course")).then((logo) => (this.logo = logo)),
-      fileExists(join(dirname, "course.md")).then(
-        (content) => (this.content = content)
-      ),
       readYaml(join(dirname, "course")).then((json) => {
         this.name = json.name as string;
         this.description = json.description as string;
@@ -63,12 +57,6 @@ export class Course {
       logo = await createAsset(this.logo.unwrap(), assetsDir, "image");
     }
 
-    tasks.push(
-      readFile(this.content).then((content) =>
-        writeJSON(join(dirname, "content.ts"), { markdown: content })
-      )
-    );
-
     const chapters: [string, Chapter][] = this.chapters.map(
       (chapter, index) => {
         const chapterDir = join(dirname, `${index}-${chapter.url}`);
@@ -80,12 +68,14 @@ export class Course {
     tasks.push(
       writeFile(
         join(dirname, "index.ts"),
-        `import { ICourse } from "${
+        `import { ICourse } from "${createTSImport(
           "." + sep + relative(dirname, courselibDir)
-        }";${EOL}${chapters
+        )}";${EOL}${chapters
           .map(
             ([path, chapter]) =>
-              `import { chapter as ${camelCase(chapter.url)} } from "${path}";`
+              `import { chapter as ${camelCase(
+                chapter.url
+              )} } from "${createTSImport(path)}";`
           )
           .join(EOL)}${EOL}`
       ).then((filepath) =>
@@ -97,7 +87,7 @@ export class Course {
             logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
           }\ttags: ${JSON.stringify(
             this.tags
-          )},${EOL}\tcontent: import("./content"),${EOL}\tdescription: ${JSON.stringify(
+          )},${EOL}\tdescription: ${JSON.stringify(
             this.description
           )},${EOL}\tchapters: [${chapters.map(([_path, chapter]) =>
             camelCase(chapter.url)

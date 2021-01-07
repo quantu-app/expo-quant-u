@@ -30,7 +30,7 @@ export function Status(props: IStatusProps) {
                 : theme.colors.error
               : undefined
           }
-          disabled={index === props.current}
+          disabled={index === props.current || props.state.done}
           icon={
             result.done
               ? result.correct

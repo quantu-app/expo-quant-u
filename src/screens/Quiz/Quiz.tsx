@@ -1,12 +1,9 @@
-import { Async } from "@aicacia/async_component-react";
 import { XorShiftRng } from "@aicacia/rand";
 import { StyleSheet } from "react-native";
 import { Title, Surface, Divider } from "react-native-paper";
 import { getCategory } from "../../../course-lib";
 import { Quiz as QuizClass } from "../../../course-lib/quiz";
-import { JSError } from "../../JSError";
 import { Layout } from "../../Layout";
-import { Loading } from "../../Loading";
 import { ParamList, QUIZ_SCREEN } from "../../Navigation";
 import { Quiz as QuizComponent } from "../../Quiz";
 
@@ -27,13 +24,9 @@ export function Quiz(props: ParamList[typeof QUIZ_SCREEN]) {
       <Surface style={styles.container}>
         <Title>{quiz.name}</Title>
         <Divider />
-        <Async
-          promise={QuizClass.fromJSON(quiz as any)}
-          onSuccess={(quiz) => (
-            <QuizComponent quiz={quiz} rng={XorShiftRng.fromSeed(props.seed)} />
-          )}
-          onPending={() => <Loading />}
-          onError={(error) => <JSError error={error} />}
+        <QuizComponent
+          quiz={QuizClass.fromJSON(quiz as any)}
+          rng={XorShiftRng.fromSeed(props.seed)}
         />
       </Surface>
     </Layout>
