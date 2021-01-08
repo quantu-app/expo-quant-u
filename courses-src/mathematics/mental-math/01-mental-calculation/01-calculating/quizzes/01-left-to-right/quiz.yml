@@ -2,8 +2,8 @@ name: Calculating Left-to-Right
 description: |
   When adding numbers start from the left side or highest power and work down from there.
 items:
-  - generator: mathematics.mental_math.mental_calculation.left_to_right
+  - generator: mathematics.mental-math.mental-calculation.left-to_right
     count: 10
     config:
-      var1Digits: 2
-      var2Digits: 2
+      var1Digits: 3
+      var2Digits: 3
