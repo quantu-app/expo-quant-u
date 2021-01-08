@@ -1,6 +1,9 @@
 import { Rng, UniformIntRng } from "@aicacia/rand";
 
-export function getIntRngForNDigits(ndigits: number, rng: Rng): UniformIntRng {
+export function getIntRngForNDigits(
+  ndigits: number,
+  rng: Rng
+): UniformIntRng<Rng> {
   const min = Math.pow(10, ndigits - 1),
     max = Math.pow(10, ndigits) - 1;
 

@@ -1,7 +1,6 @@
 import { EOL } from "os";
 import { promises } from "fs";
 import { join, relative, basename, extname, dirname, sep } from "path";
-import { snakeCase } from "snake-case";
 import { appendFile } from "../course-lib/parser/utils/appendFile";
 import { createTSImport } from "../course-lib/parser/utils/createTSImport";
 import { walk } from "../course-lib/parser/utils/walk";
@@ -30,7 +29,7 @@ export async function syncGenerators() {
       absoluteNamePath = [
         ...dirname(relativePath).split(sep),
         name,
-      ].map((tag) => snakeCase(tag).replace("_", "-")),
+      ].map((tag) => tag.toLowerCase().replace(/\s+/g, "_")),
       tags = new Set(absoluteNamePath),
       path = "." + sep + join(dirname(relativeImportPath), name);
 

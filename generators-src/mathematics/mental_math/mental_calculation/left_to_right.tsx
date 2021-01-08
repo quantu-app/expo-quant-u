@@ -1,4 +1,5 @@
 import { Rng } from "@aicacia/rand";
+import { Divider, Text } from "react-native-paper";
 import { TextQuestion, createQuestionGenerator } from "../../../../course-lib";
 import { Latex } from "../../../../src/Latex";
 import {
@@ -39,28 +40,23 @@ function generator(config: ILeftToRightConfig) {
         const leftNum = pv1[k];
         const rightNum = pv2[k];
         steps.push(
-          <li key={k + 1}>
+          <Text>
             <Latex>
               {leftNum} + {rightNum} = {leftNum + rightNum}
             </Latex>
-            <span />
             {k == 0
               ? " (start with leftmost component)"
               : " (move one to the right)"}
-          </li>
+          </Text>
         );
       }
+      steps.push(<Divider />);
       steps.push(
-        <li>
-          <hr />
-        </li>
-      );
-      steps.push(
-        <li>
+        <Text>
           <Latex>
             {var1} + {var2} = {answerSum}
           </Latex>
-        </li>
+        </Text>
       );
     } else {
       throw Error("Not Implemented for digits of different sizes.");
@@ -75,7 +71,7 @@ function generator(config: ILeftToRightConfig) {
           {var1} + {var2}
         </Latex>
       )
-      .setExplanation(<ol>{steps}</ol>);
+      .setExplanation(steps);
   };
 }
 

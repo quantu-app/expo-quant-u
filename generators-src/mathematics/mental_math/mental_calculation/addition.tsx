@@ -1,7 +1,7 @@
 import { Range } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
-import { TextQuestion, createQuestionGenerator } from "../../../course-lib";
-import { Latex } from "../../../src/Latex";
+import { TextQuestion, createQuestionGenerator } from "../../../../course-lib";
+import { Latex } from "../../../../src/Latex";
 
 interface IAdditionConfig {
   magnitude: number;
