@@ -15,7 +15,7 @@ const configSchema = {
   },
 };
 
-function configuredQuestionGenerator(config: ILeftToRightConfig) {
+function generator(config: ILeftToRightConfig) {
   return function (rng: Rng) {
     const d1n = config.var1Digits,
       d1min = Math.pow(10, d1n - 1),
@@ -78,7 +78,4 @@ function configuredQuestionGenerator(config: ILeftToRightConfig) {
   };
 }
 
-export default createQuestionGenerator(
-  configSchema,
-  configuredQuestionGenerator
-);
+export default createQuestionGenerator(configSchema, generator);
