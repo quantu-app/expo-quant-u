@@ -1,5 +1,5 @@
 import { firebase } from "../../firebase";
-import { STORE_NAME, User } from "./definitiions";
+import { IUser, STORE_NAME, User } from "./definitiions";
 import { state } from "../lib/state";
 import { none, some } from "@aicacia/core";
 
@@ -12,6 +12,10 @@ firebase.auth().onAuthStateChanged((user) => {
     signUserOut();
   }
 });
+
+export function isUserSignedIn() {
+  return store.getCurrent().user.isSome();
+}
 
 export const githubAuthProvider = new firebase.auth.GithubAuthProvider();
 
@@ -31,22 +35,44 @@ firebase
     console.error(error);
   });
 
-function signUserIn(user: firebase.User) {
-  return store.update((state) =>
-    state.set(
-      "user",
-      some(
-        User({
-          displayName: user.displayName,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-          photoURL: user.photoURL,
-          providerId: user.providerId,
-          uid: user.uid,
-        })
+async function getUserInfo(uid: string) {
+  const userInfo = await firebase.database().ref(`users/${uid}`).once("value"),
+    data = (userInfo.val() as Record<keyof IUser, any>) || ({} as any);
+
+  store.update((state) =>
+    state.update("user", (userOption) =>
+      userOption.map((user) =>
+        user
+          .set("firstName", data.firstName || "")
+          .set("lastName", data.lastName || "")
+          .set(
+            "username",
+            data.username ||
+              user.displayName?.replace(/\s+/g, "").toLowerCase() ||
+              ""
+          )
+          .set("country", data.country || "US")
+          .set("timezone", data.timezone || "Central")
+          .set("birthday", data.birthday ? new Date(data.birthday) : new Date())
+          .set("about", data.about || "")
       )
     )
   );
+}
+
+function signUserIn(firebaseUser: firebase.User) {
+  const user = User({
+    displayName: firebaseUser.displayName,
+    email: firebaseUser.email,
+    phoneNumber: firebaseUser.phoneNumber,
+    photoURL: firebaseUser.photoURL,
+    providerId: firebaseUser.providerId,
+    uid: firebaseUser.uid,
+  });
+
+  getUserInfo(user.uid);
+
+  return store.update((state) => state.set("user", some(user)));
 }
 
 function signUserOut() {

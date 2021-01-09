@@ -3,7 +3,15 @@ import { none, some, Option } from "@aicacia/core";
 import { IJSONObject, isJSONObject } from "@aicacia/json";
 import { Record, RecordOf } from "immutable";
 
-export interface IUser extends firebase.UserInfo {}
+export interface IUser extends firebase.UserInfo {
+  firstName: string;
+  lastName: string;
+  username: string;
+  country: string;
+  timezone: string;
+  birthday: Date;
+  about: string;
+}
 
 export const User = Record<IUser>({
   displayName: null,
@@ -12,6 +20,13 @@ export const User = Record<IUser>({
   photoURL: null,
   providerId: "",
   uid: "",
+  firstName: "",
+  lastName: "",
+  username: "",
+  country: "",
+  timezone: "",
+  birthday: new Date(),
+  about: "",
 });
 
 export interface IAuth {

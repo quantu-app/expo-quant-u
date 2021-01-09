@@ -1,10 +1,10 @@
-import React from "react";
-import { Changeset } from "@aicacia/changeset";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Button } from "react-native-paper";
-import { Input } from "../../Input";
+import { Button, TextInput } from "react-native-paper";
 import { Layout } from "../../Layout";
-import { useForm } from "../../state/lib/forms";
+import { useMapStateToProps } from "../../state";
+import { IUser, selectUser } from "../../state/auth";
+import { DateInput } from "../../DateInput";
 
 const styles = StyleSheet.create({
   container: {
@@ -12,60 +12,66 @@ const styles = StyleSheet.create({
   },
 });
 
-interface IProfileForm {
-  firstName: string;
-  lastName: string;
-  username: string;
-  country: string;
-  timezone: string;
-  birthday: Date;
-  about: string;
-}
-
-function changeset(
-  changeset: Changeset<IProfileForm>
-): Changeset<IProfileForm> {
-  return changeset
-    .filter([
-      "firstName",
-      "lastName",
-      "username",
-      "country",
-      "timezone",
-      "birthday",
-      "about",
-    ])
-    .validateRequired([
-      "firstName",
-      "lastName",
-      "username",
-      "country",
-      "timezone",
-      "birthday",
-    ]);
-}
-
 export function Profile() {
-  const { getFormData, valid, Field } = useForm({
-    changeset,
-  });
+  const user = useMapStateToProps(selectUser).unwrap(),
+    [form, setForm] = useState(user);
 
   function onSubmit() {
-    const formData = getFormData();
-    console.log(formData);
+    console.log();
+  }
+
+  function createOnChange(name: keyof IUser) {
+    return function onChange(value: IUser[keyof IUser]) {
+      setForm(form.set(name, value));
+    };
   }
 
   return (
     <Layout>
       <View style={styles.container}>
-        <Field name="firstName" Component={Input} dense />
-        <Field name="lastName" Component={Input} dense />
-        <Field name="username" Component={Input} dense />
-        <Field name="country" Component={Input} dense type="country" />
-        <Field name="timezone" Component={Input} dense type="date" />
-        <Field name="birthday" Component={Input} dense />
-        <Field name="about" Component={Input} dense multiline />
-        <Button compact disabled={!valid} mode="contained" onPress={onSubmit}>
+        <TextInput
+          value={form.firstName}
+          onChangeText={createOnChange("firstName")}
+          dense
+          label="First Name"
+        />
+        <TextInput
+          value={form.lastName}
+          onChangeText={createOnChange("lastName")}
+          dense
+          label="Last Name"
+        />
+        <TextInput
+          value={form.username}
+          onChangeText={createOnChange("username")}
+          dense
+          label="Userame"
+        />
+        <TextInput
+          value={form.country}
+          onChangeText={createOnChange("country")}
+          dense
+          label="Country"
+        />
+        <TextInput
+          value={form.timezone}
+          onChangeText={createOnChange("timezone")}
+          dense
+          label="Time Zone"
+        />
+        <DateInput
+          value={form.birthday}
+          onChangeDate={createOnChange("birthday")}
+          label="Birthday"
+        />
+        <TextInput
+          value={form.about}
+          onChangeText={createOnChange("about")}
+          dense
+          multiline
+          label="About"
+        />
+        <Button mode="contained" onPress={onSubmit}>
           Update
         </Button>
       </View>

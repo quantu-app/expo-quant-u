@@ -10,8 +10,12 @@ import {
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { CourseScreen } from "./screens/Course/CourseScreen";
 import { StyleSheet, View, Platform } from "react-native";
-import { Drawer } from "react-native-paper";
-import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
+import { Divider, Drawer } from "react-native-paper";
+import {
+  MaterialCommunityIcons,
+  Foundation,
+  Feather,
+} from "@expo/vector-icons";
 import { Loading } from "./Loading";
 import { CategoryScreen } from "./screens/Category/CategoryScreen";
 import { CategoriesScreen } from "./screens/Categories/CategoriesScreen";
@@ -20,6 +24,8 @@ import { UnitScreen } from "./screens/Unit/UnitScreen";
 import { QuizScreen } from "./screens/Quiz/QuizScreen";
 import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
 import { ProfileScreen } from "./screens/Profile/ProfileScreen";
+import { isUserSignedIn, selectUser } from "./state/auth";
+import { useMapStateToProps } from "./state";
 
 export const HOME_SCREEN = "Home",
   PROFILE_SCREEN = "Profile",
@@ -114,6 +120,8 @@ export function Navigation() {
 }
 
 export function AppDrawer() {
+  const user = useMapStateToProps(selectUser);
+
   return (
     <DrawerNavigator.Navigator
       initialRouteName={DEFAULT_SCREEN}
@@ -121,7 +129,12 @@ export function AppDrawer() {
       drawerContent={DrawerContent}
     >
       <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
-      <DrawerNavigator.Screen name={PROFILE_SCREEN} component={ProfileScreen} />
+      {user.isSome() && (
+        <DrawerNavigator.Screen
+          name={PROFILE_SCREEN}
+          component={ProfileScreen}
+        />
+      )}
       <DrawerNavigator.Screen
         name={CATEGORIES_SCREEN}
         component={CategoriesScreen}
@@ -172,6 +185,16 @@ function DrawerContent(
             label={CATEGORIES_SCREEN}
             onPress={() => props.navigation.navigate(CATEGORIES_SCREEN)}
           />
+          <Divider />
+          {isUserSignedIn() && (
+            <DrawerItem
+              icon={({ color, size }) => (
+                <Feather name="user" color={color} size={size} />
+              )}
+              label={PROFILE_SCREEN}
+              onPress={() => props.navigation.navigate(PROFILE_SCREEN)}
+            />
+          )}
         </Drawer.Section>
       </View>
     </DrawerContentScrollView>
