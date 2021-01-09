@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const noop = () => null;
+
 export function Results(props: IResultsProps) {
   return (
     <View style={styles.container}>
@@ -62,7 +64,8 @@ export function Results(props: IResultsProps) {
                 <QuestionComponent
                   {...questionResult.toJS()}
                   question={question}
-                  onChange={() => null}
+                  onChange={noop}
+                  onCheck={noop}
                 />
               </View>
               <View style={styles.points}>

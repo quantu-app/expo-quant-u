@@ -1,24 +1,22 @@
 import { Range } from "@aicacia/core";
-import { IJSONObject, isJSONArray, isJSONObject } from "@aicacia/json";
+import { IJSONObject } from "@aicacia/json";
 import { Rng } from "@aicacia/rand";
 import { validate } from "jsonschema";
+import { IQuiz } from "../interfaces";
 import { IQuestionGenerator, isQuestionGenerator } from "./IQuestionGenerator";
 import { Question } from "./Question";
 import { getQuestionGenerator } from "./questionGenerators";
 
-export interface IQuizItemJSON {
-  generator: string;
-  config: IJSONObject;
-  count: number;
-}
-
 export interface IQuizItemConfig<C = any, T = any> {
   generator: Promise<{ default: IQuestionGenerator<C, T> }>;
   config: IJSONObject;
+  timeInSeconds?: number;
   count: number;
 }
 
 export class Quiz {
+  protected autoNext = false;
+  protected timeInSeconds?: number;
   protected items: IQuizItemConfig[] = [];
 
   async getQuestions(rng: Rng): Promise<Question[]> {
@@ -40,12 +38,17 @@ export class Quiz {
       if (!result.valid) {
         console.warn(result);
       }
-      console.log(config);
 
       const generatorFn = generator.createGeneratorFn(config),
         generatedQuestions = new Range(1, item.count)
           .iter()
-          .map(() => generatorFn(rng))
+          .map(() => {
+            const question = generatorFn(rng);
+            if (typeof item.timeInSeconds === "number") {
+              question.setTimeInSeconds(item.timeInSeconds);
+            }
+            return question;
+          })
           .toArray();
 
       questions.push(...generatedQuestions);
@@ -54,21 +57,28 @@ export class Quiz {
     return questions;
   }
 
-  static fromJSON(json: IJSONObject) {
+  getAutoNext() {
+    return this.autoNext;
+  }
+  getTimeInSecond() {
+    return this.timeInSeconds;
+  }
+
+  static fromQuizData(quizData: IQuiz) {
     const quiz = new Quiz();
 
-    if (isJSONArray(json.items)) {
-      for (const item of json.items) {
-        if (isJSONObject(item)) {
-          const generator = getQuestionGenerator(item.generator as string);
+    quiz.autoNext = quizData.autoNext === true;
+    quiz.timeInSeconds = quizData.timeInSeconds;
 
-          quiz.items.push({
-            generator,
-            config: item.config as IJSONObject,
-            count: item.count as number,
-          });
-        }
-      }
+    for (const item of quizData.items) {
+      const generator = getQuestionGenerator(item.generator);
+
+      quiz.items.push({
+        generator,
+        config: item.config || {},
+        count: item.count,
+        timeInSeconds: item.timeInSeconds,
+      });
     }
 
     return quiz;

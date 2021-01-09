@@ -3,8 +3,9 @@
 .vscode/
 assets/
 dist/
+courses/
 node_modules/
 web-build
-electron/webpack.config.js
-electron-webpack.js
+courses.ts
+generators.ts
 webpack.config.js

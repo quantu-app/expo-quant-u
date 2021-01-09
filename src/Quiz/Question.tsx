@@ -9,6 +9,7 @@ import { theme } from "../theme";
 import { IQuestionResult } from "./QuestionResult";
 
 export interface IQuestionProps<T = any> {
+  timeInSeconds?: number;
   result: RecordOf<IQuestionResult<T>>;
   question: QuestionClass<T>;
   update(
@@ -17,6 +18,7 @@ export interface IQuestionProps<T = any> {
     ) => RecordOf<IQuestionResult<T>>
   ): void;
   onNext(): void;
+  onCheck(points: number): void;
 }
 
 const styles = StyleSheet.create({
@@ -63,8 +65,10 @@ export function Question<T = any>(props: IQuestionProps<T>) {
   const [loading, setLoading] = useState(false);
 
   useMemo(async () => {
+    setLoading(true);
     const total = await props.question.getTotalPoints();
     props.update((result) => result.set("total", total));
+    setLoading(false);
   }, [props.question]);
 
   function onInputChange(value: any) {
@@ -73,13 +77,7 @@ export function Question<T = any>(props: IQuestionProps<T>) {
 
   async function onCheck() {
     setLoading(true);
-    const points = await props.question.checkAnswer(props.result.value as any);
-    props.update((result) =>
-      result
-        .set("done", true)
-        .set("points", points)
-        .set("correct", points === props.result.total && props.result.total > 0)
-    );
+    props.onCheck(await props.question.checkAnswer(props.result.value as any));
     setLoading(false);
   }
 
@@ -94,6 +92,7 @@ export function Question<T = any>(props: IQuestionProps<T>) {
           {...props.result.toJS()}
           question={props.question}
           onChange={onInputChange}
+          onCheck={onCheck}
         />
       </View>
       <View style={styles.buttons}>

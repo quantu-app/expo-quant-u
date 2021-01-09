@@ -25,7 +25,7 @@ export function Quiz(props: ParamList[typeof QUIZ_SCREEN]) {
         <Title>{quiz.name}</Title>
         <Divider />
         <QuizComponent
-          quiz={QuizClass.fromJSON(quiz as any)}
+          quiz={QuizClass.fromQuizData(quiz)}
           rng={XorShiftRng.fromSeed(props.seed)}
         />
       </Surface>

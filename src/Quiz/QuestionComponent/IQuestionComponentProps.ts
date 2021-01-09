@@ -7,4 +7,5 @@ export interface IQuestionComponentProps<
 > extends IQuestionResult<T> {
   question: Q;
   onChange(value: T): void;
+  onCheck(): void;
 }

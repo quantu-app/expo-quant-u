@@ -1,8 +1,10 @@
 name: Addition
+autoNext: true
 description: |
   This is a quiz to test your skills with basic addition.
 items:
   - generator: mathematics.mental_math.mental_calculation.addition
     count: 5
+    timeInSeconds: 10
     config:
       magnitude: 2

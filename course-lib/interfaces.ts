@@ -43,6 +43,8 @@ export interface IUnit {
 export interface IQuiz {
   name: string;
   description: string;
+  autoNext: boolean;
+  timeInSeconds?: number;
   logo?: any;
   url: string;
   tags: string[];
@@ -53,4 +55,6 @@ export interface IQuizItem {
   generator: string;
   config: IJSONObject | null;
   count: number;
+  retires: number;
+  timeInSeconds?: number;
 }

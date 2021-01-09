@@ -14,11 +14,15 @@ export class QuizItem {
   generator = "";
   config?: Schema;
   count = 0;
+  retries = Infinity;
+  timeInSeconds?: number;
 }
 
 export class Quiz {
   name = "";
   description = "";
+  autoNext = false;
+  timeInSeconds?: number;
   logo: Option<string> = none();
   url = "";
   tags: string[] = [];
@@ -35,11 +39,21 @@ export class Quiz {
         this.name = json.name as string;
         this.description = json.description as string;
         this.tags = (json.tags as Array<string>) || [];
+        this.autoNext = json.autoNext === true;
+        if (typeof json.timeInSeconds === "number") {
+          this.timeInSeconds = json.timeInSeconds;
+        }
         this.items = ((json.items as Array<IJSONObject>) || []).map((json) => {
           const quizItem = new QuizItem();
           quizItem.generator = json.generator as string;
           quizItem.config = json.config as Schema;
           quizItem.count = json.count as number;
+          if (typeof json.retries === "number" && json.retries >= 0) {
+            quizItem.retries = json.retries;
+          }
+          if (typeof json.timeInSeconds === "number") {
+            quizItem.timeInSeconds = json.timeInSeconds;
+          }
           return quizItem;
         });
       })
@@ -69,7 +83,13 @@ export class Quiz {
           "." + sep + relative(dirname, courselibDir)
         )}";${EOL}${EOL}export const quiz: IQuiz = {${EOL}\tname: "${
           this.name
-        }",${EOL}\turl: "${this.url}",${EOL}${
+        }",${EOL}\turl: "${this.url}",${EOL}\tautoNext: ${
+          this.autoNext
+        },${EOL}${
+          this.timeInSeconds
+            ? `\ttimeInSeconds: ${this.timeInSeconds},${EOL}`
+            : ""
+        }${
           logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
         }\ttags: ${JSON.stringify(
           this.tags

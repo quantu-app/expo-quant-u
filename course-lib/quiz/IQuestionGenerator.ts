@@ -6,6 +6,7 @@ import { Question } from "./Question";
 export interface IQuestionGeneratorJSON {
   generator: string;
   config: IJSONObject;
+  timeInSeconds?: number;
   count: number;
 }
 

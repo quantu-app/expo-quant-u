@@ -1,4 +1,3 @@
-import { none, Option, some } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
 import { List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
@@ -6,6 +5,7 @@ import type {
   Question as QuestionClass,
   Quiz as QuizClass,
 } from "../../course-lib";
+import { Loading } from "../Loading";
 import { Question } from "./Question";
 import { IQuestionResult, QuestionResult } from "./QuestionResult";
 import { Results } from "./Results";
@@ -17,15 +17,17 @@ export interface IQuizProps {
 }
 
 export interface IQuizState {
+  loading: boolean;
   done: boolean;
-  current: Option<number>;
+  current: number;
   questions: List<QuestionClass>;
   results: List<RecordOf<IQuestionResult>>;
 }
 
 export const QuizState = Record<IQuizState>({
+  loading: false,
   done: false,
-  current: none(),
+  current: -1,
   questions: List(),
   results: List(),
 });
@@ -34,46 +36,107 @@ export function Quiz(props: IQuizProps) {
   const [state, setState] = useState(QuizState());
 
   async function onReset() {
-    const questions = List(await props.quiz.getQuestions(props.rng)),
-      results = questions.map(() => QuestionResult()),
-      current = none<number>();
+    setState(state.set("loading", true));
+    const questions = await props.quiz.getQuestions(props.rng);
 
-    if (!questions.isEmpty()) {
-      current.replace(0);
+    if (questions.length) {
+      setState(
+        QuizState()
+          .set("questions", List(questions))
+          .set("results", List(questions.map(() => QuestionResult())))
+          .set("current", 0)
+      );
+    } else {
+      setState(QuizState());
     }
-
-    setState(
-      QuizState()
-        .set("questions", questions)
-        .set("results", results)
-        .set("current", current)
-    );
   }
 
   useMemo(onReset, [props.quiz, props.rng]);
 
-  function updateCurrent(
+  function update(
     updater: (result: RecordOf<IQuestionResult>) => RecordOf<IQuestionResult>
   ) {
-    state.current.map((index) =>
-      setState(
-        state.update("results", (results) => results.update(index, updater))
-      )
-    );
+    if (state.current !== -1) {
+      setState(updateCurrentQuestionResult(state, updater));
+    }
+  }
+
+  function onCheck(points: number) {
+    if (state.current !== -1) {
+      let nextState = updateCurrentQuestionResult(state, (result) =>
+        result
+          .set("done", true)
+          .set("points", points)
+          .set("correct", points === result.total && result.total > 0)
+      );
+
+      if (props.quiz.getAutoNext()) {
+        const current = getNextQuestionIndex(nextState);
+        nextState = nextState
+          .set("done", current === -1)
+          .set("current", current);
+      }
+
+      setState(nextState);
+    }
   }
 
   function onSelectQuestion(index: number) {
-    console.log(index);
     if (index >= 0 && index < state.questions.size) {
-      setState(state.set("current", some(index)));
+      setState(state.set("current", index));
     }
   }
 
   function onNext() {
-    const current = state.current.unwrapOr(0);
-    let next = -1;
+    const current = getNextQuestionIndex(state);
+    setState(state.set("done", current === -1).set("current", current));
+  }
 
-    for (let i = current, il = state.results.size; i < il; i++) {
+  return state.loading ? (
+    <Loading />
+  ) : state.done ? (
+    <Results state={state} quiz={props.quiz} onReset={onReset} />
+  ) : (
+    <>
+      <Status
+        current={state.current}
+        state={state}
+        onSelectQuestion={onSelectQuestion}
+      />
+      <Question
+        result={state.results.get(state.current) as RecordOf<IQuestionResult>}
+        question={state.questions.get(state.current) as QuestionClass}
+        timeInSeconds={props.quiz.getTimeInSecond()}
+        onNext={onNext}
+        onCheck={onCheck}
+        update={update}
+      />
+    </>
+  );
+}
+
+function updateCurrentQuestionResult(
+  state: RecordOf<IQuizState>,
+  updater: (result: RecordOf<IQuestionResult>) => RecordOf<IQuestionResult>
+) {
+  return state.update("results", (results) =>
+    results.update(state.current, updater)
+  );
+}
+
+function getNextQuestionIndex(state: RecordOf<IQuizState>) {
+  let next = -1;
+
+  for (let i = state.current + 1, il = state.results.size; i < il; i++) {
+    const result = state.results.get(i) as RecordOf<IQuestionResult>;
+
+    if (!result.done) {
+      next = i;
+      break;
+    }
+  }
+  if (next === -1) {
+    for (let i = 0, il = state.current; i < il; i++) {
       const result = state.results.get(i) as RecordOf<IQuestionResult>;
 
       if (!result.done) {
@@ -81,46 +144,7 @@ export function Quiz(props: IQuizProps) {
         break;
       }
     }
-    if (next === -1) {
-      for (let i = 0, il = current; i < il; i++) {
-        const result = state.results.get(i) as RecordOf<IQuestionResult>;
-
-        if (!result.done) {
-          next = i;
-          break;
-        }
-      }
-    }
-
-    if (next === -1) {
-      setState(state.set("done", true).set("current", none()));
-    } else {
-      setState(state.set("current", some(next)));
-    }
   }
 
-  return state.done ? (
-    <Results state={state} quiz={props.quiz} onReset={onReset} />
-  ) : (
-    <>
-      <Status
-        current={state.current.unwrapOr(-1)}
-        state={state}
-        onSelectQuestion={onSelectQuestion}
-      />
-      {state.current
-        .flatMap((index) =>
-          Option.from(state.questions.get(index)).map((question) => (
-            <Question
-              key={index}
-              result={state.results.get(index) as RecordOf<IQuestionResult>}
-              question={question}
-              onNext={onNext}
-              update={updateCurrent}
-            />
-          ))
-        )
-        .unwrapOr(null as any)}
-    </>
-  );
+  return next;
 }
