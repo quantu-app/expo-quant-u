@@ -2,7 +2,7 @@ name: Addition
 description: |
   This is a quiz to test your skills with basic addition.
 items:
-  - generator: mathematics.mental-calculation.addition
+  - generator: mathematics.mental_math.mental_calculation.addition
     count: 5
     config:
       magnitude: 2
