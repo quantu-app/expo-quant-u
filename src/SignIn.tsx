@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Portal, Title, IconButton, Button, Surface } from "react-native-paper";
 import { SMALL_WIDTH } from "./screens";

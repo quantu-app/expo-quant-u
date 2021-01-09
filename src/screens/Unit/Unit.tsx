@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import {
@@ -9,6 +10,7 @@ import {
   Paragraph,
 } from "react-native-paper";
 import { getCategory } from "../../../course-lib";
+import { excerpt } from "../../excerpt";
 import { Layout } from "../../Layout";
 import { ParamList, START_QUIZ_SCREEN, UNIT_SCREEN } from "../../Navigation";
 
@@ -39,7 +41,7 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
             <List.Item
               key={quiz.url}
               title={quiz.name}
-              description={quiz.description}
+              description={excerpt(quiz.description)}
               onPress={() =>
                 navigation.navigate(START_QUIZ_SCREEN, {
                   ...props,

@@ -1,3 +1,4 @@
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { Navigation } from "./src/Navigation";
 import { createStateProvider } from "@aicacia/state-react";

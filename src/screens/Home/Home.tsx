@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, Image, View, useWindowDimensions } from "react-native";
 import { Button, Headline, Subheading } from "react-native-paper";
 import bg from "../../../assets/bg.jpg";

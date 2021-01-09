@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { Appbar } from "react-native-paper";
-import { ReactNode, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import app from "../app.json";
 import { LARGE_WIDTH } from "./screens";
 import { ParamList } from "./Navigation";

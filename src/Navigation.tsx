@@ -1,3 +1,4 @@
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createDrawerNavigator,
@@ -18,8 +19,10 @@ import { ChapterScreen } from "./screens/Chapter/ChapterScreen";
 import { UnitScreen } from "./screens/Unit/UnitScreen";
 import { QuizScreen } from "./screens/Quiz/QuizScreen";
 import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
+import { ProfileScreen } from "./screens/Profile/ProfileScreen";
 
 export const HOME_SCREEN = "Home",
+  PROFILE_SCREEN = "Profile",
   CATEGORIES_SCREEN = "Categories",
   CATEGORY_SCREEN = "Category",
   COURSE_SCREEN = "Course",
@@ -27,10 +30,11 @@ export const HOME_SCREEN = "Home",
   UNIT_SCREEN = "Unit",
   START_QUIZ_SCREEN = "Start Quiz",
   QUIZ_SCREEN = "Quiz",
-  DEFAULT_SCREEN = CATEGORIES_SCREEN;
+  DEFAULT_SCREEN = PROFILE_SCREEN;
 
 export type ParamList = {
   [HOME_SCREEN]: undefined;
+  [PROFILE_SCREEN]: undefined;
   [CATEGORIES_SCREEN]: undefined;
   [CATEGORY_SCREEN]: { category: string };
   [COURSE_SCREEN]: { category: string; course: string };
@@ -72,6 +76,7 @@ export const linking = {
   config: {
     screens: {
       [HOME_SCREEN]: "",
+      [PROFILE_SCREEN]: "profile",
       [CATEGORIES_SCREEN]: "categories",
       [CATEGORY_SCREEN]: ":category",
       [COURSE_SCREEN]: ":category/:course",
@@ -116,6 +121,7 @@ export function AppDrawer() {
       drawerContent={DrawerContent}
     >
       <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
+      <DrawerNavigator.Screen name={PROFILE_SCREEN} component={ProfileScreen} />
       <DrawerNavigator.Screen
         name={CATEGORIES_SCREEN}
         component={CategoriesScreen}

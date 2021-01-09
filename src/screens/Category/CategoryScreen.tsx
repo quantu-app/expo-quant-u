@@ -1,3 +1,4 @@
+import React from "react";
 import { Async } from "@aicacia/async_component-react";
 import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";

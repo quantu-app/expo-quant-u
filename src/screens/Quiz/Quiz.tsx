@@ -1,3 +1,4 @@
+import React from "react";
 import { XorShiftRng } from "@aicacia/rand";
 import { StyleSheet } from "react-native";
 import { Title, Surface, Divider } from "react-native-paper";

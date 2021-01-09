@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet } from "react-native";
 import {
@@ -9,6 +10,7 @@ import {
   Paragraph,
 } from "react-native-paper";
 import { getCategory } from "../../../course-lib";
+import { excerpt } from "../../excerpt";
 import { Layout } from "../../Layout";
 import { CHAPTER_SCREEN, ParamList, UNIT_SCREEN } from "../../Navigation";
 
@@ -49,7 +51,7 @@ export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
                   />
                 ))
               }
-              description={unit.description}
+              description={excerpt(unit.description)}
               onPress={() =>
                 navigation.navigate(UNIT_SCREEN, {
                   ...props,

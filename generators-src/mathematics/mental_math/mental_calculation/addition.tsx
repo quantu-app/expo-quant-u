@@ -1,3 +1,4 @@
+import React from "react";
 import { Range } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
 import { TextQuestion, createQuestionGenerator } from "../../../../course-lib";

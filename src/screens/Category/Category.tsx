@@ -1,7 +1,9 @@
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet } from "react-native";
 import { Card, Title, Button, Surface, Paragraph } from "react-native-paper";
 import { getCategory } from "../../../course-lib/categories";
+import { excerpt } from "../../excerpt";
 import { Layout } from "../../Layout";
 import { CATEGORY_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
 
@@ -37,7 +39,7 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
                 style={{ height: 128 }}
               />
             )}
-            <Paragraph>{course.description}</Paragraph>
+            <Paragraph>{excerpt(course.description)}</Paragraph>
             <Button
               mode="contained"
               onPress={() =>

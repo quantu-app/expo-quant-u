@@ -1,3 +1,4 @@
+import React from "react";
 import { RecordOf } from "immutable";
 import { StyleSheet, View } from "react-native";
 import { IconButton } from "react-native-paper";

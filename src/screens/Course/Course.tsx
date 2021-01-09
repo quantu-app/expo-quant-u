@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet } from "react-native";
 import {
@@ -9,6 +10,7 @@ import {
   Paragraph,
 } from "react-native-paper";
 import { getCategory } from "../../../course-lib/categories";
+import { excerpt } from "../../excerpt";
 import { Layout } from "../../Layout";
 import { CHAPTER_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
 
@@ -47,7 +49,7 @@ export function Course(props: ParamList[typeof COURSE_SCREEN]) {
                   />
                 ))
               }
-              description={chapter.description}
+              description={excerpt(chapter.description)}
               onPress={() =>
                 navigation.navigate(CHAPTER_SCREEN, {
                   ...props,

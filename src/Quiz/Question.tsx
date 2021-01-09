@@ -1,3 +1,4 @@
+import React from "react";
 import { RecordOf } from "immutable";
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";

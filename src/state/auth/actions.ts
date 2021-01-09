@@ -1,4 +1,4 @@
-import { firebase } from "./firebase";
+import { firebase } from "../../firebase";
 import { STORE_NAME, User } from "./definitiions";
 import { state } from "../lib/state";
 import { none, some } from "@aicacia/core";

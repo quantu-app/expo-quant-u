@@ -1,4 +1,4 @@
-import type { firebase } from "./firebase";
+import type { firebase } from "../../firebase";
 import { none, some, Option } from "@aicacia/core";
 import { IJSONObject, isJSONObject } from "@aicacia/json";
 import { Record, RecordOf } from "immutable";

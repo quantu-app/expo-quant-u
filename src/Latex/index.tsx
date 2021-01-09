@@ -1,3 +1,4 @@
+import React from "react";
 import { ReactText } from "react";
 import { LatexComponent } from "./LatexComponent";
 

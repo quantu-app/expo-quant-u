@@ -1,3 +1,4 @@
+import React from "react";
 import { Rng } from "@aicacia/rand";
 import { List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";

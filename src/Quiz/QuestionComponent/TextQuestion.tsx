@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
 import type { TextQuestion as TextQuestionClass } from "../../../course-lib";

@@ -1,3 +1,4 @@
+import React from "react";
 import { Rng } from "@aicacia/rand";
 import { Divider, Text } from "react-native-paper";
 import { TextQuestion, createQuestionGenerator } from "../../../../course-lib";

@@ -1,4 +1,6 @@
-import Katex from "react-native-katex";
+import React from "react";
+import "katex/dist/katex.min.css";
+import TeX from "@matejmazur/react-katex";
 
 export interface ILatexComponentProps {
   block: boolean;
@@ -6,5 +8,5 @@ export interface ILatexComponentProps {
 }
 
 export function LatexComponent(props: ILatexComponentProps) {
-  return <Katex displayMode={props.block} expression={props.children} />;
+  return <TeX block={props.block}>{props.children}</TeX>;
 }

@@ -1,7 +1,9 @@
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet } from "react-native";
 import { Card, Title, Button, Surface, Paragraph } from "react-native-paper";
 import { getCategories } from "../../../course-lib/categories";
+import { excerpt } from "../../excerpt";
 import { Layout } from "../../Layout";
 import { CATEGORY_SCREEN } from "../../Navigation";
 
@@ -35,7 +37,7 @@ export function Categories() {
                 style={{ height: 128 }}
               />
             )}
-            <Paragraph>{category.description}</Paragraph>
+            <Paragraph>{excerpt(category.description)}</Paragraph>
             <Button
               mode="contained"
               onPress={() =>
