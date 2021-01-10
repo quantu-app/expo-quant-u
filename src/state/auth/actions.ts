@@ -1,5 +1,5 @@
 import { firebase } from "../../firebase";
-import { IUser, STORE_NAME, User } from "./definitiions";
+import { IUserExtra, STORE_NAME, User } from "./definitiions";
 import { state } from "../lib/state";
 import { none, some } from "@aicacia/core";
 
@@ -16,6 +16,12 @@ firebase.auth().onAuthStateChanged((user) => {
 export function isUserSignedIn() {
   return store.getCurrent().user.isSome();
 }
+
+export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+
+googleAuthProvider.setCustomParameters({
+  allow_signup: "true",
+});
 
 export const githubAuthProvider = new firebase.auth.GithubAuthProvider();
 
@@ -35,26 +41,51 @@ firebase
     console.error(error);
   });
 
-async function getUserInfo(uid: string) {
-  const userInfo = await firebase.database().ref(`users/${uid}`).once("value"),
-    data = (userInfo.val() as Record<keyof IUser, any>) || ({} as any);
+export async function isValidUsername(uid: string, username: string) {
+  const dataSnapshot = await firebase
+    .database()
+    .ref("users")
+    .equalTo(username, "username")
+    .once("value");
+
+  return dataSnapshot.exists() && dataSnapshot.val().uid !== uid;
+}
+
+export async function setUserExtra(uid: string, userExtra: IUserExtra) {
+  await firebase
+    .database()
+    .ref(`users/${uid}`)
+    .set({
+      ...userExtra,
+      birthday: userExtra.birthday.toUTCString(),
+    });
+}
+
+async function getUserExtra(uid: string) {
+  const userExtra = await firebase.database().ref(`users/${uid}`).once("value"),
+    data: IUserExtra = userExtra.val() || {};
 
   store.update((state) =>
     state.update("user", (userOption) =>
       userOption.map((user) =>
-        user
-          .set("firstName", data.firstName || "")
-          .set("lastName", data.lastName || "")
-          .set(
-            "username",
-            data.username ||
-              user.displayName?.replace(/\s+/g, "").toLowerCase() ||
-              ""
-          )
-          .set("country", data.country || "US")
-          .set("timezone", data.timezone || "Central")
-          .set("birthday", data.birthday ? new Date(data.birthday) : new Date())
-          .set("about", data.about || "")
+        user.update("extra", (extra) =>
+          extra
+            .set("firstName", data.firstName || "")
+            .set("lastName", data.lastName || "")
+            .set(
+              "username",
+              data.username ||
+                user.displayName?.replace(/\s+/g, "").toLowerCase() ||
+                ""
+            )
+            .set("country", data.country)
+            .set("timezone", data.timezone)
+            .set(
+              "birthday",
+              data.birthday ? new Date(data.birthday) : new Date()
+            )
+            .set("about", data.about || "")
+        )
       )
     )
   );
@@ -70,7 +101,7 @@ function signUserIn(firebaseUser: firebase.User) {
     uid: firebaseUser.uid,
   });
 
-  getUserInfo(user.uid);
+  getUserExtra(user.uid);
 
   return store.update((state) => state.set("user", some(user)));
 }
@@ -88,6 +119,22 @@ export async function signInWithGithub() {
   return firebase
     .auth()
     .signInWithPopup(githubAuthProvider)
+    .then((result) => {
+      if (result.user) {
+        signUserIn(result.user);
+      } else {
+        throw new Error(JSON.stringify(result, null, 2));
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export async function signInWithGoogle() {
+  return firebase
+    .auth()
+    .signInWithPopup(googleAuthProvider)
     .then((result) => {
       if (result.user) {
         signUserIn(result.user);

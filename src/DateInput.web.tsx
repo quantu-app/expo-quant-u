@@ -13,7 +13,7 @@ export type IDateInputProps = (
 ) & {
   dense?: boolean;
   label?: string;
-  onChangeDate?: (value: Date) => void;
+  onChangeDate?: (value?: Date) => void;
 };
 
 const inlineStyles = {
@@ -30,17 +30,18 @@ const inlineStyles = {
 export function DateInput(props: IDateInputProps) {
   function onChange(e: any) {
     if (props.onChange) {
-      props.onChange(e as any, new Date(e.target.valueAsDate));
+      props.onChange(e as any, e.target.valueAsDate);
     }
     if (props.onChangeDate) {
-      props.onChangeDate(new Date(e.target.valueAsDate));
+      props.onChangeDate(e.target.valueAsDate);
     }
   }
 
   return (
     <TextInput
+      style={props.style}
       dense={props.dense}
-      value={toInputValue(props.value)}
+      value={props.value ? toInputValue(props.value) : ""}
       label={props.label}
       render={(renderProps) => {
         return (
@@ -56,16 +57,13 @@ export function DateInput(props: IDateInputProps) {
   );
 }
 
-function pad(value: number): string {
-  if (value < 10) {
-    return "0" + value;
-  } else {
-    return value.toString();
-  }
+function pad(value: number, maxLength: number): string {
+  return `${value}`.padStart(maxLength, "0");
 }
 
 function toInputValue(date: Date) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-    date.getDate() + 1
+  return `${pad(date.getFullYear(), 4)}-${pad(date.getMonth() + 1, 2)}-${pad(
+    date.getDate() + 1,
+    2
   )}`;
 }

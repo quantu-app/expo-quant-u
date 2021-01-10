@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Portal, Title, IconButton, Button, Surface } from "react-native-paper";
 import { SMALL_WIDTH } from "./screens";
-import { signInWithGithub } from "./state/auth";
+import { signInWithGithub, signInWithGoogle } from "./state/auth";
 import { theme } from "./theme";
 
 const styles = StyleSheet.create({
@@ -31,8 +31,9 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  button: {
+    marginBottom: 8,
   },
 });
 
@@ -50,8 +51,9 @@ export function SignIn(props: ISignInProps) {
       await signInFn();
       props.onClose();
     } catch (error) {
-      setLoading(false);
       throw error;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -68,10 +70,23 @@ export function SignIn(props: ISignInProps) {
               </View>
               <View style={styles.content}>
                 <Button
+                  style={styles.button}
+                  icon="google"
+                  mode="contained"
+                  color="#ea4335"
+                  disabled={loading}
+                  uppercase={false}
+                  onPress={() => signIn(signInWithGoogle)}
+                >
+                  Google
+                </Button>
+                <Button
+                  style={styles.button}
                   icon="github"
                   mode="contained"
                   color="#24292e"
                   disabled={loading}
+                  uppercase={false}
                   onPress={() => signIn(signInWithGithub)}
                 >
                   Github
