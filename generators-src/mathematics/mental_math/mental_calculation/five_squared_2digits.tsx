@@ -3,7 +3,6 @@ import { Rng } from "@aicacia/rand";
 import { Divider, Text } from "react-native-paper";
 import { TextQuestion, createQuestionGenerator } from "../../../../course-lib";
 import { Latex } from "../../../../src/Latex";
-import { getIntegerPlaceValues } from "../../../../src/learning/utils";
 
 interface SquaringNumbersEndingInFiveConfig {
   nDigits: number;
@@ -13,7 +12,7 @@ const configSchema = {
   type: "object",
 };
 
-function generator(config: SquaringNumbersEndingInFiveConfig) {
+function generator(_config: SquaringNumbersEndingInFiveConfig) {
   return function (rng: Rng) {
     const d1 = rng.nextIntInRange(1, 9),
       num = d1 * 10 + 5,
