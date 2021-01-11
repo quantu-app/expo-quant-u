@@ -26,11 +26,10 @@ export async function syncGenerators() {
     const relativePath = relative(GENERATORS_PATH, filepath),
       relativeImportPath = relative(dirname(OUT_PATH), filepath),
       name = basename(relativeImportPath, extname(relativeImportPath)),
-      absoluteNamePath = [
-        ...dirname(relativePath).split(sep),
-        name,
-      ].map((tag) => tag.toLowerCase().replace(/\s+/g, "_")),
-      tags = new Set(absoluteNamePath),
+      absoluteNamePath = [...dirname(relativePath).split(sep), name],
+      tags = new Set(
+        absoluteNamePath.map((tag) => tag.toLowerCase().replace(/\s+/g, "_"))
+      ),
       path = "." + sep + join(dirname(relativeImportPath), name);
 
     generators.push({
