@@ -1,0 +1,6 @@
+name: Calculative the square of two digit numbers ending in 5
+description: |
+  When squaring two-digit numbers ending in 5, there's a quick trick you can use.
+items:
+  - generator: mathematics.mental_math.mental_calculation.five_squared_2digits
+    count: 10
