@@ -26,6 +26,11 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 16,
   },
+  buttons: {
+    marginTop: 16,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 function changesetFn(changeset: Changeset<IUserExtra>): Changeset<IUserExtra> {
@@ -122,14 +127,16 @@ export function ProfileForm(props: IProfileFormProps) {
         multiline
         label="About"
       />
-      <Button
-        mode="contained"
-        loading={loading}
-        disabled={changeset.isInvalid() || loading}
-        onPress={onSubmit}
-      >
-        Update
-      </Button>
+      <View style={styles.buttons}>
+        <Button
+          mode="contained"
+          loading={loading}
+          disabled={changeset.isInvalid() || loading}
+          onPress={onSubmit}
+        >
+          Update
+        </Button>
+      </View>
     </Surface>
   );
 }
