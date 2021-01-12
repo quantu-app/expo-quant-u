@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    overflowY: "scroll",
     flexDirection: "row",
     alignContent: "center",
     justifyContent: "center",

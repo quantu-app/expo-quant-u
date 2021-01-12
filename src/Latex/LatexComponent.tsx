@@ -1,6 +1,6 @@
 import React from "react";
-import "katex/dist/katex.min.css";
-import TeX from "@matejmazur/react-katex";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 
 export interface ILatexComponentProps {
   block: boolean;
@@ -8,5 +8,13 @@ export interface ILatexComponentProps {
 }
 
 export function LatexComponent(props: ILatexComponentProps) {
-  return <TeX block={props.block}>{props.children}</TeX>;
+  if (props.block) {
+    return (
+      <View>
+        <Text>{props.children}</Text>
+      </View>
+    );
+  } else {
+    return <Text>{props.children}</Text>;
+  }
 }

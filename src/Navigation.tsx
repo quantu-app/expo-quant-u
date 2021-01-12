@@ -70,8 +70,8 @@ export type ParamList = {
 
 // TODO: remove after not hosting on github pages
 export const ENABLE_LINKING =
-  location.hostname === "localhost" ||
-  (!("electron" in process.versions) && Platform.OS !== "web");
+  global.location?.hostname === "localhost" ||
+  (!("electron" in (global.process?.versions || {})) && Platform.OS !== "web");
 
 export const linking = {
   prefixes: [
@@ -100,7 +100,7 @@ export const linking = {
   },
 };
 
-if (process.env.NODE_ENV !== "production") {
+if (ENABLE_LINKING && process.env.NODE_ENV !== "production") {
   linking.prefixes.push(
     `${location.protocol}//${location.host}:${location.port}`
   );
