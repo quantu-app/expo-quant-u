@@ -9,7 +9,7 @@ import { CATEGORY_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
 const styles = StyleSheet.create({
   title: {
     marginTop: 16,
-    paddingLeft: 16,
+    padding: 16,
   },
   card: {
     margin: 16,

@@ -38,15 +38,18 @@ export const User = Record<IUser>({
 });
 
 export interface IAuth {
+  signInModal: boolean;
   user: Option<RecordOf<IUser>>;
 }
 
 export const Auth = Record<IAuth>({
+  signInModal: false,
   user: none(),
 });
 
 export function fromJSON(json: IJSONObject): RecordOf<IAuth> {
   return Auth({
+    signInModal: json.signInModal === true,
     user: isJSONObject(json.user) ? some(User(json.user)) : none(),
   });
 }

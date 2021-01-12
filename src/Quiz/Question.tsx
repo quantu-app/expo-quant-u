@@ -23,17 +23,7 @@ export interface IQuestionProps<T = any> {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  content: {
-    flex: 1,
-  },
   prompt: {
-    flex: 1,
     paddingTop: 8,
     paddingBottom: 8,
     paddingLeft: 16,
@@ -42,7 +32,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   input: {
-    flex: 1,
     paddingTop: 8,
     paddingBottom: 8,
     paddingLeft: 16,
@@ -51,7 +40,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   explanation: {
-    flex: 1,
     paddingTop: 8,
     paddingBottom: 8,
     paddingLeft: 16,
@@ -64,7 +52,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
   },
-  button: {},
   results: {
     alignItems: "center",
     marginTop: 16,
@@ -108,7 +95,7 @@ export function Question<T = any>(props: IQuestionProps<T>) {
       </View>
       <View style={styles.buttons}>
         {props.result.done ? (
-          <Button mode="contained" onPress={props.onNext} style={styles.button}>
+          <Button mode="contained" onPress={props.onNext}>
             Next
           </Button>
         ) : (
@@ -116,7 +103,6 @@ export function Question<T = any>(props: IQuestionProps<T>) {
             mode="contained"
             loading={loading}
             disabled={!props.result.changed || loading}
-            style={styles.button}
             onPress={onCheck}
           >
             Check
@@ -127,7 +113,6 @@ export function Question<T = any>(props: IQuestionProps<T>) {
             mode="outlined"
             loading={loading}
             disabled={props.result.explained || loading}
-            style={styles.button}
             onPress={onExplain}
           >
             Explain

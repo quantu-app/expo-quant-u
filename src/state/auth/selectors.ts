@@ -6,3 +6,7 @@ import { IUser } from "./definitiions";
 export function selectUser(state: IState): Option<RecordOf<IUser>> {
   return state.auth.user;
 }
+
+export function selectSignInModal(state: IState): boolean {
+  return state.auth.signInModal;
+}

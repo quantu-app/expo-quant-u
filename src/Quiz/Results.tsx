@@ -64,7 +64,7 @@ export function Results(props: IResultsProps) {
               <View style={styles.question}>
                 <QuestionInput
                   {...questionResult.toJS()}
-                  question={question}
+                  input={question.getInput()}
                   onChange={noop}
                   onCheck={noop}
                 />

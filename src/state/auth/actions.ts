@@ -13,6 +13,10 @@ firebase.auth().onAuthStateChanged((user) => {
   }
 });
 
+export function toggleSignInModal() {
+  store.update((state) => state.set("signInModal", !state.get("signInModal")));
+}
+
 export function isUserSignedIn() {
   return store.getCurrent().user.isSome();
 }
