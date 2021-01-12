@@ -4,7 +4,6 @@ import { Image, StyleSheet } from "react-native";
 import { Card, Title, Button, Surface, Paragraph } from "react-native-paper";
 import { getCategory } from "../../../course-lib/categories";
 import { excerpt } from "../../excerpt";
-import { Layout } from "../../Layout";
 import { CATEGORY_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
 
 const styles = StyleSheet.create({
@@ -23,7 +22,7 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
     category = getCategory(props.category);
 
   return (
-    <Layout>
+    <>
       <Surface style={styles.title}>
         <Title>{category.name}</Title>
         <Paragraph>{category.description}</Paragraph>
@@ -54,6 +53,6 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
           </Card.Content>
         </Card>
       ))}
-    </Layout>
+    </>
   );
 }

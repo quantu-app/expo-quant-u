@@ -6,12 +6,11 @@ import {
   Divider,
   Surface,
   List,
-  Subheading,
+  Headline,
   Paragraph,
 } from "react-native-paper";
 import { getCategory } from "../../../course-lib";
 import { excerpt } from "../../excerpt";
-import { Layout } from "../../Layout";
 import { ParamList, START_QUIZ_SCREEN, UNIT_SCREEN } from "../../Navigation";
 
 const styles = StyleSheet.create({
@@ -29,29 +28,27 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
     ].unitMap[props.unit];
 
   return (
-    <Layout>
-      <Surface style={styles.container}>
-        <Title>{unit.name}</Title>
-        <Paragraph>{unit.description}</Paragraph>
-        <Divider />
-        <Subheading>Quizzes</Subheading>
-        <Divider />
-        <List.Section>
-          {unit.quizzes.map((quiz) => (
-            <List.Item
-              key={quiz.url}
-              title={quiz.name}
-              description={excerpt(quiz.description)}
-              onPress={() =>
-                navigation.navigate(START_QUIZ_SCREEN, {
-                  ...props,
-                  quiz: quiz.url,
-                })
-              }
-            />
-          ))}
-        </List.Section>
-      </Surface>
-    </Layout>
+    <Surface style={styles.container}>
+      <Headline>{unit.name}</Headline>
+      <Divider />
+      <Paragraph>{unit.description}</Paragraph>
+      <Title>Quizzes</Title>
+      <Divider />
+      <List.Section>
+        {unit.quizzes.map((quiz) => (
+          <List.Item
+            key={quiz.url}
+            title={quiz.name}
+            description={excerpt(quiz.description)}
+            onPress={() =>
+              navigation.navigate(START_QUIZ_SCREEN, {
+                ...props,
+                quiz: quiz.url,
+              })
+            }
+          />
+        ))}
+      </List.Section>
+    </Surface>
   );
 }

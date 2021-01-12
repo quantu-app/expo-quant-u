@@ -4,7 +4,6 @@ import { StyleSheet } from "react-native";
 import { Title, Surface, Divider } from "react-native-paper";
 import { getCategory } from "../../../course-lib";
 import { Quiz as QuizClass } from "../../../course-lib/quiz";
-import { Layout } from "../../Layout";
 import { ParamList, QUIZ_SCREEN } from "../../Navigation";
 import { Quiz as QuizComponent } from "../../Quiz";
 
@@ -21,15 +20,13 @@ export function Quiz(props: ParamList[typeof QUIZ_SCREEN]) {
   ].unitMap[props.unit].quizMap[props.quiz];
 
   return (
-    <Layout>
-      <Surface style={styles.container}>
-        <Title>{quiz.name}</Title>
-        <Divider />
-        <QuizComponent
-          quiz={QuizClass.fromQuizData(quiz)}
-          rng={XorShiftRng.fromSeed(props.seed)}
-        />
-      </Surface>
-    </Layout>
+    <Surface style={styles.container}>
+      <Title>{quiz.name}</Title>
+      <Divider />
+      <QuizComponent
+        quiz={QuizClass.fromQuizData(quiz)}
+        rng={XorShiftRng.fromSeed(props.seed)}
+      />
+    </Surface>
   );
 }

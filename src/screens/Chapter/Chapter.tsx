@@ -6,19 +6,17 @@ import {
   Divider,
   Surface,
   List,
-  Subheading,
   Paragraph,
+  Headline,
 } from "react-native-paper";
 import { getCategory } from "../../../course-lib";
 import { excerpt } from "../../excerpt";
-import { Layout } from "../../Layout";
 import { CHAPTER_SCREEN, ParamList, UNIT_SCREEN } from "../../Navigation";
 
 const styles = StyleSheet.create({
   container: {
     marginTop: 16,
-    paddingLeft: 16,
-    paddingRight: 16,
+    padding: 16,
   },
 });
 
@@ -29,39 +27,37 @@ export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
     ];
 
   return (
-    <Layout>
-      <Surface style={styles.container}>
-        <Title>{chapter.name}</Title>
-        <Paragraph>{chapter.description}</Paragraph>
-        <Divider />
-        <Subheading>Units</Subheading>
-        <Divider />
-        <List.Section>
-          {chapter.units.map((unit) => (
-            <List.Item
-              key={unit.url}
-              title={unit.name}
-              left={
-                unit.logo &&
-                (() => (
-                  <Image
-                    source={unit.logo}
-                    style={{ width: 64 }}
-                    resizeMode="contain"
-                  />
-                ))
-              }
-              description={excerpt(unit.description)}
-              onPress={() =>
-                navigation.navigate(UNIT_SCREEN, {
-                  ...props,
-                  unit: unit.url,
-                })
-              }
-            />
-          ))}
-        </List.Section>
-      </Surface>
-    </Layout>
+    <Surface style={styles.container}>
+      <Headline>{chapter.name}</Headline>
+      <Divider />
+      <Paragraph>{chapter.description}</Paragraph>
+      <Title>Units</Title>
+      <Divider />
+      <List.Section>
+        {chapter.units.map((unit) => (
+          <List.Item
+            key={unit.url}
+            title={unit.name}
+            left={
+              unit.logo &&
+              (() => (
+                <Image
+                  source={unit.logo}
+                  style={{ width: 64 }}
+                  resizeMode="contain"
+                />
+              ))
+            }
+            description={excerpt(unit.description)}
+            onPress={() =>
+              navigation.navigate(UNIT_SCREEN, {
+                ...props,
+                unit: unit.url,
+              })
+            }
+          />
+        ))}
+      </List.Section>
+    </Surface>
   );
 }

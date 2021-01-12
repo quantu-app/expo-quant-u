@@ -182,8 +182,12 @@ function DrawerContent(
             icon={({ color, size }) => (
               <Foundation name="page-multiple" color={color} size={size} />
             )}
-            label={CATEGORIES_SCREEN}
-            onPress={() => props.navigation.navigate(CATEGORIES_SCREEN)}
+            label={"Mathematics"}
+            onPress={() =>
+              props.navigation.navigate(CATEGORY_SCREEN, {
+                category: "mathematics",
+              })
+            }
           />
           <Divider />
           {isUserSignedIn() && (

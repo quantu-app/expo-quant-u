@@ -4,7 +4,6 @@ import { Image, StyleSheet } from "react-native";
 import { Card, Title, Button, Surface, Paragraph } from "react-native-paper";
 import { getCategories } from "../../../course-lib/categories";
 import { excerpt } from "../../excerpt";
-import { Layout } from "../../Layout";
 import { CATEGORY_SCREEN } from "../../Navigation";
 
 const styles = StyleSheet.create({
@@ -22,7 +21,7 @@ export function Categories() {
   const navigation = useNavigation();
 
   return (
-    <Layout>
+    <>
       <Surface style={styles.title}>
         <Title>Categories</Title>
       </Surface>
@@ -51,6 +50,6 @@ export function Categories() {
           </Card.Content>
         </Card>
       ))}
-    </Layout>
+    </>
   );
 }

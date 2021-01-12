@@ -2,9 +2,8 @@ import React from "react";
 import { StyleSheet, Image, View, useWindowDimensions } from "react-native";
 import { Button, Headline, Subheading } from "react-native-paper";
 import bg from "../../../assets/bg.jpg";
-import { Layout } from "../../Layout";
 import { useNavigation } from "@react-navigation/native";
-import { CATEGORIES_SCREEN } from "../../Navigation";
+import { CATEGORY_SCREEN } from "../../Navigation";
 import { isSmallScreen } from "../../screens";
 
 const styles = StyleSheet.create({
@@ -39,36 +38,38 @@ export function Home() {
     navigation = useNavigation();
 
   return (
-    <Layout>
-      <View style={styles.container}>
-        <View
-          style={
-            isSmallScreen(windowDimensions.width)
-              ? styles.contentSmall
-              : styles.content
-          }
-        >
-          <View style={styles.grid}>
-            <Headline>Lifelong Learning</Headline>
-            <Subheading>
-              With our open platform designed for deep thinkers and lifelong
-              learners, you can build, train and iteratively improve your
-              reasoning and quantitative skills.
-            </Subheading>
-            <Button
-              style={styles.button}
-              mode="contained"
-              onPress={() => navigation.navigate(CATEGORIES_SCREEN)}
-            >
-              Categories
-            </Button>
-          </View>
-          <View style={styles.grid}>
-            <Image source={bg} style={styles.image} resizeMode="contain" />
-          </View>
+    <View style={styles.container}>
+      <View
+        style={
+          isSmallScreen(windowDimensions.width)
+            ? styles.contentSmall
+            : styles.content
+        }
+      >
+        <View style={styles.grid}>
+          <Headline>Lifelong Learning</Headline>
+          <Subheading>
+            With our open platform designed for deep thinkers and lifelong
+            learners, you can build, train and iteratively improve your
+            reasoning and quantitative skills.
+          </Subheading>
+          <Button
+            style={styles.button}
+            mode="contained"
+            onPress={() =>
+              navigation.navigate(CATEGORY_SCREEN, {
+                category: "mathematics",
+              })
+            }
+          >
+            Mathematics
+          </Button>
         </View>
-        <View style={styles.space} />
+        <View style={styles.grid}>
+          <Image source={bg} style={styles.image} resizeMode="contain" />
+        </View>
       </View>
-    </Layout>
+      <View style={styles.space} />
+    </View>
   );
 }

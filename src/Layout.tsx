@@ -4,17 +4,20 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
-import { Appbar } from "react-native-paper";
+import { Appbar, Button } from "react-native-paper";
 import React, { ReactNode, useState } from "react";
 import app from "../app.json";
 import { LARGE_WIDTH } from "./screens";
-import { ParamList } from "./Navigation";
+import { HOME_SCREEN, ParamList } from "./Navigation";
 import { theme } from "./theme";
 import { SignIn } from "./SignIn";
 import { useMapStateToProps } from "./state";
 import { selectUser, signOut } from "./state/auth";
 
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: theme.colors.surface,
+  },
   container: {
     flex: 1,
     overflowY: "scroll",
@@ -44,24 +47,22 @@ export function Layout(props: ILayoutProps) {
 
   return (
     <>
-      <Appbar.Header>
+      <Appbar.Header style={styles.header}>
         <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
-        <Appbar.Content title={app.expo.name} />
+        <Appbar.Content
+          title={
+            <Button
+              color={theme.colors.text}
+              onPress={() => navigation.navigate(HOME_SCREEN)}
+            >
+              {app.expo.name}
+            </Button>
+          }
+        />
         {stateProps.user
-          .map(() => (
-            <Appbar.Action
-              key={0}
-              icon="logout"
-              color={theme.colors.surface}
-              onPress={signOut}
-            />
-          ))
+          .map(() => <Appbar.Action key={0} icon="logout" onPress={signOut} />)
           .unwrapOrElse(() => (
-            <Appbar.Action
-              icon="login"
-              color={theme.colors.surface}
-              onPress={() => setSignInOpen(true)}
-            />
+            <Appbar.Action icon="login" onPress={() => setSignInOpen(true)} />
           ))}
       </Appbar.Header>
       <SignIn open={signInOpen} onClose={() => setSignInOpen(false)} />

@@ -4,6 +4,7 @@ import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { ParamList, CHAPTER_SCREEN } from "../../Navigation";
+import { Layout } from "../../Layout";
 
 export interface IChapterScreenProps {
   route: RouteProp<ParamList, typeof CHAPTER_SCREEN>;
@@ -11,11 +12,13 @@ export interface IChapterScreenProps {
 
 export function ChapterScreen(props: IChapterScreenProps) {
   return (
-    <Async
-      promise={import("./Chapter")}
-      onSuccess={({ Chapter }) => <Chapter {...props.route.params} />}
-      onPending={() => <Loading />}
-      onError={(error) => <JSError error={error} />}
-    />
+    <Layout>
+      <Async
+        promise={import("./Chapter")}
+        onSuccess={({ Chapter }) => <Chapter {...props.route.params} />}
+        onPending={() => <Loading />}
+        onError={(error) => <JSError error={error} />}
+      />
+    </Layout>
   );
 }
