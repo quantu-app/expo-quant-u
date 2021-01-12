@@ -1,4 +1,4 @@
-export { QuestionComponent } from "./QuestionComponent";
-export { IQuestionComponentProps } from "./QuestionComponent/IQuestionComponentProps";
+export { QuestionInput } from "./QuestionInput";
+export { IQuestionInputProps } from "./QuestionInput/IQuestionInputProps";
 export { Question, IQuestionProps } from "./Question";
 export { Quiz, IQuizProps } from "./Quiz";

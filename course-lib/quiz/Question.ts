@@ -1,9 +1,33 @@
 import { Option, none } from "@aicacia/core";
 import { ReactNode } from "react";
+import { QuestionInput } from "./QuestionInput";
 
-export abstract class Question<T = any> {
+export class Question<T = any, I extends QuestionInput<T> = QuestionInput<T>> {
+  protected prompt: ReactNode;
+  protected input: I;
   protected timeInSeconds?: number;
   protected explanation: Option<ReactNode> = none();
+
+  constructor(prompt: ReactNode, input: I) {
+    this.prompt = prompt;
+    this.input = input;
+  }
+
+  setInput(input: I) {
+    this.input = input;
+    return this;
+  }
+  getInput() {
+    return this.input;
+  }
+
+  setPrompt(prompt: ReactNode) {
+    this.prompt = prompt;
+    return this;
+  }
+  getPrompt() {
+    return this.prompt;
+  }
 
   setTimeInSeconds(timeInSeconds: number) {
     this.timeInSeconds = timeInSeconds;
@@ -21,6 +45,10 @@ export abstract class Question<T = any> {
     return this.explanation;
   }
 
-  abstract getTotalPoints(): Promise<number>;
-  abstract checkAnswer(answer?: T): Promise<number>;
+  getTotalPoints(): Promise<number> {
+    return this.input.getTotalPoints();
+  }
+  checkAnswer(answer?: T): Promise<number> {
+    return this.input.checkAnswer(answer);
+  }
 }

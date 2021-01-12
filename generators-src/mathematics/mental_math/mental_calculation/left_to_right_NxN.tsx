@@ -1,7 +1,11 @@
 import React from "react";
 import { Rng } from "@aicacia/rand";
 import { Divider, Text } from "react-native-paper";
-import { TextQuestion, createQuestionGenerator } from "../../../../course-lib";
+import {
+  TextInput,
+  Question,
+  createQuestionGenerator,
+} from "../../../../course-lib";
 import { Latex } from "../../../../src/Latex";
 import {
   getIntRngForNDigits,
@@ -60,16 +64,17 @@ function generator(config: ILeftToRightConfig) {
       </Text>
     );
 
-    return new TextQuestion()
-      .setChecker(async (answer) => (parseInt(answer) === answerSum ? 1 : 0))
-      .setTotalPoints(1)
-      .setType("number")
-      .setPrompt(
+    return new Question(
+      (
         <Latex>
           {var1} + {var2}
         </Latex>
-      )
-      .setExplanation(steps);
+      ),
+      new TextInput()
+        .setChecker(async (answer) => (parseInt(answer) === answerSum ? 1 : 0))
+        .setTotalPoints(1)
+        .setType("number")
+    ).setExplanation(steps);
   };
 }
 

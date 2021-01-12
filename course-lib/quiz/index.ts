@@ -6,14 +6,15 @@ export {
   isQuestionGenerator,
 } from "./IQuestionGenerator";
 export {
-  MultipleChoiceQuestion,
-  MultipleChoiceQuestionOption,
-} from "./MultipleChoiceQuestion";
+  MultipleChoiceInput,
+  MultipleChoiceInputOption,
+} from "./MultipleChoiceInput";
 export { Question } from "./Question";
+export { QuestionInput } from "./QuestionInput";
 export {
   addQuestionGenerator,
   getQuestionGenerator,
   hasQuestionGenerator,
 } from "./questionGenerators";
 export { Quiz } from "./Quiz";
-export { TextQuestion } from "./TextQuestion";
+export { TextInput } from "./TextInput";

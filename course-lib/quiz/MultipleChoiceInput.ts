@@ -1,8 +1,8 @@
 import { Option } from "@aicacia/core";
 import { ReactNode } from "react";
-import { Question } from "./Question";
+import { QuestionInput } from "./QuestionInput";
 
-export class MultipleChoiceQuestionOption {
+export class MultipleChoiceInputOption {
   protected children: ReactNode;
   protected key = "";
   protected correct = false;
@@ -34,20 +34,11 @@ export class MultipleChoiceQuestionOption {
   }
 }
 
-export class MultipleChoiceQuestion extends Question<string[]> {
-  static Option = MultipleChoiceQuestionOption;
+export class MultipleChoiceInput extends QuestionInput<string[]> {
+  static Option = MultipleChoiceInputOption;
 
-  protected prompt: ReactNode = null;
   protected allOrNothing = false;
-  protected choices: MultipleChoiceQuestionOption[] = [];
-
-  setPrompt(prompt: ReactNode) {
-    this.prompt = prompt;
-    return this;
-  }
-  getPrompt() {
-    return this.prompt;
-  }
+  protected choices: MultipleChoiceInputOption[] = [];
 
   setAllOrNothing(allOrNothing = true) {
     this.allOrNothing = allOrNothing;
@@ -57,13 +48,13 @@ export class MultipleChoiceQuestion extends Question<string[]> {
     return this.choices.filter((choice) => choice.isCorrect()).length > 1;
   }
 
-  getChoices(): ReadonlyArray<MultipleChoiceQuestionOption> {
+  getChoices(): ReadonlyArray<MultipleChoiceInputOption> {
     return this.choices;
   }
-  getChoice(key: string): Option<MultipleChoiceQuestionOption> {
+  getChoice(key: string): Option<MultipleChoiceInputOption> {
     return Option.from(this.choices.find((choice) => choice.getKey() === key));
   }
-  addChoice(...choices: ReadonlyArray<MultipleChoiceQuestionOption>) {
+  addChoice(...choices: ReadonlyArray<MultipleChoiceInputOption>) {
     choices.forEach((choice) => {
       choice.UNSAFE_setKey(this.choices.length.toString(36));
       this.choices.push(choice);

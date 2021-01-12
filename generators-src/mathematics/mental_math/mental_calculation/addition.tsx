@@ -1,7 +1,11 @@
 import React from "react";
 import { Range } from "@aicacia/core";
 import { Rng } from "@aicacia/rand";
-import { TextQuestion, createQuestionGenerator } from "../../../../course-lib";
+import {
+  Question,
+  TextInput,
+  createQuestionGenerator,
+} from "../../../../course-lib";
 import { Latex } from "../../../../src/Latex";
 
 interface IAdditionConfig {
@@ -30,12 +34,13 @@ function generator(config: IAdditionConfig) {
         .toArray(),
       sum = variables.reduce((sum, variable) => sum + variable);
 
-    return new TextQuestion()
-      .setChecker(async (answer) => (parseInt(answer) === sum ? 1 : 0))
-      .setTotalPoints(1)
-      .setType("number")
-      .setPrompt(<Latex>{variables.join(" + ")} = x</Latex>)
-      .setExplanation(<Latex>x = {sum}</Latex>);
+    return new Question(
+      <Latex>{variables.join(" + ")} = x</Latex>,
+      new TextInput()
+        .setChecker(async (answer) => (parseInt(answer) === sum ? 1 : 0))
+        .setTotalPoints(1)
+        .setType("number")
+    ).setExplanation(<Latex>x = {sum}</Latex>);
   };
 }
 

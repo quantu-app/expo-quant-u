@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../../course-lib";
-import { QuestionComponent } from "./QuestionComponent";
+import { QuestionInput } from "./QuestionInput";
 import { theme } from "../theme";
 import { IQuestionResult } from "./QuestionResult";
 
@@ -32,7 +32,16 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  question: {
+  prompt: {
+    flex: 1,
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  input: {
     flex: 1,
     paddingTop: 8,
     paddingBottom: 8,
@@ -88,10 +97,11 @@ export function Question<T = any>(props: IQuestionProps<T>) {
 
   return (
     <>
-      <View style={styles.question}>
-        <QuestionComponent
+      <View style={styles.prompt}>{props.question.getPrompt()}</View>
+      <View style={styles.input}>
+        <QuestionInput
           {...props.result.toJS()}
-          question={props.question}
+          input={props.question.getInput()}
           onChange={onInputChange}
           onCheck={onCheck}
         />

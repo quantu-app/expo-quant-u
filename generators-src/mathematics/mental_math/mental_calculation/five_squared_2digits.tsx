@@ -1,7 +1,11 @@
 import React from "react";
 import { Rng } from "@aicacia/rand";
 import { Divider, Text } from "react-native-paper";
-import { TextQuestion, createQuestionGenerator } from "../../../../course-lib";
+import {
+  TextInput,
+  Question,
+  createQuestionGenerator,
+} from "../../../../course-lib";
 import { Latex } from "../../../../src/Latex";
 
 interface SquaringNumbersEndingInFiveConfig {
@@ -74,12 +78,13 @@ function generator(_config: SquaringNumbersEndingInFiveConfig) {
     // TODO: how can we add a visual image of a box here where I dynamically fill it with appropriate
     // visual cues for why this formula works?
 
-    return new TextQuestion()
-      .setChecker(async (answer) => (parseInt(answer) === numSquared ? 1 : 0))
-      .setTotalPoints(1)
-      .setType("number")
-      .setPrompt(<Latex>{num}^2</Latex>)
-      .setExplanation(steps);
+    return new Question(
+      <Latex>{num}^2</Latex>,
+      new TextInput()
+        .setChecker(async (answer) => (parseInt(answer) === numSquared ? 1 : 0))
+        .setTotalPoints(1)
+        .setType("number")
+    ).setExplanation(steps);
   };
 }
 

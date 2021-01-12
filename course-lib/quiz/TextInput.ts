@@ -1,26 +1,16 @@
-import { ReactNode } from "react";
-import { Question } from "./Question";
+import { QuestionInput } from "./QuestionInput";
 
 async function DEFAULT_CHECKER(_answer: string) {
   throw TypeError(
-    "TextQuestion.check: must use setChecker() to set function for validating status"
+    "TextInput.check: must use setChecker() to set function for validating status"
   );
   return 0;
 }
 
-export class TextQuestion extends Question<string> {
-  protected prompt: ReactNode = null;
+export class TextInput extends QuestionInput<string> {
   protected type = "text";
   protected totalPoints = 1;
   protected checker: (answer: string) => Promise<number> = DEFAULT_CHECKER;
-
-  setPrompt(prompt: ReactNode) {
-    this.prompt = prompt;
-    return this;
-  }
-  getPrompt() {
-    return this.prompt;
-  }
 
   setType(type: string) {
     this.type = type;

@@ -7,7 +7,7 @@ import { theme } from "../theme";
 import { Quiz } from "../../course-lib";
 import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
-import { QuestionComponent } from "./QuestionComponent";
+import { QuestionInput } from "./QuestionInput";
 
 interface IResultsProps {
   quiz: Quiz;
@@ -62,7 +62,7 @@ export function Results(props: IResultsProps) {
           return (
             <View key={index} style={styles.result}>
               <View style={styles.question}>
-                <QuestionComponent
+                <QuestionInput
                   {...questionResult.toJS()}
                   question={question}
                   onChange={noop}
