@@ -105,6 +105,7 @@ export function Quiz(props: IQuizProps) {
         onSelectQuestion={onSelectQuestion}
       />
       <Question
+        key={state.current}
         result={state.results.get(state.current) as RecordOf<IQuestionResult>}
         question={state.questions.get(state.current) as QuestionClass}
         timeInSeconds={props.quiz.getTimeInSecond()}

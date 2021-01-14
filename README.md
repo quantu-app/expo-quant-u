@@ -8,7 +8,6 @@
 
 - [Expo](https://docs.expo.io/)/[React Native](https://reactnative.dev/docs/getting-started)
 - [react-native-paper](https://callstack.github.io/react-native-paper/index.html)
-- [Electron](https://www.electronjs.org/)
 - [Icons](https://icons.expo.fyi/)
 
 ## Getting Started
