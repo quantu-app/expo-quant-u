@@ -3,7 +3,7 @@ import { join, basename, relative, sep } from "path";
 import { none, Option } from "@aicacia/core";
 import { readYaml } from "./utils/readYaml";
 import { Quiz } from "./Quiz";
-import { walkDirectories } from "./utils/walkDirectories";
+import { walkDirectoriesSync } from "./utils/walkDirectories";
 import { writeFile } from "./utils/writeFile";
 import { stripOrdering } from "./utils/stripOrdering";
 import { camelCase } from "camel-case";
@@ -34,7 +34,7 @@ export class Unit {
       })
     );
 
-    for await (const quizDir of walkDirectories(join(dirname, "quizzes"))) {
+    for await (const quizDir of walkDirectoriesSync(join(dirname, "quizzes"))) {
       const quiz = new Quiz();
       this.quizzes.push(quiz);
       tasks.push(quiz.parse(quizDir));

@@ -2,7 +2,7 @@ import { EOL } from "os";
 import { join, basename, relative, sep } from "path";
 import { none, Option } from "@aicacia/core";
 import { readYaml } from "./utils/readYaml";
-import { walkDirectories } from "./utils/walkDirectories";
+import { walkDirectoriesSync } from "./utils/walkDirectories";
 import { writeFile } from "./utils/writeFile";
 import { camelCase } from "camel-case";
 import { stripOrdering } from "./utils/stripOrdering";
@@ -34,7 +34,7 @@ export class Category {
       })
     );
 
-    for await (const courseDir of walkDirectories(dirname)) {
+    for (const courseDir of walkDirectoriesSync(dirname)) {
       const course = new Course();
       this.courses.push(course);
       tasks.push(course.parse(courseDir));
