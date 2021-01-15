@@ -1,7 +1,7 @@
 import { firebase } from "../../firebase";
 import { IUserExtra, STORE_NAME, User } from "./definitiions";
 import { state } from "../lib/state";
-import { none, some } from "@aicacia/core";
+import { none, Option, some } from "@aicacia/core";
 
 export const store = state.getStore(STORE_NAME);
 
@@ -15,10 +15,6 @@ firebase.auth().onAuthStateChanged((user) => {
 
 export function toggleSignInModal() {
   store.update((state) => state.set("signInModal", !state.get("signInModal")));
-}
-
-export function isUserSignedIn() {
-  return store.getCurrent().user.isSome();
 }
 
 export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
@@ -45,14 +41,17 @@ firebase
     console.error(error);
   });
 
-export async function isValidUsername(uid: string, username: string) {
+export async function isValidUsername(uid: string, username = "") {
   const dataSnapshot = await firebase
     .database()
     .ref("users")
-    .equalTo(username, "username")
+    .orderByChild("username")
+    .equalTo(username)
     .once("value");
 
-  return dataSnapshot.exists() && dataSnapshot.val().uid !== uid;
+  return (
+    dataSnapshot.exists() && !Object.keys(dataSnapshot.val()).includes(uid)
+  );
 }
 
 export async function setUserExtra(uid: string, userExtra: IUserExtra) {
@@ -61,38 +60,42 @@ export async function setUserExtra(uid: string, userExtra: IUserExtra) {
     .ref(`users/${uid}`)
     .set({
       ...userExtra,
-      birthday: userExtra.birthday.toUTCString(),
+      birthday: userExtra.birthday?.toUTCString(),
     });
 }
 
-async function getUserExtra(uid: string) {
-  const userExtra = await firebase.database().ref(`users/${uid}`).once("value"),
-    data: IUserExtra = userExtra.val() || {};
+const USER_EXTRA_REF: Option<firebase.database.Reference> = none();
 
-  store.update((state) =>
-    state.update("user", (userOption) =>
-      userOption.map((user) =>
-        user.update("extra", (extra) =>
-          extra
-            .set("firstName", data.firstName || "")
-            .set("lastName", data.lastName || "")
-            .set(
-              "username",
-              data.username ||
-                user.displayName?.replace(/\s+/g, "").toLowerCase() ||
-                ""
-            )
-            .set("country", data.country)
-            .set("timezone", data.timezone)
-            .set(
-              "birthday",
-              data.birthday ? new Date(data.birthday) : new Date()
-            )
-            .set("about", data.about || "")
+function subscribeUserExtra(uid: string) {
+  const ref = firebase.database().ref(`users/${uid}`);
+
+  unsubscribeUserExtra();
+  USER_EXTRA_REF.replace(ref);
+
+  ref.on("value", (snapshot) => {
+    const data: IUserExtra = snapshot.val() || {};
+
+    store.update((state) =>
+      state.update("user", (userOption) =>
+        userOption.map((user) =>
+          user.update("extra", (extra) =>
+            extra
+              .set("firstName", data.firstName)
+              .set("lastName", data.lastName)
+              .set("username", data.username)
+              .set("country", data.country)
+              .set("timezone", data.timezone)
+              .set("birthday", data.birthday)
+              .set("about", data.about)
+          )
         )
       )
-    )
-  );
+    );
+  });
+}
+
+function unsubscribeUserExtra() {
+  USER_EXTRA_REF.take().map((ref) => ref.off("value"));
 }
 
 function signUserIn(firebaseUser: firebase.User) {
@@ -105,12 +108,13 @@ function signUserIn(firebaseUser: firebase.User) {
     uid: firebaseUser.uid,
   });
 
-  getUserExtra(user.uid);
+  subscribeUserExtra(user.uid);
 
   return store.update((state) => state.set("user", some(user)));
 }
 
 function signUserOut() {
+  unsubscribeUserExtra();
   return store.update((state) => state.set("user", none()));
 }
 

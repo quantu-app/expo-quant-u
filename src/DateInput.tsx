@@ -33,7 +33,7 @@ export function DateInput(props: IDateInputProps) {
       <TextInput
         style={props.style}
         dense={props.dense}
-        value={props.value.toDateString()}
+        value={props.value?.toDateString()}
         label={props.label}
         onFocus={() => setShow(true)}
       />

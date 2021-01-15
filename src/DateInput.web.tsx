@@ -41,7 +41,7 @@ export function DateInput(props: IDateInputProps) {
     <TextInput
       style={props.style}
       dense={props.dense}
-      value={props.value ? toInputValue(props.value) : ""}
+      value={props.value instanceof Date ? toInputValue(props.value) : ""}
       label={props.label}
       render={(renderProps) => {
         return (

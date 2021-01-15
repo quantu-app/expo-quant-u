@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, Surface, TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import { RecordOf } from "immutable";
 import {
   isValidUsername,
@@ -12,11 +12,6 @@ import { DateInput } from "../../DateInput";
 import { Changeset } from "@aicacia/changeset";
 
 const styles = StyleSheet.create({
-  form: {
-    marginTop: 16,
-    marginBottom: 16,
-    padding: 16,
-  },
   container: {
     flexDirection: "row",
   },
@@ -42,8 +37,6 @@ function changesetFn(changeset: Changeset<IUserExtra>): Changeset<IUserExtra> {
   ]);
 }
 
-const EMPTY_DATE = new Date();
-
 export interface IProfileFormProps {
   user: RecordOf<IUser>;
 }
@@ -51,7 +44,7 @@ export interface IProfileFormProps {
 export function ProfileForm(props: IProfileFormProps) {
   const [loading, setLoading] = useState(false),
     [changeset, setChangeset] = useState<Changeset<IUserExtra>>(() =>
-      changesetFn(new Changeset(props.user.extra.toJS()))
+      changesetFn(new Changeset(props.user.extra.toJS() as any))
     );
 
   useMemo(() => {
@@ -85,7 +78,7 @@ export function ProfileForm(props: IProfileFormProps) {
   }
 
   return (
-    <Surface style={styles.form}>
+    <>
       <View style={styles.container}>
         <View style={styles.grid}>
           <TextInput
@@ -115,7 +108,7 @@ export function ProfileForm(props: IProfileFormProps) {
       />
       <DateInput
         style={styles.input}
-        value={changeset.getField("birthday", EMPTY_DATE) as Date}
+        value={changeset.getField("birthday") as Date}
         onChangeDate={createOnChange("birthday")}
         label="Birthday"
       />
@@ -137,6 +130,6 @@ export function ProfileForm(props: IProfileFormProps) {
           Update
         </Button>
       </View>
-    </Surface>
+    </>
   );
 }

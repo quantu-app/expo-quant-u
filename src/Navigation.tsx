@@ -24,8 +24,9 @@ import { UnitScreen } from "./screens/Unit/UnitScreen";
 import { QuizScreen } from "./screens/Quiz/QuizScreen";
 import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
 import { ProfileScreen } from "./screens/Profile/ProfileScreen";
-import { isUserSignedIn, selectUser } from "./state/auth";
+import { IUser, selectUser } from "./state/auth";
 import { useMapStateToProps } from "./state";
+import { Option } from "@aicacia/core";
 
 export const HOME_SCREEN = "Home",
   PROFILE_SCREEN = "Profile",
@@ -126,7 +127,7 @@ export function AppDrawer() {
     <DrawerNavigator.Navigator
       initialRouteName={DEFAULT_SCREEN}
       drawerType="front"
-      drawerContent={DrawerContent}
+      drawerContent={(props) => <DrawerContent {...props} user={user} />}
     >
       <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
       {user.isSome() && (
@@ -164,9 +165,12 @@ const drawerContentStyles = StyleSheet.create({
   },
 });
 
-function DrawerContent(
-  props: DrawerContentComponentProps<DrawerContentOptions>
-) {
+interface IDrawerContentProps
+  extends DrawerContentComponentProps<DrawerContentOptions> {
+  user: Option<IUser>;
+}
+
+function DrawerContent(props: IDrawerContentProps) {
   return (
     <DrawerContentScrollView {...props}>
       <View style={drawerContentStyles.drawerContent}>
@@ -190,7 +194,7 @@ function DrawerContent(
             }
           />
           <Divider />
-          {isUserSignedIn() && (
+          {props.user.isSome() && (
             <DrawerItem
               icon={({ color, size }) => (
                 <Feather name="user" color={color} size={size} />

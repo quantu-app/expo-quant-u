@@ -4,23 +4,23 @@ import { IJSONObject, isJSONObject } from "@aicacia/json";
 import { Record, RecordOf } from "immutable";
 
 export interface IUserExtra {
-  firstName: string;
-  lastName: string;
-  username: string;
-  country: string;
-  timezone: string;
-  birthday: Date;
-  about: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  country?: string;
+  timezone?: string;
+  birthday?: Date;
+  about?: string;
 }
 
 export const UserExtra = Record<IUserExtra>({
-  firstName: "",
-  lastName: "",
-  username: "",
-  country: "",
-  timezone: "",
-  birthday: new Date(),
-  about: "",
+  firstName: undefined,
+  lastName: undefined,
+  username: undefined,
+  country: undefined,
+  timezone: undefined,
+  birthday: undefined,
+  about: undefined,
 });
 
 export interface IUser extends firebase.UserInfo {
