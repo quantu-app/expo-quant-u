@@ -11,9 +11,7 @@ For each method or exercise I want to show 2 things, first a proof using traditi
 that the answer is correct and secondly, showing why the answer is correct i.e. providing some visual, symbolic
 or textual intuition as to why the method works.
 
-
 ## Outline
-
 
 ### Chapter 1 - General Calculation Methods
 
