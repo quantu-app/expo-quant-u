@@ -1,20 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Portal, Title, IconButton, Button, Surface } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Modal, Layout, Button, Text, Icon } from "@ui-kitten/components";
 import { SMALL_WIDTH } from "./screens";
 import { signInWithGithub, signInWithGoogle } from "./state/auth";
-import { theme } from "./theme";
 
 const styles = StyleSheet.create({
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: theme.colors.backdrop,
-  },
-  wrapper: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modal: {
     width: SMALL_WIDTH * 0.5,
@@ -35,6 +27,8 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 8,
   },
+  google: { backgroundColor: "#ea4335" },
+  github: { backgroundColor: "#24292e" },
 });
 
 export interface ISignInProps {
@@ -58,44 +52,42 @@ export function SignIn(props: ISignInProps) {
   }
 
   return (
-    <Portal>
-      {props.open ? (
-        <>
-          <View style={styles.backdrop} />
-          <View style={styles.wrapper}>
-            <Surface style={styles.modal}>
-              <View style={styles.header}>
-                <Title style={styles.title}>Sign in</Title>
-                <IconButton icon="close" onPress={props.onClose} />
-              </View>
-              <View style={styles.content}>
-                <Button
-                  style={styles.button}
-                  icon="google"
-                  mode="contained"
-                  color="#ea4335"
-                  disabled={loading}
-                  uppercase={false}
-                  onPress={() => signIn(signInWithGoogle)}
-                >
-                  Google
-                </Button>
-                <Button
-                  style={styles.button}
-                  icon="github"
-                  mode="contained"
-                  color="#24292e"
-                  disabled={loading}
-                  uppercase={false}
-                  onPress={() => signIn(signInWithGithub)}
-                >
-                  Github
-                </Button>
-              </View>
-            </Surface>
-          </View>
-        </>
-      ) : null}
-    </Portal>
+    <Modal
+      style={styles.modal}
+      visible={props.open}
+      onBackdropPress={props.onClose}
+      backdropStyle={styles.backdrop}
+    >
+      <Layout style={styles.header}>
+        <Text category="h3" style={styles.title}>
+          Sign in
+        </Text>
+        <Button
+          appearance="ghost"
+          onPress={props.onClose}
+          accessoryLeft={(props) => <Icon {...props} name="close" />}
+        />
+      </Layout>
+      <Layout style={styles.content}>
+        <Button
+          style={[styles.button, styles.google]}
+          accessoryLeft={(props) => <Icon {...props} name="google" />}
+          appearance="filled"
+          disabled={loading}
+          onPress={() => signIn(signInWithGoogle)}
+        >
+          Google
+        </Button>
+        <Button
+          style={[styles.button, styles.github]}
+          accessoryLeft={(props) => <Icon {...props} name="github" />}
+          appearance="filled"
+          disabled={loading}
+          onPress={() => signIn(signInWithGithub)}
+        >
+          Github
+        </Button>
+      </Layout>
+    </Modal>
   );
 }

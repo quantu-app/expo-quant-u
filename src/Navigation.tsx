@@ -9,13 +9,14 @@ import {
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { CourseScreen } from "./screens/Course/CourseScreen";
-import { StyleSheet, View, Platform } from "react-native";
-import { Divider, Drawer } from "react-native-paper";
+import { StyleSheet } from "react-native";
 import {
   MaterialCommunityIcons,
   Foundation,
   Feather,
 } from "@expo/vector-icons";
+import { Option } from "@aicacia/core";
+import { Divider, Drawer, IndexPath, Layout } from "@ui-kitten/components";
 import { Loading } from "./Loading";
 import { CategoryScreen } from "./screens/Category/CategoryScreen";
 import { CategoriesScreen } from "./screens/Categories/CategoriesScreen";
@@ -26,86 +27,21 @@ import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
 import { ProfileScreen } from "./screens/Profile/ProfileScreen";
 import { IUser, selectUser } from "./state/auth";
 import { useMapStateToProps } from "./state";
-import { Option } from "@aicacia/core";
-
-export const HOME_SCREEN = "Home",
-  PROFILE_SCREEN = "Profile",
-  CATEGORIES_SCREEN = "Categories",
-  CATEGORY_SCREEN = "Category",
-  COURSE_SCREEN = "Course",
-  CHAPTER_SCREEN = "Chapter",
-  UNIT_SCREEN = "Unit",
-  START_QUIZ_SCREEN = "Start Quiz",
-  QUIZ_SCREEN = "Quiz",
-  DEFAULT_SCREEN = PROFILE_SCREEN;
-
-export type ParamList = {
-  [HOME_SCREEN]: undefined;
-  [PROFILE_SCREEN]: undefined;
-  [CATEGORIES_SCREEN]: undefined;
-  [CATEGORY_SCREEN]: { category: string };
-  [COURSE_SCREEN]: { category: string; course: string };
-  [CHAPTER_SCREEN]: { category: string; course: string; chapter: string };
-  [UNIT_SCREEN]: {
-    category: string;
-    course: string;
-    chapter: string;
-    unit: string;
-  };
-  [START_QUIZ_SCREEN]: {
-    category: string;
-    course: string;
-    chapter: string;
-    unit: string;
-    quiz: string;
-  };
-  [QUIZ_SCREEN]: {
-    category: string;
-    course: string;
-    chapter: string;
-    unit: string;
-    quiz: string;
-    seed: number;
-  };
-};
-
-// TODO: remove after not hosting on github pages
-export const ENABLE_LINKING =
-  global.location?.hostname === "localhost" ||
-  (!("electron" in (global.process?.versions || {})) && Platform.OS !== "web");
-
-export const linking = {
-  prefixes: [
-    "https://quant-u.com",
-    "quant-u://",
-    "https://quantu-app.github.io/expo-quant-u",
-  ],
-  config: {
-    screens: {
-      [HOME_SCREEN]: "",
-      [PROFILE_SCREEN]: "profile",
-      [CATEGORIES_SCREEN]: "categories",
-      [CATEGORY_SCREEN]: ":category",
-      [COURSE_SCREEN]: ":category/:course",
-      [CHAPTER_SCREEN]: ":category/:course/:chapter",
-      [UNIT_SCREEN]: ":category/:course/:chapter/:unit",
-      [START_QUIZ_SCREEN]:
-        ":category/:course/:chapter/:unit/quizzes/:quiz/start",
-      [QUIZ_SCREEN]: {
-        path: ":category/:course/:chapter/:unit/quizzes/:quiz",
-        parse: {
-          seed: Number,
-        },
-      },
-    },
-  },
-};
-
-if (ENABLE_LINKING && process.env.NODE_ENV !== "production") {
-  linking.prefixes.push(
-    `${location.protocol}//${location.host}:${location.port}`
-  );
-}
+import {
+  CATEGORIES_SCREEN,
+  CATEGORY_SCREEN,
+  CHAPTER_SCREEN,
+  COURSE_SCREEN,
+  DEFAULT_SCREEN,
+  ENABLE_LINKING,
+  HOME_SCREEN,
+  linking,
+  ParamList,
+  PROFILE_SCREEN,
+  QUIZ_SCREEN,
+  START_QUIZ_SCREEN,
+  UNIT_SCREEN,
+} from "./navigationConfig";
 
 export const DrawerNavigator = createDrawerNavigator<ParamList>();
 
@@ -115,12 +51,19 @@ export function Navigation() {
       linking={ENABLE_LINKING ? linking : undefined}
       fallback={<Loading />}
     >
-      <AppDrawer />
+      <NavigationDrawer />
     </NavigationContainer>
   );
 }
 
-export function AppDrawer() {
+const navigationDrawerStyles = StyleSheet.create({
+  sceneContainerStyle: {
+    flex: 1,
+    flexGrow: 1,
+  },
+});
+
+function NavigationDrawer() {
   const user = useMapStateToProps(selectUser);
 
   return (
@@ -128,6 +71,8 @@ export function AppDrawer() {
       initialRouteName={DEFAULT_SCREEN}
       drawerType="front"
       drawerContent={(props) => <DrawerContent {...props} user={user} />}
+      sceneContainerStyle={navigationDrawerStyles.sceneContainerStyle}
+      detachInactiveScreens
     >
       <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
       {user.isSome() && (
@@ -173,8 +118,14 @@ interface IDrawerContentProps
 function DrawerContent(props: IDrawerContentProps) {
   return (
     <DrawerContentScrollView {...props}>
-      <View style={drawerContentStyles.drawerContent}>
-        <Drawer.Section style={drawerContentStyles.drawerSection}>
+      <Layout style={drawerContentStyles.drawerContent}>
+        <Drawer
+          style={drawerContentStyles.drawerSection}
+          selectedIndex={new IndexPath(props.state.index)}
+          onSelect={(index) =>
+            props.navigation.navigate(props.state.routeNames[index.row])
+          }
+        >
           <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />
@@ -194,7 +145,7 @@ function DrawerContent(props: IDrawerContentProps) {
             }
           />
           <Divider />
-          {props.user.isSome() && (
+          {props.user.isSome() ? (
             <DrawerItem
               icon={({ color, size }) => (
                 <Feather name="user" color={color} size={size} />
@@ -202,9 +153,11 @@ function DrawerContent(props: IDrawerContentProps) {
               label={PROFILE_SCREEN}
               onPress={() => props.navigation.navigate(PROFILE_SCREEN)}
             />
+          ) : (
+            (null as any)
           )}
-        </Drawer.Section>
-      </View>
+        </Drawer>
+      </Layout>
     </DrawerContentScrollView>
   );
 }

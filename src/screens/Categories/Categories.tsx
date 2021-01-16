@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet } from "react-native";
-import { Card, Title, Button, Surface, Paragraph } from "react-native-paper";
+import { Text, Button, Layout } from "@ui-kitten/components";
 import { getCategories } from "../../../course-lib/categories";
 import { excerpt } from "../../excerpt";
-import { CATEGORY_SCREEN } from "../../Navigation";
+import { CATEGORY_SCREEN } from "../../navigationConfig";
 
 const styles = StyleSheet.create({
   title: {
@@ -22,33 +22,31 @@ export function Categories() {
 
   return (
     <>
-      <Surface style={styles.title}>
-        <Title>Categories</Title>
-      </Surface>
+      <Layout style={styles.title}>
+        <Text category="h1">Categories</Text>
+      </Layout>
       {getCategories().map((category) => (
-        <Card key={category.url} style={styles.card}>
-          <Card.Content>
-            <Title>{category.name}</Title>
-            {category.logo && (
-              <Image
-                source={category.logo}
-                resizeMode="contain"
-                style={{ height: 128 }}
-              />
-            )}
-            <Paragraph>{excerpt(category.description)}</Paragraph>
-            <Button
-              mode="contained"
-              onPress={() =>
-                navigation.navigate(CATEGORY_SCREEN, {
-                  category: category.url,
-                })
-              }
-            >
-              Start
-            </Button>
-          </Card.Content>
-        </Card>
+        <Layout key={category.url} style={styles.card}>
+          <Text category="h1">{category.name}</Text>
+          {category.logo && (
+            <Image
+              source={category.logo}
+              resizeMode="contain"
+              style={{ height: 128 }}
+            />
+          )}
+          <Text>{excerpt(category.description)}</Text>
+          <Button
+            appearance="filled"
+            onPress={() =>
+              navigation.navigate(CATEGORY_SCREEN, {
+                category: category.url,
+              })
+            }
+          >
+            Start
+          </Button>
+        </Layout>
       ))}
     </>
   );

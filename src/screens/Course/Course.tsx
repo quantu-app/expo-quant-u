@@ -1,17 +1,14 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet } from "react-native";
-import {
-  Title,
-  Divider,
-  Surface,
-  List,
-  Paragraph,
-  Headline,
-} from "react-native-paper";
+import { Divider, Layout, List, ListItem, Text } from "@ui-kitten/components";
 import { getCategory } from "../../../course-lib/categories";
 import { excerpt } from "../../excerpt";
-import { CHAPTER_SCREEN, COURSE_SCREEN, ParamList } from "../../Navigation";
+import {
+  CHAPTER_SCREEN,
+  COURSE_SCREEN,
+  ParamList,
+} from "../../navigationConfig";
 
 const styles = StyleSheet.create({
   container: {
@@ -25,37 +22,38 @@ export function Course(props: ParamList[typeof COURSE_SCREEN]) {
     course = getCategory(props.category).courseMap[props.course];
 
   return (
-    <Surface style={styles.container}>
-      <Headline>{course.name}</Headline>
+    <Layout style={styles.container}>
+      <Text category="h1">{course.name}</Text>
       <Divider />
-      <Paragraph>{course.description}</Paragraph>
-      <Title>Chapters</Title>
+      <Text>{course.description}</Text>
+      <Text category="h3">Chapters</Text>
       <Divider />
-      <List.Section>
-        {course.chapters.map((chapter) => (
-          <List.Item
-            key={course.url}
-            title={chapter.name}
-            left={
-              chapter.logo &&
+      <List
+        data={course.chapters}
+        renderItem={({ item }) => (
+          <ListItem
+            key={item.url}
+            title={item.name}
+            accessoryLeft={
+              item.logo &&
               (() => (
                 <Image
-                  source={chapter.logo}
+                  source={item.logo}
                   style={{ width: 64 }}
                   resizeMode="contain"
                 />
               ))
             }
-            description={excerpt(chapter.description)}
+            description={excerpt(item.description)}
             onPress={() =>
               navigation.navigate(CHAPTER_SCREEN, {
                 ...props,
-                chapter: chapter.url,
+                chapter: item.url,
               })
             }
           />
-        ))}
-      </List.Section>
-    </Surface>
+        )}
+      />
+    </Layout>
   );
 }

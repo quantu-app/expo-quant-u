@@ -1,24 +1,20 @@
 import React from "react";
 import { TextInput as TextInputClass } from "../../../course-lib";
-import { TextInput as TextInputPaper } from "react-native-paper";
+import { Input } from "@ui-kitten/components";
 import { IQuestionInputProps } from "./IQuestionInputProps";
-
-// TODO: type this
-function onMount(instance: any) {
-  if (instance && typeof instance.forceFocus === "function") {
-    instance.forceFocus();
-  }
-}
 
 export function TextInput(props: IQuestionInputProps<string, TextInputClass>) {
   return (
-    <TextInputPaper
+    <Input
       label="Answer"
-      dense
-      ref={onMount}
-      error={props.done && props.points < props.total}
-      disabled={props.done}
-      value={props.value || ""}
+      autoFocus
+      status={
+        props.result.done && props.result.points < props.result.total
+          ? "danger"
+          : undefined
+      }
+      disabled={props.result.done}
+      value={props.result.value || ""}
       onChangeText={props.onChange}
       onSubmitEditing={props.onCheck}
     />

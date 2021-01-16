@@ -3,8 +3,8 @@ import { Async } from "@aicacia/async_component-react";
 import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
-import { ParamList, START_QUIZ_SCREEN } from "../../Navigation";
-import { Layout } from "../../Layout";
+import { ParamList, START_QUIZ_SCREEN } from "../../navigationConfig";
+import { AppLayout } from "../../AppLayout";
 
 export interface IStartQuizScreenProps {
   route: RouteProp<ParamList, typeof START_QUIZ_SCREEN>;
@@ -12,13 +12,13 @@ export interface IStartQuizScreenProps {
 
 export function StartQuizScreen(props: IStartQuizScreenProps) {
   return (
-    <Layout>
+    <AppLayout>
       <Async
         promise={import("./StartQuiz")}
         onSuccess={({ StartQuiz }) => <StartQuiz {...props.route.params} />}
         onPending={() => <Loading />}
         onError={(error) => <JSError error={error} />}
       />
-    </Layout>
+    </AppLayout>
   );
 }

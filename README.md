@@ -7,8 +7,8 @@
 ## Tech
 
 - [Expo](https://docs.expo.io/)/[React Native](https://reactnative.dev/docs/getting-started)
-- [react-native-paper](https://callstack.github.io/react-native-paper/index.html)
-- [Icons](https://icons.expo.fyi/)
+- [ui-kitten](https://akveo.github.io/react-native-ui-kitten/docs/)
+- [Icons](https://akveo.github.io/eva-icons/#/)
 
 ## Getting Started
 

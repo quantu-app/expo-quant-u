@@ -1,5 +1,5 @@
 import React from "react";
-import { Checkbox, List } from "react-native-paper";
+import { CheckBox, List, ListItem } from "@ui-kitten/components";
 import {
   MultipleChoiceInput as MultipleChoiceInputClass,
   MultipleChoiceInputOption,
@@ -10,7 +10,7 @@ export function MultipleChoiceInput(
   props: IQuestionInputProps<string[], MultipleChoiceInputClass>
 ) {
   const isMultiple = props.input.hasMultipleAnswers(),
-    selected = props.value || [];
+    selected = props.result.value || [];
 
   function onSelect(choice: MultipleChoiceInputOption) {
     const index = selected.indexOf(choice.getKey()),
@@ -25,63 +25,26 @@ export function MultipleChoiceInput(
     return props.onChange(newSelected);
   }
 
-  function renderItem(selected: boolean, choice: MultipleChoiceInputOption) {
-    const checkAnswerQuestionElement = (
-      <Checkbox
-        status={
-          (props.done && choice.isCorrect()) || selected
-            ? "checked"
-            : "unchecked"
-        }
-        disabled={props.done}
-        onPress={() => onSelect(choice)}
-      />
-    );
-
-    if (props.done) {
-      if (choice.isCorrect()) {
-        return (
-          <List.Item
-            key={choice.getKey()}
-            left={() => checkAnswerQuestionElement}
-            title={choice.getChildren()}
-          />
-        );
-      } else if (selected) {
-        return (
-          <List.Item
-            key={choice.getKey()}
-            left={() => checkAnswerQuestionElement}
-            title={choice.getChildren()}
-          />
-        );
-      } else {
-        return (
-          <List.Item
-            key={choice.getKey()}
-            left={() => checkAnswerQuestionElement}
-            title={choice.getChildren()}
-          />
-        );
-      }
-    } else {
-      return (
-        <List.Item
-          key={choice.getKey()}
-          left={() => checkAnswerQuestionElement}
-          title={choice.getChildren()}
-        />
-      );
-    }
-  }
-
   return (
-    <List.Section>
-      {props.input
-        .getChoices()
-        .map((choice) =>
-          renderItem(selected.includes(choice.getKey()), choice)
-        )}
-    </List.Section>
+    <List
+      data={props.input.getChoices()}
+      renderItem={({ item }) => (
+        <ListItem
+          key={item.getKey()}
+          accessoryLeft={() => (
+            <CheckBox
+              status={
+                (props.result.done && item.isCorrect()) || selected
+                  ? "checked"
+                  : "unchecked"
+              }
+              disabled={props.result.done}
+              onPress={() => onSelect(item)}
+            />
+          )}
+          title={item.getChildren()}
+        />
+      )}
+    />
   );
 }

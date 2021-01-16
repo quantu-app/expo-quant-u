@@ -1,10 +1,10 @@
 import React from "react";
 import { RecordOf } from "immutable";
-import { StyleSheet, View } from "react-native";
-import { Button, Title } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Button, Text, Layout } from "@ui-kitten/components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { theme } from "../theme";
 import { Quiz } from "../../course-lib";
+import customTheme from "../../custom-theme.json";
 import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
 import { QuestionInput } from "./QuestionInput";
@@ -52,47 +52,47 @@ const noop = () => null;
 
 export function Results(props: IResultsProps) {
   return (
-    <View style={styles.container}>
-      <View>
+    <Layout style={styles.container}>
+      <Layout>
         {props.state.questions.map((question, index) => {
           const questionResult = props.state.results.get(
             index
           ) as RecordOf<IQuestionResult>;
 
           return (
-            <View key={index} style={styles.result}>
-              <View style={styles.question}>
+            <Layout key={index} style={styles.result}>
+              <Layout style={styles.question}>
                 <QuestionInput
-                  {...questionResult.toJS()}
+                  result={questionResult}
                   input={question.getInput()}
                   onChange={noop}
                   onCheck={noop}
                 />
-              </View>
-              <View style={styles.points}>
-                <Title>
+              </Layout>
+              <Layout style={styles.points}>
+                <Text category="h1">
                   {questionResult.correct ? (
                     <MaterialCommunityIcons
                       name="check"
                       size={32}
-                      color={theme.colors.primary}
+                      color={customTheme["color-success-100"]}
                     />
                   ) : (
                     <MaterialCommunityIcons
                       name="window-close"
                       size={32}
-                      color={theme.colors.error}
+                      color={customTheme["color-danger-100"]}
                     />
                   )}
                   {questionResult.points} / {questionResult.total}
-                </Title>
-              </View>
-            </View>
+                </Text>
+              </Layout>
+            </Layout>
           );
         })}
-      </View>
-      <View style={{ marginTop: 16 }}>
-        <Title>
+      </Layout>
+      <Layout style={{ marginTop: 16 }}>
+        <Text category="h1">
           Points -{" "}
           {props.state.results.reduce(
             (count, questionResult) => count + questionResult.points,
@@ -103,17 +103,17 @@ export function Results(props: IResultsProps) {
             (count, questionResult) => count + questionResult.total,
             0
           )}
-        </Title>
-      </View>
-      <View style={styles.buttons}>
+        </Text>
+      </Layout>
+      <Layout style={styles.buttons}>
         <Button
-          mode="contained"
+          appearance="filled"
           style={styles.resetButton}
           onPress={props.onReset}
         >
           Reset
         </Button>
-      </View>
-    </View>
+      </Layout>
+    </Layout>
   );
 }

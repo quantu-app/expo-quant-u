@@ -54,21 +54,10 @@ export function Quiz(props: IQuizProps) {
 
   useMemo(onReset, [props.quiz, props.rng]);
 
-  function update(
-    updater: (result: RecordOf<IQuestionResult>) => RecordOf<IQuestionResult>
-  ) {
+  function onCheck(result: RecordOf<IQuestionResult>) {
     if (state.current !== -1) {
-      setState(updateCurrentQuestionResult(state, updater));
-    }
-  }
-
-  function onCheck(points: number) {
-    if (state.current !== -1) {
-      let nextState = updateCurrentQuestionResult(state, (result) =>
-        result
-          .set("done", true)
-          .set("points", points)
-          .set("correct", points === result.total && result.total > 0)
+      let nextState = state.update("results", (results) =>
+        results.set(state.current, result)
       );
 
       if (props.quiz.getAutoNext()) {
@@ -111,18 +100,8 @@ export function Quiz(props: IQuizProps) {
         timeInSeconds={props.quiz.getTimeInSecond()}
         onNext={onNext}
         onCheck={onCheck}
-        update={update}
       />
     </>
-  );
-}
-
-function updateCurrentQuestionResult(
-  state: RecordOf<IQuizState>,
-  updater: (result: RecordOf<IQuestionResult>) => RecordOf<IQuestionResult>
-) {
-  return state.update("results", (results) =>
-    results.update(state.current, updater)
   );
 }
 

@@ -3,8 +3,8 @@ import { Async } from "@aicacia/async_component-react";
 import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
-import { ParamList, UNIT_SCREEN } from "../../Navigation";
-import { Layout } from "../../Layout";
+import { ParamList, UNIT_SCREEN } from "../../navigationConfig";
+import { AppLayout } from "../../AppLayout";
 
 export interface IUnitScreenProps {
   route: RouteProp<ParamList, typeof UNIT_SCREEN>;
@@ -12,13 +12,13 @@ export interface IUnitScreenProps {
 
 export function UnitScreen(props: IUnitScreenProps) {
   return (
-    <Layout>
+    <AppLayout>
       <Async
         promise={import("./Unit")}
         onSuccess={({ Unit }) => <Unit {...props.route.params} />}
         onPending={() => <Loading />}
         onError={(error) => <JSError error={error} />}
       />
-    </Layout>
+    </AppLayout>
   );
 }

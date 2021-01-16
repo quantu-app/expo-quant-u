@@ -1,6 +1,5 @@
 import React from "react";
-import { View } from "react-native";
-import { Text } from "react-native-paper";
+import { Layout, Text } from "@ui-kitten/components";
 
 export interface ILatexComponentProps {
   block: boolean;
@@ -10,9 +9,9 @@ export interface ILatexComponentProps {
 export function LatexComponent(props: ILatexComponentProps) {
   if (props.block) {
     return (
-      <View>
+      <Layout>
         <Text>{props.children}</Text>
-      </View>
+      </Layout>
     );
   } else {
     return <Text>{props.children}</Text>;

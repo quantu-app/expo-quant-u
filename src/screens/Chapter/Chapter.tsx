@@ -1,17 +1,10 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet } from "react-native";
-import {
-  Title,
-  Divider,
-  Surface,
-  List,
-  Paragraph,
-  Headline,
-} from "react-native-paper";
+import { Divider, Layout, List, ListItem, Text } from "@ui-kitten/components";
 import { getCategory } from "../../../course-lib";
 import { excerpt } from "../../excerpt";
-import { CHAPTER_SCREEN, ParamList, UNIT_SCREEN } from "../../Navigation";
+import { CHAPTER_SCREEN, ParamList, UNIT_SCREEN } from "../../navigationConfig";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,37 +20,39 @@ export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
     ];
 
   return (
-    <Surface style={styles.container}>
-      <Headline>{chapter.name}</Headline>
+    <Layout style={styles.container}>
+      <Text category="h1">{chapter.name}</Text>
       <Divider />
-      <Paragraph>{chapter.description}</Paragraph>
-      <Title>Units</Title>
+      <Text>{chapter.description}</Text>
+      <Text category="h3">Units</Text>
       <Divider />
-      <List.Section>
-        {chapter.units.map((unit) => (
-          <List.Item
-            key={unit.url}
-            title={unit.name}
-            left={
-              unit.logo &&
-              (() => (
+      <List
+        data={chapter.units}
+        renderItem={({ item }) => (
+          <ListItem
+            key={item.url}
+            title={item.name}
+            accessoryLeft={
+              item.logo &&
+              ((props) => (
                 <Image
-                  source={unit.logo}
+                  {...props}
+                  source={item.logo}
                   style={{ width: 64 }}
                   resizeMode="contain"
                 />
               ))
             }
-            description={excerpt(unit.description)}
+            description={excerpt(item.description)}
             onPress={() =>
               navigation.navigate(UNIT_SCREEN, {
                 ...props,
-                unit: unit.url,
+                unit: item.url,
               })
             }
           />
-        ))}
-      </List.Section>
-    </Surface>
+        )}
+      />
+    </Layout>
   );
 }

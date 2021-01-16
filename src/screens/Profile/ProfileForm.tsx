@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import {
+  Button,
+  Input,
+  Layout,
+  Datepicker,
+  Spinner,
+} from "@ui-kitten/components";
 import { RecordOf } from "immutable";
 import {
   isValidUsername,
@@ -8,7 +14,6 @@ import {
   IUserExtra,
   setUserExtra,
 } from "../../state/auth";
-import { DateInput } from "../../DateInput";
 import { Changeset } from "@aicacia/changeset";
 
 const styles = StyleSheet.create({
@@ -79,57 +84,53 @@ export function ProfileForm(props: IProfileFormProps) {
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.grid}>
-          <TextInput
+      <Layout style={styles.container}>
+        <Layout style={styles.grid}>
+          <Input
             style={styles.input}
             value={changeset.getField("firstName", "")}
             onChangeText={createOnChange("firstName")}
-            dense
             label="First Name"
           />
-        </View>
-        <View style={styles.grid}>
-          <TextInput
+        </Layout>
+        <Layout style={styles.grid}>
+          <Input
             style={styles.input}
             value={changeset.getField("lastName", "")}
             onChangeText={createOnChange("lastName")}
-            dense
             label="Last Name"
           />
-        </View>
-      </View>
-      <TextInput
+        </Layout>
+      </Layout>
+      <Input
         style={styles.input}
         value={changeset.getField("username", "")}
         onChangeText={createOnChange("username")}
-        dense
         label="Userame"
       />
-      <DateInput
+      <Datepicker
         style={styles.input}
-        value={changeset.getField("birthday") as Date}
-        onChangeDate={createOnChange("birthday")}
+        date={changeset.getField("birthday") as Date}
+        onSelect={createOnChange("birthday")}
         label="Birthday"
       />
-      <TextInput
+      <Input
         style={styles.input}
         value={changeset.getField("about", "")}
         onChangeText={createOnChange("about")}
-        dense
         multiline
         label="About"
       />
-      <View style={styles.buttons}>
+      <Layout style={styles.buttons}>
         <Button
-          mode="contained"
-          loading={loading}
+          appearance="filled"
+          accessoryLeft={loading ? () => <Spinner /> : undefined}
           disabled={changeset.isInvalid() || loading}
           onPress={onSubmit}
         >
           Update
         </Button>
-      </View>
+      </Layout>
     </>
   );
 }

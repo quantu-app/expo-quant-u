@@ -1,8 +1,8 @@
 import React from "react";
 import { RecordOf } from "immutable";
-import { StyleSheet, View } from "react-native";
-import { IconButton } from "react-native-paper";
-import { theme } from "../theme";
+import { StyleSheet } from "react-native";
+import { Icon, Layout } from "@ui-kitten/components";
+import customThem from "../../custom-theme.json";
 import { IQuizState } from "./Quiz";
 
 interface IStatusProps {
@@ -13,6 +13,7 @@ interface IStatusProps {
 
 const styles = StyleSheet.create({
   container: {
+    flexWrap: "wrap",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -21,28 +22,30 @@ const styles = StyleSheet.create({
 
 export function Status(props: IStatusProps) {
   return (
-    <View style={styles.container}>
+    <Layout style={styles.container}>
       {props.state.results.map((result, index) => (
-        <IconButton
-          color={
+        <Icon
+          key={index}
+          size="tiny"
+          style={{
+            width: 24,
+            backgroundColor: result.done
+              ? result.correct
+                ? customThem["color-success-100"]
+                : customThem["color-danger-100"]
+              : undefined,
+          }}
+          name={
             result.done
               ? result.correct
-                ? theme.colors.primary
-                : theme.colors.error
-              : undefined
+                ? "checkmark-square-2-outline"
+                : "close-square-outline"
+              : "square-outline"
           }
           disabled={index === props.current || props.state.done}
-          icon={
-            result.done
-              ? result.correct
-                ? "checkbox-marked"
-                : "checkbox-blank-off-outline"
-              : "checkbox-blank-outline"
-          }
-          key={index}
           onPress={() => props.onSelectQuestion(index)}
         />
       ))}
-    </View>
+    </Layout>
   );
 }

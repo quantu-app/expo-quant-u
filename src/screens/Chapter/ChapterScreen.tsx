@@ -3,8 +3,8 @@ import { Async } from "@aicacia/async_component-react";
 import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
-import { ParamList, CHAPTER_SCREEN } from "../../Navigation";
-import { Layout } from "../../Layout";
+import { ParamList, CHAPTER_SCREEN } from "../../navigationConfig";
+import { AppLayout } from "../../AppLayout";
 
 export interface IChapterScreenProps {
   route: RouteProp<ParamList, typeof CHAPTER_SCREEN>;
@@ -12,13 +12,13 @@ export interface IChapterScreenProps {
 
 export function ChapterScreen(props: IChapterScreenProps) {
   return (
-    <Layout>
+    <AppLayout>
       <Async
         promise={import("./Chapter")}
         onSuccess={({ Chapter }) => <Chapter {...props.route.params} />}
         onPending={() => <Loading />}
         onError={(error) => <JSError error={error} />}
       />
-    </Layout>
+    </AppLayout>
   );
 }

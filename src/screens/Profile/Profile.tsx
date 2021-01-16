@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Surface } from "react-native-paper";
+import { Layout } from "@ui-kitten/components";
 import { useMapStateToProps } from "../../state";
 import { selectUser } from "../../state/auth";
 import { ProfileForm } from "./ProfileForm";
@@ -17,8 +17,8 @@ export function Profile() {
   const user = useMapStateToProps(selectUser).unwrap();
 
   return (
-    <Surface style={styles.form}>
+    <Layout style={styles.form}>
       <ProfileForm user={user} />
-    </Surface>
+    </Layout>
   );
 }

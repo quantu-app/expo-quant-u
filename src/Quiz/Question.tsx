@@ -1,25 +1,20 @@
 import React from "react";
 import { RecordOf } from "immutable";
 import { useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Button, Layout, Spinner } from "@ui-kitten/components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../../course-lib";
 import { QuestionInput } from "./QuestionInput";
-import { theme } from "../theme";
+import customTheme from "../../custom-theme.json";
 import { IQuestionResult } from "./QuestionResult";
 
 export interface IQuestionProps<T = any> {
   timeInSeconds?: number;
   result: RecordOf<IQuestionResult<T>>;
   question: QuestionClass<T>;
-  update(
-    updater: (
-      result: RecordOf<IQuestionResult<T>>
-    ) => RecordOf<IQuestionResult<T>>
-  ): void;
   onNext(): void;
-  onCheck(points: number): void;
+  onCheck(result: RecordOf<IQuestionResult<T>>): void;
 }
 
 const styles = StyleSheet.create({
@@ -59,50 +54,59 @@ const styles = StyleSheet.create({
 });
 
 export function Question<T = any>(props: IQuestionProps<T>) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false),
+    [state, setState] = useState(props.result);
 
   useMemo(async () => {
     setLoading(true);
     const total = await props.question.getTotalPoints();
-    props.update((result) => result.set("total", total));
+    setState(state.set("total", total));
     setLoading(false);
-  }, [props.question]);
+  }, [props.question, props.result]);
 
   function onInputChange(value: any) {
-    props.update((result) => result.set("value", value).set("changed", true));
+    setState(state.set("value", value).set("changed", true));
   }
 
   async function onCheck() {
     setLoading(true);
-    props.onCheck(await props.question.checkAnswer(props.result.value as any));
+    const points = await props.question.checkAnswer(state.value as any),
+      nextState = state
+        .set("done", true)
+        .set("points", points)
+        .set("correct", points === state.total && state.total > 0);
+    setState(nextState);
+    props.onCheck(nextState);
     setLoading(false);
   }
 
   async function onExplain() {
-    props.update((result) => result.set("done", true).set("explained", true));
+    const nextState = state.set("done", true).set("explained", true);
+    setState(nextState);
+    props.onCheck(nextState);
   }
 
   return (
     <>
-      <View style={styles.prompt}>{props.question.getPrompt()}</View>
-      <View style={styles.input}>
+      <Layout style={styles.prompt}>{props.question.getPrompt()}</Layout>
+      <Layout style={styles.input}>
         <QuestionInput
-          {...props.result.toJS()}
+          result={state}
           input={props.question.getInput()}
           onChange={onInputChange}
           onCheck={onCheck}
         />
-      </View>
-      <View style={styles.buttons}>
-        {props.result.done ? (
-          <Button mode="contained" onPress={props.onNext}>
+      </Layout>
+      <Layout style={styles.buttons}>
+        {state.done ? (
+          <Button appearance="filled" onPress={props.onNext}>
             Next
           </Button>
         ) : (
           <Button
-            mode="contained"
-            loading={loading}
-            disabled={!props.result.changed || loading}
+            appearance="filled"
+            accessoryLeft={loading ? () => <Spinner /> : undefined}
+            disabled={!state.changed || loading}
             onPress={onCheck}
           >
             Check
@@ -110,38 +114,38 @@ export function Question<T = any>(props: IQuestionProps<T>) {
         )}
         {props.question.getExplanation().isSome() && (
           <Button
-            mode="outlined"
-            loading={loading}
-            disabled={props.result.explained || loading}
+            appearance="outline"
+            accessoryLeft={loading ? () => <Spinner /> : undefined}
+            disabled={state.explained || loading}
             onPress={onExplain}
           >
             Explain
           </Button>
         )}
-      </View>
-      <View style={styles.results}>
-        {props.result.done && props.result.correct && (
+      </Layout>
+      <Layout style={styles.results}>
+        {state.done && state.correct && (
           <MaterialCommunityIcons
             name="check"
             size={32}
-            color={theme.colors.primary}
+            color={customTheme["color-success-100"]}
           />
         )}
-        {props.result.done && !props.result.correct && (
+        {state.done && !state.correct && (
           <MaterialCommunityIcons
             name="window-close"
             size={32}
-            color={theme.colors.error}
+            color={customTheme["color-danger-100"]}
           />
         )}
-      </View>
-      {props.result.explained &&
+      </Layout>
+      {state.explained &&
         props.question
           .getExplanation()
           .map((explanation) => (
-            <View key={0} style={styles.explanation}>
+            <Layout key={0} style={styles.explanation}>
               {explanation}
-            </View>
+            </Layout>
           ))
           .unwrapOr(null as any)}
     </>

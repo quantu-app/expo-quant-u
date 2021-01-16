@@ -1,17 +1,14 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
-import {
-  Title,
-  Divider,
-  Surface,
-  List,
-  Headline,
-  Paragraph,
-} from "react-native-paper";
+import { ListItem, Divider, Layout, List, Text } from "@ui-kitten/components";
 import { getCategory } from "../../../course-lib";
 import { excerpt } from "../../excerpt";
-import { ParamList, START_QUIZ_SCREEN, UNIT_SCREEN } from "../../Navigation";
+import {
+  ParamList,
+  START_QUIZ_SCREEN,
+  UNIT_SCREEN,
+} from "../../navigationConfig";
 
 const styles = StyleSheet.create({
   container: {
@@ -28,27 +25,28 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
     ].unitMap[props.unit];
 
   return (
-    <Surface style={styles.container}>
-      <Headline>{unit.name}</Headline>
+    <Layout style={styles.container}>
+      <Text category="h1">{unit.name}</Text>
       <Divider />
-      <Paragraph>{unit.description}</Paragraph>
-      <Title>Quizzes</Title>
+      <Text>{unit.description}</Text>
+      <Text category="h3">Quizzes</Text>
       <Divider />
-      <List.Section>
-        {unit.quizzes.map((quiz) => (
-          <List.Item
-            key={quiz.url}
-            title={quiz.name}
-            description={excerpt(quiz.description)}
+      <List
+        data={unit.quizzes}
+        renderItem={({ item }) => (
+          <ListItem
+            key={item.url}
+            title={item.name}
+            description={excerpt(item.description)}
             onPress={() =>
               navigation.navigate(START_QUIZ_SCREEN, {
                 ...props,
-                quiz: quiz.url,
+                quiz: item.url,
               })
             }
           />
-        ))}
-      </List.Section>
-    </Surface>
+        )}
+      />
+    </Layout>
   );
 }

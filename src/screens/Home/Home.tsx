@@ -1,9 +1,9 @@
 import React from "react";
-import { StyleSheet, Image, View, useWindowDimensions } from "react-native";
-import { Button, Headline, Subheading, Surface } from "react-native-paper";
+import { StyleSheet, Image, useWindowDimensions } from "react-native";
+import { Text, Button, Layout } from "@ui-kitten/components";
 import bg from "../../../assets/bg.jpg";
 import { useNavigation } from "@react-navigation/native";
-import { CATEGORY_SCREEN } from "../../Navigation";
+import { CATEGORY_SCREEN } from "../../navigationConfig";
 import { isSmallScreen } from "../../screens";
 
 const styles = StyleSheet.create({
@@ -34,27 +34,27 @@ export function Home() {
     navigation = useNavigation();
 
   return (
-    <Surface style={styles.container}>
-      <View
+    <Layout style={styles.container}>
+      <Layout
         style={
           isSmallScreen(windowDimensions.width)
             ? styles.contentSmall
             : styles.content
         }
       >
-        <View style={styles.grid}>
+        <Layout style={styles.grid}>
           <Image source={bg} style={styles.image} resizeMode="contain" />
-        </View>
-        <View style={styles.grid}>
-          <Headline>Lifelong Learning</Headline>
-          <Subheading>
+        </Layout>
+        <Layout style={styles.grid}>
+          <Text category="h3">Lifelong Learning</Text>
+          <Text category="h4">
             With our open platform designed for deep thinkers and lifelong
             learners, you can build, train and iteratively improve your
             reasoning and quantitative skills.
-          </Subheading>
+          </Text>
           <Button
             style={styles.button}
-            mode="contained"
+            appearance="filled"
             onPress={() =>
               navigation.navigate(CATEGORY_SCREEN, {
                 category: "mathematics",
@@ -63,8 +63,8 @@ export function Home() {
           >
             Mathematics
           </Button>
-        </View>
-      </View>
-    </Surface>
+        </Layout>
+      </Layout>
+    </Layout>
   );
 }

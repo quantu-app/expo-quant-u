@@ -1,9 +1,13 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet, View } from "react-native";
-import { Title, Button, Surface, Paragraph } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Button, Layout, Text } from "@ui-kitten/components";
 import { getCategory } from "../../../course-lib";
-import { ParamList, START_QUIZ_SCREEN, QUIZ_SCREEN } from "../../Navigation";
+import {
+  ParamList,
+  START_QUIZ_SCREEN,
+  QUIZ_SCREEN,
+} from "../../navigationConfig";
 
 const styles = StyleSheet.create({
   container: {
@@ -24,12 +28,12 @@ export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
     navigation = useNavigation();
 
   return (
-    <Surface style={styles.container}>
-      <Title>{quiz.name}</Title>
-      <Paragraph>{quiz.description}</Paragraph>
-      <View style={styles.buttons}>
+    <Layout style={styles.container}>
+      <Text category="h1">{quiz.name}</Text>
+      <Text>{quiz.description}</Text>
+      <Layout style={styles.buttons}>
         <Button
-          mode="contained"
+          appearance="filled"
           onPress={() =>
             navigation.navigate(QUIZ_SCREEN, {
               ...props,
@@ -39,7 +43,7 @@ export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
         >
           Start Quiz
         </Button>
-      </View>
-    </Surface>
+      </Layout>
+    </Layout>
   );
 }

@@ -1,6 +1,5 @@
 import React from "react";
-import { View } from "react-native";
-import { Title, Headline, Text } from "react-native-paper";
+import { Text, Layout } from "@ui-kitten/components";
 
 const RE_NEWLINE = /[^\r\n]+/g;
 
@@ -13,13 +12,13 @@ export function JSError(props: IJSErrorProps) {
 
   return (
     <>
-      <Title>{props.error.name}</Title>
-      <Headline>{props.error.message}</Headline>
-      <View>
+      <Text category="h1">{props.error.name}</Text>
+      <Text category="h3">{props.error.message}</Text>
+      <Layout>
         {(props.error.stack || "").split(RE_NEWLINE).map((line, index) => (
           <Text key={index}>{line}</Text>
         ))}
-      </View>
+      </Layout>
     </>
   );
 }

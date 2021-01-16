@@ -3,8 +3,8 @@ import { Async } from "@aicacia/async_component-react";
 import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
-import { CATEGORY_SCREEN, ParamList } from "../../Navigation";
-import { Layout } from "../../Layout";
+import { CATEGORY_SCREEN, ParamList } from "../../navigationConfig";
+import { AppLayout } from "../../AppLayout";
 
 export interface ICategoryScreenProps {
   route: RouteProp<ParamList, typeof CATEGORY_SCREEN>;
@@ -12,13 +12,13 @@ export interface ICategoryScreenProps {
 
 export function CategoryScreen(props: ICategoryScreenProps) {
   return (
-    <Layout>
+    <AppLayout>
       <Async
         promise={import("./Category")}
         onSuccess={({ Category }) => <Category {...props.route.params} />}
         onPending={() => <Loading />}
         onError={(error) => <JSError error={error} />}
       />
-    </Layout>
+    </AppLayout>
   );
 }

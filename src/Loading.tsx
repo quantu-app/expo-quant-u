@@ -1,6 +1,6 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Spinner, Layout } from "@ui-kitten/components";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
 
 export function Loading() {
   return (
-    <View style={styles.container}>
-      <ActivityIndicator animating size={64} />
-    </View>
+    <Layout style={styles.container}>
+      <Spinner animating size="large" />
+    </Layout>
   );
 }
