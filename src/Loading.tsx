@@ -1,6 +1,6 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import { Spinner, Layout } from "@ui-kitten/components";
+import { StyleSheet, View } from "react-native";
+import { Spinner } from "@ui-kitten/components";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
 
 export function Loading() {
   return (
-    <Layout style={styles.container}>
+    <View style={styles.container}>
       <Spinner animating size="large" />
-    </Layout>
+    </View>
   );
 }

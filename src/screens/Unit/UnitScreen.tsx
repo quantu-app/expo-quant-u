@@ -4,7 +4,7 @@ import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { ParamList, UNIT_SCREEN } from "../../navigationConfig";
-import { AppLayout } from "../../AppLayout";
+import { Container } from "../../Container";
 
 export interface IUnitScreenProps {
   route: RouteProp<ParamList, typeof UNIT_SCREEN>;
@@ -12,13 +12,13 @@ export interface IUnitScreenProps {
 
 export function UnitScreen(props: IUnitScreenProps) {
   return (
-    <AppLayout>
+    <Container>
       <Async
         promise={import("./Unit")}
         onSuccess={({ Unit }) => <Unit {...props.route.params} />}
         onPending={() => <Loading />}
         onError={(error) => <JSError error={error} />}
       />
-    </AppLayout>
+    </Container>
   );
 }

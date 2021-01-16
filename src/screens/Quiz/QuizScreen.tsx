@@ -4,7 +4,7 @@ import { RouteProp } from "@react-navigation/native";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { ParamList, QUIZ_SCREEN } from "../../navigationConfig";
-import { AppLayout } from "../../AppLayout";
+import { Container } from "../../Container";
 
 export interface IQuizScreenProps {
   route: RouteProp<ParamList, typeof QUIZ_SCREEN>;
@@ -12,13 +12,13 @@ export interface IQuizScreenProps {
 
 export function QuizScreen(props: IQuizScreenProps) {
   return (
-    <AppLayout>
+    <Container>
       <Async
         promise={import("./Quiz")}
         onSuccess={({ Quiz }) => <Quiz {...props.route.params} />}
         onPending={() => <Loading />}
         onError={(error) => <JSError error={error} />}
       />
-    </AppLayout>
+    </Container>
   );
 }
