@@ -85,7 +85,7 @@ function subscribeUserExtra(uid: string) {
               .set("username", data.username)
               .set("country", data.country)
               .set("timezone", data.timezone)
-              .set("birthday", data.birthday)
+              .set("birthday", data.birthday && new Date(data.birthday))
               .set("about", data.about)
           )
         )

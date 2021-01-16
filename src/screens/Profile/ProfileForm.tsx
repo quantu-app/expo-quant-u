@@ -110,7 +110,7 @@ export function ProfileForm(props: IProfileFormProps) {
       />
       <Datepicker
         style={styles.input}
-        date={changeset.getField("birthday") as Date}
+        date={changeset.getField("birthday")}
         onSelect={createOnChange("birthday")}
         label="Birthday"
       />
