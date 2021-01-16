@@ -8,9 +8,7 @@ import {
 } from "../../../../course-lib";
 import { Latex } from "../../../../src/Latex";
 
-interface SquaringNumbersEndingInFiveConfig {
-  nDigits: number;
-}
+interface SquaringNumbersEndingInFiveConfig {}
 
 const configSchema = {
   type: "object",
