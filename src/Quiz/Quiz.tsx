@@ -21,6 +21,8 @@ export interface IQuizState {
   loading: boolean;
   done: boolean;
   current: number;
+  start: number;
+  end: number;
   questions: List<QuestionClass>;
   results: List<RecordOf<IQuestionResult>>;
 }
@@ -29,6 +31,8 @@ export const QuizState = Record<IQuizState>({
   loading: false,
   done: false,
   current: -1,
+  start: 0,
+  end: 0,
   questions: List(),
   results: List(),
 });
@@ -42,13 +46,19 @@ export function Quiz(props: IQuizProps) {
 
     if (questions.length) {
       setState(
-        QuizState()
-          .set("questions", List(questions))
-          .set("results", List(questions.map(() => QuestionResult())))
-          .set("current", 0)
+        QuizState({
+          start: Date.now(),
+          questions: List(questions),
+          results: List(questions.map(() => QuestionResult())),
+          current: 0,
+        })
       );
     } else {
-      setState(QuizState());
+      setState(
+        QuizState({
+          start: Date.now(),
+        })
+      );
     }
   }
 
@@ -60,11 +70,16 @@ export function Quiz(props: IQuizProps) {
         results.set(state.current, result)
       );
 
-      if (props.quiz.getAutoNext()) {
+      if (props.quiz.getAutoNext() && !result.explained) {
         const current = getNextQuestionIndex(nextState);
+
         nextState = nextState
           .set("done", current === -1)
           .set("current", current);
+
+        if (nextState.done) {
+          nextState = nextState.set("end", Date.now());
+        }
       }
 
       setState(nextState);
@@ -79,7 +94,13 @@ export function Quiz(props: IQuizProps) {
 
   function onNext() {
     const current = getNextQuestionIndex(state);
-    setState(state.set("done", current === -1).set("current", current));
+    let nextState = state.set("done", current === -1).set("current", current);
+
+    if (nextState.done) {
+      nextState = nextState.set("end", Date.now());
+    }
+
+    setState(nextState);
   }
 
   return state.loading ? (

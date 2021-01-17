@@ -7,6 +7,6 @@ export function selectUser(state: IState): Option<RecordOf<IUser>> {
   return state.auth.user;
 }
 
-export function selectSignInModal(state: IState): boolean {
-  return state.auth.signInModal;
+export function selectSignInUpOpen(state: IState): boolean {
+  return state.auth.signInUpOpen;
 }

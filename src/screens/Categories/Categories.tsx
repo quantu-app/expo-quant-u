@@ -1,19 +1,28 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Image, StyleSheet } from "react-native";
-import { Text, Button, Layout } from "@ui-kitten/components";
+import { Image, StyleSheet, View } from "react-native";
+import { Text, Button, Card } from "@ui-kitten/components";
 import { getCategories } from "../../../course-lib/categories";
 import { excerpt } from "../../excerpt";
 import { CATEGORY_SCREEN } from "../../navigationConfig";
 
 const styles = StyleSheet.create({
-  title: {
-    marginTop: 16,
-    paddingLeft: 16,
+  grid: {
+    marginBottom: 16,
+    flex: 1,
+    flexShrink: 1,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    flexWrap: "wrap",
   },
   card: {
-    margin: 16,
-    width: 196,
+    maxWidth: 256,
+    marginTop: 16,
+  },
+  buttons: {
+    marginTop: 16,
+    alignItems: "center",
   },
 });
 
@@ -22,32 +31,36 @@ export function Categories() {
 
   return (
     <>
-      <Layout style={styles.title}>
+      <Card>
         <Text category="h1">Categories</Text>
-      </Layout>
-      {getCategories().map((category) => (
-        <Layout key={category.url} style={styles.card}>
-          <Text category="h1">{category.name}</Text>
-          {category.logo && (
-            <Image
-              source={category.logo}
-              resizeMode="contain"
-              style={{ height: 128 }}
-            />
-          )}
-          <Text>{excerpt(category.description)}</Text>
-          <Button
-            appearance="filled"
-            onPress={() =>
-              navigation.navigate(CATEGORY_SCREEN, {
-                category: category.url,
-              })
-            }
-          >
-            Start
-          </Button>
-        </Layout>
-      ))}
+      </Card>
+      <View style={styles.grid}>
+        {getCategories().map((category) => (
+          <Card key={category.url} style={styles.card}>
+            <Text category="h1">{category.name}</Text>
+            {category.logo && (
+              <Image
+                source={category.logo}
+                resizeMode="contain"
+                style={{ height: 128 }}
+              />
+            )}
+            <Text>{excerpt(category.description)}</Text>
+            <View style={styles.buttons}>
+              <Button
+                appearance="filled"
+                onPress={() =>
+                  navigation.navigate(CATEGORY_SCREEN, {
+                    category: category.url,
+                  })
+                }
+              >
+                Start
+              </Button>
+            </View>
+          </Card>
+        ))}
+      </View>
     </>
   );
 }

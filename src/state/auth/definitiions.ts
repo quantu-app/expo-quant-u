@@ -7,8 +7,6 @@ export interface IUserExtra {
   firstName?: string;
   lastName?: string;
   username?: string;
-  country?: string;
-  timezone?: string;
   birthday?: Date;
   about?: string;
 }
@@ -17,8 +15,6 @@ export const UserExtra = Record<IUserExtra>({
   firstName: undefined,
   lastName: undefined,
   username: undefined,
-  country: undefined,
-  timezone: undefined,
   birthday: undefined,
   about: undefined,
 });
@@ -38,18 +34,18 @@ export const User = Record<IUser>({
 });
 
 export interface IAuth {
-  signInModal: boolean;
+  signInUpOpen: boolean;
   user: Option<RecordOf<IUser>>;
 }
 
 export const Auth = Record<IAuth>({
-  signInModal: false,
+  signInUpOpen: false,
   user: none(),
 });
 
 export function fromJSON(json: IJSONObject): RecordOf<IAuth> {
   return Auth({
-    signInModal: json.signInModal === true,
+    signInUpOpen: json.signInUpOpen === true,
     user: isJSONObject(json.user) ? some(User(json.user)) : none(),
   });
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
-import { Button, Layout, Text } from "@ui-kitten/components";
+import { StyleSheet, View } from "react-native";
+import { Button, Card, Divider, Text } from "@ui-kitten/components";
 import { getCategory } from "../../../course-lib";
 import {
   ParamList,
@@ -12,11 +12,9 @@ import {
 const styles = StyleSheet.create({
   container: {
     marginTop: 16,
-    padding: 16,
   },
   buttons: {
     marginTop: 16,
-    justifyContent: "center",
     alignItems: "center",
   },
 });
@@ -28,10 +26,11 @@ export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
     navigation = useNavigation();
 
   return (
-    <Layout style={styles.container}>
+    <Card style={styles.container}>
       <Text category="h1">{quiz.name}</Text>
+      <Divider />
       <Text>{quiz.description}</Text>
-      <Layout style={styles.buttons}>
+      <View style={styles.buttons}>
         <Button
           appearance="filled"
           onPress={() =>
@@ -43,7 +42,7 @@ export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
         >
           Start Quiz
         </Button>
-      </Layout>
-    </Layout>
+      </View>
+    </Card>
   );
 }

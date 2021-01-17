@@ -1,12 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
-import {
-  Button,
-  Input,
-  Layout,
-  Datepicker,
-  Spinner,
-} from "@ui-kitten/components";
+import { StyleSheet, View } from "react-native";
+import { Button, Input, Datepicker, Spinner } from "@ui-kitten/components";
 import { RecordOf } from "immutable";
 import {
   isValidUsername,
@@ -23,9 +17,6 @@ const styles = StyleSheet.create({
   grid: {
     flex: 1,
   },
-  input: {
-    marginBottom: 16,
-  },
   buttons: {
     marginTop: 16,
     justifyContent: "center",
@@ -41,6 +32,12 @@ function changesetFn(changeset: Changeset<IUserExtra>): Changeset<IUserExtra> {
     "birthday",
   ]);
 }
+
+const EMPTY_DATE = new Date(
+    new Date().setFullYear(new Date().getFullYear() - 18)
+  ),
+  MIN_DATE = new Date(new Date().setFullYear(1900)),
+  MAX_DATE = new Date();
 
 export interface IProfileFormProps {
   user: RecordOf<IUser>;
@@ -78,50 +75,48 @@ export function ProfileForm(props: IProfileFormProps) {
 
   function createOnChange(name: keyof IUserExtra) {
     return function onChange(value?: IUserExtra[keyof IUserExtra]) {
+      console.log(name, value);
       setChangeset(changesetFn(changeset.addChange(name, value).clearErrors()));
     };
   }
 
   return (
     <>
-      <Layout style={styles.container}>
-        <Layout style={styles.grid}>
+      <View style={styles.container}>
+        <View style={styles.grid}>
           <Input
-            style={styles.input}
-            value={changeset.getField("firstName", "")}
+            value={changeset.getField("firstName") || ""}
             onChangeText={createOnChange("firstName")}
             label="First Name"
           />
-        </Layout>
-        <Layout style={styles.grid}>
+        </View>
+        <View style={styles.grid}>
           <Input
-            style={styles.input}
-            value={changeset.getField("lastName", "")}
+            value={changeset.getField("lastName") || ""}
             onChangeText={createOnChange("lastName")}
             label="Last Name"
           />
-        </Layout>
-      </Layout>
+        </View>
+      </View>
       <Input
-        style={styles.input}
-        value={changeset.getField("username", "")}
+        value={changeset.getField("username") || ""}
         onChangeText={createOnChange("username")}
         label="Userame"
       />
       <Datepicker
-        style={styles.input}
-        date={changeset.getField("birthday")}
+        min={MIN_DATE}
+        max={MAX_DATE}
+        date={changeset.getField("birthday") || EMPTY_DATE}
         onSelect={createOnChange("birthday")}
         label="Birthday"
       />
       <Input
-        style={styles.input}
-        value={changeset.getField("about", "")}
+        value={changeset.getField("about") || ""}
         onChangeText={createOnChange("about")}
         multiline
         label="About"
       />
-      <Layout style={styles.buttons}>
+      <View style={styles.buttons}>
         <Button
           appearance="filled"
           accessoryLeft={loading ? () => <Spinner /> : undefined}
@@ -130,7 +125,7 @@ export function ProfileForm(props: IProfileFormProps) {
         >
           Update
         </Button>
-      </Layout>
+      </View>
     </>
   );
 }

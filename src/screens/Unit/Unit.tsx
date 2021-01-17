@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
-import { ListItem, Divider, Layout, List, Text } from "@ui-kitten/components";
+import { Image, StyleSheet, View } from "react-native";
+import { ListItem, Divider, Card, List, Text } from "@ui-kitten/components";
 import { getCategory } from "../../../course-lib";
 import { excerpt } from "../../excerpt";
 import {
@@ -13,8 +13,10 @@ import {
 const styles = StyleSheet.create({
   container: {
     marginTop: 16,
-    paddingLeft: 16,
-    paddingRight: 16,
+    marginBottom: 16,
+  },
+  quizzes: {
+    marginTop: 16,
   },
 });
 
@@ -25,28 +27,41 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
     ].unitMap[props.unit];
 
   return (
-    <Layout style={styles.container}>
+    <Card style={styles.container}>
       <Text category="h1">{unit.name}</Text>
       <Divider />
       <Text>{unit.description}</Text>
-      <Text category="h3">Quizzes</Text>
-      <Divider />
-      <List
-        data={unit.quizzes}
-        renderItem={({ item }) => (
-          <ListItem
-            key={item.url}
-            title={item.name}
-            description={excerpt(item.description)}
-            onPress={() =>
-              navigation.navigate(START_QUIZ_SCREEN, {
-                ...props,
-                quiz: item.url,
-              })
-            }
-          />
-        )}
-      />
-    </Layout>
+      <View style={styles.quizzes}>
+        <Text category="h3">Quizzes</Text>
+        <Divider />
+        <List
+          data={unit.quizzes}
+          renderItem={({ item }) => (
+            <ListItem
+              key={item.url}
+              title={item.name}
+              accessoryLeft={
+                item.logo &&
+                ((props) => (
+                  <Image
+                    {...props}
+                    source={item.logo}
+                    style={{ width: 64, height: 64 }}
+                    resizeMode="contain"
+                  />
+                ))
+              }
+              description={excerpt(item.description)}
+              onPress={() =>
+                navigation.navigate(START_QUIZ_SCREEN, {
+                  ...props,
+                  quiz: item.url,
+                })
+              }
+            />
+          )}
+        />
+      </View>
+    </Card>
   );
 }

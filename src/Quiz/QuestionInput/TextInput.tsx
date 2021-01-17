@@ -9,8 +9,10 @@ export function TextInput(props: IQuestionInputProps<string, TextInputClass>) {
       label="Answer"
       autoFocus
       status={
-        props.result.done && props.result.points < props.result.total
-          ? "danger"
+        props.result.done
+          ? props.result.correct
+            ? "success"
+            : "danger"
           : undefined
       }
       disabled={props.result.done}

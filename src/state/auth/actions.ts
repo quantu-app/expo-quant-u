@@ -13,8 +13,10 @@ firebase.auth().onAuthStateChanged((user) => {
   }
 });
 
-export function toggleSignInModal() {
-  store.update((state) => state.set("signInModal", !state.get("signInModal")));
+export function toggleSignInUpOpen() {
+  store.update((state) =>
+    state.set("signInUpOpen", !state.get("signInUpOpen"))
+  );
 }
 
 export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
@@ -83,8 +85,6 @@ function subscribeUserExtra(uid: string) {
               .set("firstName", data.firstName)
               .set("lastName", data.lastName)
               .set("username", data.username)
-              .set("country", data.country)
-              .set("timezone", data.timezone)
               .set("birthday", data.birthday && new Date(data.birthday))
               .set("about", data.about)
           )

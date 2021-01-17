@@ -9,7 +9,7 @@ import {
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { CourseScreen } from "./screens/Course/CourseScreen";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   MaterialCommunityIcons,
   Foundation,
@@ -18,7 +18,7 @@ import {
 import { Option } from "@aicacia/core";
 import {
   Button,
-  Divider,
+  Layout,
   Drawer,
   Icon,
   IndexPath,
@@ -35,10 +35,10 @@ import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
 import { ProfileScreen } from "./screens/Profile/ProfileScreen";
 import {
   IUser,
-  selectSignInModal,
+  selectSignInUpOpen,
   selectUser,
   signOut,
-  toggleSignInModal,
+  toggleSignInUpOpen,
 } from "./state/auth";
 import { useMapStateToProps } from "./state";
 import {
@@ -81,10 +81,10 @@ const navigationDrawerStyles = StyleSheet.create({
 });
 
 function NavigationDrawer() {
-  const { user, signInModal } = useMapStateToProps((state) => ({
-    user: selectUser(state),
-    signInModal: selectSignInModal(state),
-  }));
+  const [user, signInUpOpen] = useMapStateToProps((state) => [
+    selectUser(state),
+    selectSignInUpOpen(state),
+  ]);
 
   return (
     <DrawerNavigator.Navigator
@@ -92,7 +92,7 @@ function NavigationDrawer() {
       screenOptions={{
         headerShown: true,
         header(props) {
-          return <Header {...props} user={user} signInModal={signInModal} />;
+          return <Header {...props} user={user} signInUpOpen={signInUpOpen} />;
         },
       }}
       drawerType="front"
@@ -127,14 +127,21 @@ function NavigationDrawer() {
   );
 }
 
+const headerStyles = StyleSheet.create({
+  container: {
+    borderBottomColor: "rgb(228, 233, 242)",
+    borderBottomWidth: 1,
+  },
+});
+
 interface IDrawerHeaderProps extends DrawerHeaderProps {
   user: Option<IUser>;
-  signInModal: boolean;
+  signInUpOpen: boolean;
 }
 
 export function Header(props: IDrawerHeaderProps) {
   return (
-    <View>
+    <Layout style={headerStyles.container}>
       <TopNavigation
         alignment="start"
         title={() => (
@@ -168,15 +175,14 @@ export function Header(props: IDrawerHeaderProps) {
             : (props) => (
                 <TopNavigationAction
                   {...props}
-                  onPress={toggleSignInModal}
+                  onPress={toggleSignInUpOpen}
                   icon={(props) => <Icon {...props} name="log-in-outline" />}
                 />
               )
         }
       />
-      <Divider />
-      <SignIn open={props.signInModal} onClose={toggleSignInModal} />
-    </View>
+      <SignIn open={props.signInUpOpen} onClose={toggleSignInUpOpen} />
+    </Layout>
   );
 }
 

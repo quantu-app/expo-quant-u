@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Image, StyleSheet } from "react-native";
-import { Layout, Button, Text } from "@ui-kitten/components";
+import { Image, StyleSheet, View } from "react-native";
+import { Card, Button, Text, Divider } from "@ui-kitten/components";
 import { getCategory } from "../../../course-lib/categories";
 import { excerpt } from "../../excerpt";
 import {
@@ -11,13 +11,22 @@ import {
 } from "../../navigationConfig";
 
 const styles = StyleSheet.create({
-  title: {
-    marginTop: 16,
-    padding: 16,
+  grid: {
+    marginBottom: 16,
+    flex: 1,
+    flexShrink: 1,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    flexWrap: "wrap",
   },
   card: {
-    margin: 16,
-    width: 196,
+    maxWidth: 256,
+    marginTop: 16,
+  },
+  buttons: {
+    marginTop: 16,
+    alignItems: "center",
   },
 });
 
@@ -27,34 +36,39 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
 
   return (
     <>
-      <Layout style={styles.title}>
+      <Card>
         <Text category="h1">{category.name}</Text>
+        <Divider />
         <Text>{category.description}</Text>
-      </Layout>
-      {category.courses.map((course) => (
-        <Layout key={course.url} style={styles.card}>
-          <Text category="h2">{course.name}</Text>
-          {course.logo && (
-            <Image
-              source={course.logo}
-              resizeMode="contain"
-              style={{ height: 128 }}
-            />
-          )}
-          <Text>{excerpt(course.description)}</Text>
-          <Button
-            appearance="filled"
-            onPress={() =>
-              navigation.navigate(COURSE_SCREEN, {
-                ...props,
-                course: course.url,
-              })
-            }
-          >
-            Start
-          </Button>
-        </Layout>
-      ))}
+      </Card>
+      <View style={styles.grid}>
+        {category.courses.map((course) => (
+          <Card key={course.url} style={styles.card}>
+            <Text category="h2">{course.name}</Text>
+            {course.logo && (
+              <Image
+                source={course.logo}
+                resizeMode="contain"
+                style={{ height: 128 }}
+              />
+            )}
+            <Text>{excerpt(course.description)}</Text>
+            <View style={styles.buttons}>
+              <Button
+                appearance="filled"
+                onPress={() =>
+                  navigation.navigate(COURSE_SCREEN, {
+                    ...props,
+                    course: course.url,
+                  })
+                }
+              >
+                Start
+              </Button>
+            </View>
+          </Card>
+        ))}
+      </View>
     </>
   );
 }

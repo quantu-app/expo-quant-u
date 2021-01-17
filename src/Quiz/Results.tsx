@@ -1,10 +1,8 @@
 import React from "react";
 import { RecordOf } from "immutable";
-import { StyleSheet } from "react-native";
-import { Button, Text, Layout } from "@ui-kitten/components";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StyleSheet, View } from "react-native";
+import { Button, Text, Card } from "@ui-kitten/components";
 import { Quiz } from "../../course-lib";
-import customTheme from "../../custom-theme.json";
 import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
 import { QuestionInput } from "./QuestionInput";
@@ -16,35 +14,9 @@ interface IResultsProps {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  result: {
-    flexDirection: "row",
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  question: {
-    flex: 11,
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  points: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-  },
   buttons: {
     marginTop: 16,
     alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-  },
-  resetButton: {
-    marginRight: 16,
   },
 });
 
@@ -52,47 +24,47 @@ const noop = () => null;
 
 export function Results(props: IResultsProps) {
   return (
-    <Layout style={styles.container}>
-      <Layout>
+    <Card>
+      <View>
+        <Text>
+          Total Time
+          {props.state.end - props.state.start}
+          ms
+        </Text>
+      </View>
+      <View>
         {props.state.questions.map((question, index) => {
           const questionResult = props.state.results.get(
             index
           ) as RecordOf<IQuestionResult>;
 
           return (
-            <Layout key={index} style={styles.result}>
-              <Layout style={styles.question}>
+            <View key={index}>
+              <View>
                 <QuestionInput
                   result={questionResult}
                   input={question.getInput()}
                   onChange={noop}
                   onCheck={noop}
                 />
-              </Layout>
-              <Layout style={styles.points}>
-                <Text category="h1">
-                  {questionResult.correct ? (
-                    <MaterialCommunityIcons
-                      name="check"
-                      size={32}
-                      color={customTheme["color-success-100"]}
-                    />
-                  ) : (
-                    <MaterialCommunityIcons
-                      name="window-close"
-                      size={32}
-                      color={customTheme["color-danger-100"]}
-                    />
-                  )}
+              </View>
+              <View>
+                <Text>
                   {questionResult.points} / {questionResult.total}
                 </Text>
-              </Layout>
-            </Layout>
+              </View>
+              <View>
+                <Text>
+                  {questionResult.end - questionResult.start}
+                  ms
+                </Text>
+              </View>
+            </View>
           );
         })}
-      </Layout>
-      <Layout style={{ marginTop: 16 }}>
-        <Text category="h1">
+      </View>
+      <View>
+        <Text>
           Points -{" "}
           {props.state.results.reduce(
             (count, questionResult) => count + questionResult.points,
@@ -104,16 +76,12 @@ export function Results(props: IResultsProps) {
             0
           )}
         </Text>
-      </Layout>
-      <Layout style={styles.buttons}>
-        <Button
-          appearance="filled"
-          style={styles.resetButton}
-          onPress={props.onReset}
-        >
+      </View>
+      <View style={styles.buttons}>
+        <Button appearance="filled" onPress={props.onReset}>
           Reset
         </Button>
-      </Layout>
-    </Layout>
+      </View>
+    </Card>
   );
 }

@@ -8,6 +8,8 @@ export interface IQuestionResult<T = any> {
   correct: boolean;
   total: number;
   points: number;
+  start: number;
+  end: number;
 }
 
 export const QuestionResult = Record<IQuestionResult>({
@@ -18,4 +20,6 @@ export const QuestionResult = Record<IQuestionResult>({
   correct: false,
   total: 0,
   points: 0,
+  start: 0,
+  end: 0,
 });

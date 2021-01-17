@@ -14,8 +14,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     maxWidth: LARGE_WIDTH,
-    paddingLeft: 16,
-    paddingRight: 16,
+    padding: 16,
   },
   content: {
     flex: 1,

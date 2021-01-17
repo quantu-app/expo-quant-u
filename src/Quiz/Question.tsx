@@ -1,8 +1,8 @@
 import React from "react";
 import { RecordOf } from "immutable";
 import { useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
-import { Button, Layout, Spinner } from "@ui-kitten/components";
+import { StyleSheet, View } from "react-native";
+import { Button, Spinner } from "@ui-kitten/components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../../course-lib";
 import { QuestionInput } from "./QuestionInput";
@@ -60,7 +60,7 @@ export function Question<T = any>(props: IQuestionProps<T>) {
   useMemo(async () => {
     setLoading(true);
     const total = await props.question.getTotalPoints();
-    setState(state.set("total", total));
+    setState(state.set("total", total).set("start", Date.now()));
     setLoading(false);
   }, [props.question, props.result]);
 
@@ -74,30 +74,38 @@ export function Question<T = any>(props: IQuestionProps<T>) {
       nextState = state
         .set("done", true)
         .set("points", points)
-        .set("correct", points === state.total && state.total > 0);
+        .set("correct", points === state.total && state.total > 0)
+        .set("end", Date.now());
     setState(nextState);
     props.onCheck(nextState);
     setLoading(false);
   }
 
   async function onExplain() {
-    const nextState = state.set("done", true).set("explained", true);
+    let nextState = state;
+
+    if (!nextState.done) {
+      nextState = nextState.set("end", Date.now());
+    }
+
+    nextState = nextState.set("done", true).set("explained", true);
+
     setState(nextState);
     props.onCheck(nextState);
   }
 
   return (
     <>
-      <Layout style={styles.prompt}>{props.question.getPrompt()}</Layout>
-      <Layout style={styles.input}>
+      <View style={styles.prompt}>{props.question.getPrompt()}</View>
+      <View style={styles.input}>
         <QuestionInput
           result={state}
           input={props.question.getInput()}
           onChange={onInputChange}
           onCheck={onCheck}
         />
-      </Layout>
-      <Layout style={styles.buttons}>
+      </View>
+      <View style={styles.buttons}>
         {state.done ? (
           <Button appearance="filled" onPress={props.onNext}>
             Next
@@ -122,8 +130,8 @@ export function Question<T = any>(props: IQuestionProps<T>) {
             Explain
           </Button>
         )}
-      </Layout>
-      <Layout style={styles.results}>
+      </View>
+      <View style={styles.results}>
         {state.done && state.correct && (
           <MaterialCommunityIcons
             name="check"
@@ -138,14 +146,14 @@ export function Question<T = any>(props: IQuestionProps<T>) {
             color={customTheme["color-danger-100"]}
           />
         )}
-      </Layout>
+      </View>
       {state.explained &&
         props.question
           .getExplanation()
           .map((explanation) => (
-            <Layout key={0} style={styles.explanation}>
+            <View key={0} style={styles.explanation}>
               {explanation}
-            </Layout>
+            </View>
           ))
           .unwrapOr(null as any)}
     </>
