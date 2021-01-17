@@ -1,7 +1,7 @@
 import React from "react";
 import { RecordOf } from "immutable";
 import { StyleSheet, View } from "react-native";
-import { Button, Text, Card } from "@ui-kitten/components";
+import { Button, Text } from "@ui-kitten/components";
 import { Quiz } from "../../course-lib";
 import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
@@ -24,7 +24,7 @@ const noop = () => null;
 
 export function Results(props: IResultsProps) {
   return (
-    <Card>
+    <>
       <View>
         <Text>
           Total Time
@@ -82,6 +82,6 @@ export function Results(props: IResultsProps) {
           Reset
         </Button>
       </View>
-    </Card>
+    </>
   );
 }

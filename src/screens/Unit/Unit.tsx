@@ -11,10 +11,6 @@ import {
 } from "../../navigationConfig";
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 16,
-    marginBottom: 16,
-  },
   quizzes: {
     marginTop: 16,
   },
@@ -27,7 +23,7 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
     ].unitMap[props.unit];
 
   return (
-    <Card style={styles.container}>
+    <Card>
       <Text category="h1">{unit.name}</Text>
       <Divider />
       <Text>{unit.description}</Text>

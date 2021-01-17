@@ -4,22 +4,17 @@ import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerContentComponentProps,
-  DrawerItem,
   DrawerContentOptions,
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { CourseScreen } from "./screens/Course/CourseScreen";
 import { StyleSheet } from "react-native";
-import {
-  MaterialCommunityIcons,
-  Foundation,
-  Feather,
-} from "@expo/vector-icons";
 import { Option } from "@aicacia/core";
 import {
   Button,
   Layout,
   Drawer,
+  DrawerItem,
   Icon,
   IndexPath,
   TopNavigation,
@@ -60,7 +55,7 @@ import { SignIn } from "./SignIn";
 import app from "../app.json";
 import { DrawerHeaderProps } from "@react-navigation/drawer/lib/typescript/src/types";
 
-export const DrawerNavigator = createDrawerNavigator<ParamList>();
+export const { Navigator, Screen } = createDrawerNavigator<ParamList>();
 
 export function Navigation() {
   return (
@@ -73,13 +68,6 @@ export function Navigation() {
   );
 }
 
-const navigationDrawerStyles = StyleSheet.create({
-  sceneContainerStyle: {
-    flex: 1,
-    flexGrow: 1,
-  },
-});
-
 function NavigationDrawer() {
   const [user, signInUpOpen] = useMapStateToProps((state) => [
     selectUser(state),
@@ -87,7 +75,7 @@ function NavigationDrawer() {
   ]);
 
   return (
-    <DrawerNavigator.Navigator
+    <Navigator
       initialRouteName={DEFAULT_SCREEN}
       screenOptions={{
         headerShown: true,
@@ -97,33 +85,20 @@ function NavigationDrawer() {
       }}
       drawerType="front"
       drawerContent={(props) => <DrawerContent {...props} user={user} />}
-      sceneContainerStyle={navigationDrawerStyles.sceneContainerStyle}
       detachInactiveScreens
     >
-      <DrawerNavigator.Screen name={HOME_SCREEN} component={HomeScreen} />
+      <Screen name={HOME_SCREEN} component={HomeScreen} />
       {user.isSome() && (
-        <DrawerNavigator.Screen
-          name={PROFILE_SCREEN}
-          component={ProfileScreen}
-        />
+        <Screen name={PROFILE_SCREEN} component={ProfileScreen} />
       )}
-      <DrawerNavigator.Screen
-        name={CATEGORIES_SCREEN}
-        component={CategoriesScreen}
-      />
-      <DrawerNavigator.Screen
-        name={CATEGORY_SCREEN}
-        component={CategoryScreen}
-      />
-      <DrawerNavigator.Screen name={COURSE_SCREEN} component={CourseScreen} />
-      <DrawerNavigator.Screen name={CHAPTER_SCREEN} component={ChapterScreen} />
-      <DrawerNavigator.Screen name={UNIT_SCREEN} component={UnitScreen} />
-      <DrawerNavigator.Screen
-        name={START_QUIZ_SCREEN}
-        component={StartQuizScreen}
-      />
-      <DrawerNavigator.Screen name={QUIZ_SCREEN} component={QuizScreen} />
-    </DrawerNavigator.Navigator>
+      <Screen name={CATEGORIES_SCREEN} component={CategoriesScreen} />
+      <Screen name={CATEGORY_SCREEN} component={CategoryScreen} />
+      <Screen name={COURSE_SCREEN} component={CourseScreen} />
+      <Screen name={CHAPTER_SCREEN} component={ChapterScreen} />
+      <Screen name={UNIT_SCREEN} component={UnitScreen} />
+      <Screen name={START_QUIZ_SCREEN} component={StartQuizScreen} />
+      <Screen name={QUIZ_SCREEN} component={QuizScreen} />
+    </Navigator>
   );
 }
 
@@ -191,27 +166,31 @@ interface IDrawerContentProps
   user: Option<IUser>;
 }
 
+function mapStateIndexToListed(index: number) {
+  switch (index) {
+    case 0:
+      return 0;
+    case 1:
+      return 2;
+    default:
+      return 1;
+  }
+}
+
 function DrawerContent(props: IDrawerContentProps) {
   return (
     <DrawerContentScrollView {...props}>
       <Drawer
-        selectedIndex={new IndexPath(props.state.index)}
-        onSelect={(index) =>
-          props.navigation.navigate(props.state.routeNames[index.row])
-        }
+        selectedIndex={new IndexPath(mapStateIndexToListed(props.state.index))}
       >
         <DrawerItem
-          icon={({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} />
-          )}
-          label={HOME_SCREEN}
+          accessoryLeft={(props) => <Icon {...props} name="home-outline" />}
+          title={HOME_SCREEN}
           onPress={() => props.navigation.navigate(HOME_SCREEN)}
         />
         <DrawerItem
-          icon={({ color, size }) => (
-            <Foundation name="page-multiple" color={color} size={size} />
-          )}
-          label={"Mathematics"}
+          accessoryLeft={(props) => <Icon {...props} name="list-outline" />}
+          title={"Mathematics"}
           onPress={() =>
             props.navigation.navigate(CATEGORY_SCREEN, {
               category: "mathematics",
@@ -220,10 +199,8 @@ function DrawerContent(props: IDrawerContentProps) {
         />
         {props.user.isSome() ? (
           <DrawerItem
-            icon={({ color, size }) => (
-              <Feather name="user" color={color} size={size} />
-            )}
-            label={PROFILE_SCREEN}
+            accessoryLeft={(props) => <Icon {...props} name="person-outline" />}
+            title={PROFILE_SCREEN}
             onPress={() => props.navigation.navigate(PROFILE_SCREEN)}
           />
         ) : (

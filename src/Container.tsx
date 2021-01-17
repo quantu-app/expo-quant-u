@@ -5,6 +5,7 @@ import { LARGE_WIDTH } from "./screens";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexGrow: 999,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

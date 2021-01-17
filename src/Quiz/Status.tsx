@@ -1,7 +1,7 @@
 import React from "react";
 import { RecordOf } from "immutable";
-import { StyleSheet } from "react-native";
-import { Icon, Layout } from "@ui-kitten/components";
+import { StyleSheet, View } from "react-native";
+import { Icon } from "@ui-kitten/components";
 import customThem from "../../custom-theme.json";
 import { IQuizState } from "./Quiz";
 
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 
 export function Status(props: IStatusProps) {
   return (
-    <Layout style={styles.container}>
+    <View style={styles.container}>
       {props.state.results.map((result, index) => (
         <Icon
           key={index}
@@ -46,6 +46,6 @@ export function Status(props: IStatusProps) {
           onPress={() => props.onSelectQuestion(index)}
         />
       ))}
-    </Layout>
+    </View>
   );
 }

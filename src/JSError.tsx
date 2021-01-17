@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, Layout } from "@ui-kitten/components";
+import { Text } from "@ui-kitten/components";
+import { View } from "react-native";
 
 const RE_NEWLINE = /[^\r\n]+/g;
 
@@ -14,11 +15,11 @@ export function JSError(props: IJSErrorProps) {
     <>
       <Text category="h1">{props.error.name}</Text>
       <Text category="h3">{props.error.message}</Text>
-      <Layout>
+      <View>
         {(props.error.stack || "").split(RE_NEWLINE).map((line, index) => (
           <Text key={index}>{line}</Text>
         ))}
-      </Layout>
+      </View>
     </>
   );
 }

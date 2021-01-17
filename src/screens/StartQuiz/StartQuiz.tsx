@@ -10,9 +10,6 @@ import {
 } from "../../navigationConfig";
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 16,
-  },
   buttons: {
     marginTop: 16,
     alignItems: "center",
@@ -26,7 +23,7 @@ export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
     navigation = useNavigation();
 
   return (
-    <Card style={styles.container}>
+    <Card>
       <Text category="h1">{quiz.name}</Text>
       <Divider />
       <Text>{quiz.description}</Text>
