@@ -25,12 +25,7 @@ const styles = StyleSheet.create({
 });
 
 function changesetFn(changeset: Changeset<IUserExtra>): Changeset<IUserExtra> {
-  return changeset.validateRequired([
-    "firstName",
-    "lastName",
-    "username",
-    "birthday",
-  ]);
+  return changeset.validateRequired(["username"]);
 }
 
 const EMPTY_DATE = new Date(
@@ -46,11 +41,11 @@ export interface IProfileFormProps {
 export function ProfileForm(props: IProfileFormProps) {
   const [loading, setLoading] = useState(false),
     [changeset, setChangeset] = useState<Changeset<IUserExtra>>(() =>
-      changesetFn(new Changeset(props.user.extra.toJS() as any))
+      changesetFn(new Changeset({}))
     );
 
   useMemo(() => {
-    setChangeset(changeset.addDefaults(props.user.extra.toJS()));
+    setChangeset(changeset.addDefaults(props.user.extra.toJS()).clearErrors());
   }, [props.user.extra]);
 
   async function onSubmit() {
@@ -58,16 +53,11 @@ export function ProfileForm(props: IProfileFormProps) {
     try {
       const userExtra = changeset.applyChanges().toJS() as IUserExtra;
 
-      if (await isValidUsername(props.user.uid, userExtra.username)) {
+      if (await isValidUsername(props.user, userExtra.username)) {
+        await setUserExtra(props.user, userExtra);
+      } else {
         setChangeset(changeset.addError("username", "already taken"));
-        setLoading(false);
-        return;
       }
-
-      await setUserExtra(
-        props.user.uid,
-        changeset.applyChanges().toJS() as IUserExtra
-      );
     } finally {
       setLoading(false);
     }
@@ -75,7 +65,6 @@ export function ProfileForm(props: IProfileFormProps) {
 
   function createOnChange(name: keyof IUserExtra) {
     return function onChange(value?: IUserExtra[keyof IUserExtra]) {
-      console.log(name, value);
       setChangeset(changesetFn(changeset.addChange(name, value).clearErrors()));
     };
   }
@@ -85,6 +74,11 @@ export function ProfileForm(props: IProfileFormProps) {
       <View style={styles.container}>
         <View style={styles.grid}>
           <Input
+            status={
+              changeset.getErrorList("firstName").isEmpty()
+                ? undefined
+                : "danger"
+            }
             value={changeset.getField("firstName") || ""}
             onChangeText={createOnChange("firstName")}
             label="First Name"
@@ -92,6 +86,11 @@ export function ProfileForm(props: IProfileFormProps) {
         </View>
         <View style={styles.grid}>
           <Input
+            status={
+              changeset.getErrorList("lastName").isEmpty()
+                ? undefined
+                : "danger"
+            }
             value={changeset.getField("lastName") || ""}
             onChangeText={createOnChange("lastName")}
             label="Last Name"
@@ -99,6 +98,9 @@ export function ProfileForm(props: IProfileFormProps) {
         </View>
       </View>
       <Input
+        status={
+          changeset.getErrorList("username").isEmpty() ? undefined : "danger"
+        }
         value={changeset.getField("username") || ""}
         onChangeText={createOnChange("username")}
         label="Userame"
@@ -106,6 +108,9 @@ export function ProfileForm(props: IProfileFormProps) {
       <Datepicker
         min={MIN_DATE}
         max={MAX_DATE}
+        status={
+          changeset.getErrorList("birthday").isEmpty() ? undefined : "danger"
+        }
         date={changeset.getField("birthday") || EMPTY_DATE}
         onSelect={createOnChange("birthday")}
         label="Birthday"

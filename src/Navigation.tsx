@@ -28,13 +28,7 @@ import { UnitScreen } from "./screens/Unit/UnitScreen";
 import { QuizScreen } from "./screens/Quiz/QuizScreen";
 import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
 import { ProfileScreen } from "./screens/Profile/ProfileScreen";
-import {
-  IUser,
-  selectSignInUpOpen,
-  selectUser,
-  signOut,
-  toggleSignInUpOpen,
-} from "./state/auth";
+import { IUser, selectUser, signOut, toggleSignInUpOpen } from "./state/auth";
 import { useMapStateToProps } from "./state";
 import {
   CATEGORIES_SCREEN,
@@ -51,7 +45,7 @@ import {
   START_QUIZ_SCREEN,
   UNIT_SCREEN,
 } from "./navigationConfig";
-import { SignIn } from "./SignIn";
+import { SignInUp } from "./SignInUp";
 import app from "../app.json";
 import customTheme from "../custom-theme.json";
 import { DrawerHeaderProps } from "@react-navigation/drawer/lib/typescript/src/types";
@@ -70,10 +64,7 @@ export function Navigation() {
 }
 
 function NavigationDrawer() {
-  const [user, signInUpOpen] = useMapStateToProps((state) => [
-    selectUser(state),
-    selectSignInUpOpen(state),
-  ]);
+  const user = useMapStateToProps(selectUser);
 
   return (
     <Navigator
@@ -81,7 +72,7 @@ function NavigationDrawer() {
       screenOptions={{
         headerShown: true,
         header(props) {
-          return <Header {...props} user={user} signInUpOpen={signInUpOpen} />;
+          return <Header {...props} user={user} />;
         },
       }}
       drawerType="front"
@@ -112,7 +103,6 @@ const headerStyles = StyleSheet.create({
 
 interface IDrawerHeaderProps extends DrawerHeaderProps {
   user: Option<IUser>;
-  signInUpOpen: boolean;
 }
 
 export function Header(props: IDrawerHeaderProps) {
@@ -141,23 +131,25 @@ export function Header(props: IDrawerHeaderProps) {
         )}
         accessoryRight={
           props.user.isSome()
-            ? (props) => (
+            ? (accessoryProps) => (
                 <TopNavigationAction
-                  {...props}
+                  {...accessoryProps}
                   onPress={signOut}
-                  icon={(props) => <Icon {...props} name="person-outline" />}
+                  accessibilityHint="Log out"
+                  icon={(props) => <Icon {...props} name="log-out-outline" />}
                 />
               )
             : (props) => (
                 <TopNavigationAction
                   {...props}
                   onPress={toggleSignInUpOpen}
+                  accessibilityHint="Log in"
                   icon={(props) => <Icon {...props} name="log-in-outline" />}
                 />
               )
         }
       />
-      <SignIn open={props.signInUpOpen} onClose={toggleSignInUpOpen} />
+      <SignInUp />
     </Layout>
   );
 }
