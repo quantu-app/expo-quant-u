@@ -53,6 +53,7 @@ import {
 } from "./navigationConfig";
 import { SignIn } from "./SignIn";
 import app from "../app.json";
+import customTheme from "../custom-theme.json";
 import { DrawerHeaderProps } from "@react-navigation/drawer/lib/typescript/src/types";
 
 export const { Navigator, Screen } = createDrawerNavigator<ParamList>();
@@ -104,7 +105,7 @@ function NavigationDrawer() {
 
 const headerStyles = StyleSheet.create({
   container: {
-    borderBottomColor: "rgb(228, 233, 242)",
+    borderBottomColor: customTheme["color-danger-transparent-100"],
     borderBottomWidth: 1,
   },
 });
