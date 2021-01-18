@@ -27,3 +27,14 @@ npm run web
 ### Writing Generators
 
 `generators-src` contains generator funtions, use `npm run syncGenerators` to regenerate the generators
+
+## Build Android (WIP)
+
+```bash
+ngrok http 127.0.0.1:8080 -host-header="127.0.0.1:8080"
+```
+
+```bash
+expo export --public-url https://4cb998adf5ad.ngrok.io
+turtle build:android --public-url https://4cb998adf5ad.ngrok.io/android-index.json
+```
