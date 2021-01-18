@@ -11,6 +11,8 @@ import { appendFile } from "./utils/appendFile";
 import { createAsset } from "./utils/createAsset";
 import { findImage } from "./utils/findImage";
 import { createTSImport } from "./utils/createTSImport";
+import { fileExists } from "./utils/fileExists";
+import { Lesson } from "./Lesson";
 
 export class Unit {
   name = "";
@@ -18,7 +20,7 @@ export class Unit {
   logo: Option<string> = none();
   url = "";
   tags: string[] = [];
-  quizzes: Quiz[] = [];
+  lessons: Lesson[] = [];
 
   async parse(dirname: string): Promise<this> {
     const tasks: Promise<any>[] = [];
@@ -34,10 +36,14 @@ export class Unit {
       })
     );
 
-    for await (const quizDir of walkDirectoriesSync(join(dirname, "quizzes"))) {
-      const quiz = new Quiz();
-      this.quizzes.push(quiz);
-      tasks.push(quiz.parse(quizDir));
+    for (const lessonDir of walkDirectoriesSync(join(dirname))) {
+      if (fileExists(join(lessonDir, "quiz"), [".yml", ".yaml"])) {
+        const quiz = new Quiz();
+        this.lessons.push(quiz);
+        tasks.push(quiz.parse(lessonDir));
+      } else {
+        throw new Error(`Invalid lesson directory ${lessonDir}`);
+      }
     }
 
     await Promise.all(tasks);
@@ -57,10 +63,10 @@ export class Unit {
       logo = await createAsset(this.logo.unwrap(), assetsDir, "image");
     }
 
-    const quizzes: [string, Quiz][] = this.quizzes.map((quiz, index) => {
-      const quizDir = join(dirname, "quizzes", `${index}-${quiz.url}`);
-      tasks.push(quiz.write(quizDir, courselibDir, assetsDir));
-      return ["." + sep + relative(dirname, quizDir), quiz];
+    const lessons: [string, Lesson][] = this.lessons.map((lesson, index) => {
+      const lessonDir = join(dirname, `${index}-${lesson.url}`);
+      tasks.push(lesson.write(lessonDir, courselibDir, assetsDir));
+      return ["." + sep + relative(dirname, lessonDir), lesson];
     });
 
     tasks.push(
@@ -68,12 +74,12 @@ export class Unit {
         join(dirname, "index.ts"),
         `import { IUnit } from "${createTSImport(
           "." + sep + relative(dirname, courselibDir)
-        )}";${EOL}${quizzes
+        )}";${EOL}${lessons
           .map(
-            ([path, quiz]) =>
-              `import { quiz as ${camelCase(quiz.url)} } from "${createTSImport(
-                path
-              )}";`
+            ([path, lesson]) =>
+              `import { lesson as ${camelCase(
+                lesson.url
+              )} } from "${createTSImport(path)}";`
           )
           .join(EOL)}${EOL}`
       ).then((filepath) =>
@@ -87,12 +93,12 @@ export class Unit {
             this.tags
           )},${EOL}\tdescription: ${JSON.stringify(
             this.description
-          )},${EOL}\tquizzes: [${quizzes.map(([_path, quiz]) =>
-            camelCase(quiz.url)
-          )}],${EOL}\tquizMap: {${EOL}${quizzes
+          )},${EOL}\tlessons: [${lessons.map(([_path, lesson]) =>
+            camelCase(lesson.url)
+          )}],${EOL}\tlessonMap: {${EOL}${lessons
             .map(
-              ([_path, quiz]) =>
-                `\t\t"${quiz.url}": ${camelCase(quiz.url)},${EOL}`
+              ([_path, lesson]) =>
+                `\t\t"${lesson.url}": ${camelCase(lesson.url)},${EOL}`
             )
             .join("")}\t},${EOL}}`
         )

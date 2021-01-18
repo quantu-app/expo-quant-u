@@ -33,7 +33,7 @@ export function Home() {
     navigation = useNavigation();
 
   return (
-    <Card>
+    <Card disabled>
       <View
         style={
           isSmallScreen(windowDimensions.width)

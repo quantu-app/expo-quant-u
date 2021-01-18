@@ -19,7 +19,7 @@ export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
     ];
 
   return (
-    <Card>
+    <Card disabled>
       <Text category="h1">{chapter.name}</Text>
       <Divider />
       <Text>{chapter.description}</Text>

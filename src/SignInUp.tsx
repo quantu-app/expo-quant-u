@@ -39,7 +39,7 @@ export function SignInUp() {
       onBackdropPress={toggleSignInUpOpen}
       backdropStyle={styles.backdrop}
     >
-      <Card>
+      <Card disabled>
         <SignIn />
       </Card>
     </Modal>

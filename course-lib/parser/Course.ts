@@ -34,7 +34,7 @@ export class Course {
       })
     );
 
-    for await (const chapterDir of walkDirectoriesSync(dirname)) {
+    for (const chapterDir of walkDirectoriesSync(dirname)) {
       const chapter = new Chapter();
       this.chapters.push(chapter);
       tasks.push(chapter.parse(chapterDir));

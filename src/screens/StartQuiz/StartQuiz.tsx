@@ -19,11 +19,11 @@ const styles = StyleSheet.create({
 export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
   const quiz = getCategory(props.category).courseMap[props.course].chapterMap[
       props.chapter
-    ].unitMap[props.unit].quizMap[props.quiz],
+    ].unitMap[props.unit].lessonMap[props.quiz],
     navigation = useNavigation();
 
   return (
-    <Card>
+    <Card disabled>
       <Text category="h1">{quiz.name}</Text>
       <Divider />
       <Text>{quiz.description}</Text>

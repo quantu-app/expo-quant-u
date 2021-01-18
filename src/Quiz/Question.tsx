@@ -8,9 +8,9 @@ import type { Question as QuestionClass } from "../../course-lib";
 import { QuestionInput } from "./QuestionInput";
 import customTheme from "../../custom-theme.json";
 import { IQuestionResult } from "./QuestionResult";
+import { useTimeout } from "./useTimeout";
 
 export interface IQuestionProps<T = any> {
-  timeInSeconds?: number;
   result: RecordOf<IQuestionResult<T>>;
   question: QuestionClass<T>;
   onNext(): void;
@@ -55,7 +55,12 @@ const styles = StyleSheet.create({
 
 export function Question<T = any>(props: IQuestionProps<T>) {
   const [loading, setLoading] = useState(false),
-    [state, setState] = useState(props.result);
+    [state, setState] = useState(props.result),
+    timeInSeconds = props.question.getTimeInSeconds();
+
+  if (timeInSeconds) {
+    useTimeout(timeInSeconds, onCheck);
+  }
 
   useMemo(async () => {
     setLoading(true);
@@ -69,13 +74,14 @@ export function Question<T = any>(props: IQuestionProps<T>) {
   }
 
   async function onCheck() {
+    const endTime = Date.now();
     setLoading(true);
     const points = await props.question.checkAnswer(state.value as any),
       nextState = state
         .set("done", true)
         .set("points", points)
         .set("correct", points === state.total && state.total > 0)
-        .set("end", Date.now());
+        .set("end", endTime);
     setState(nextState);
     props.onCheck(nextState);
     setLoading(false);
@@ -136,14 +142,14 @@ export function Question<T = any>(props: IQuestionProps<T>) {
           <MaterialCommunityIcons
             name="check"
             size={32}
-            color={customTheme["color-success-100"]}
+            color={customTheme["color-success-400"]}
           />
         )}
         {state.done && !state.correct && (
           <MaterialCommunityIcons
             name="window-close"
             size={32}
-            color={customTheme["color-danger-100"]}
+            color={customTheme["color-danger-400"]}
           />
         )}
       </View>

@@ -11,7 +11,7 @@ import {
 } from "../../navigationConfig";
 
 const styles = StyleSheet.create({
-  quizzes: {
+  lessons: {
     marginTop: 16,
   },
 });
@@ -23,15 +23,15 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
     ].unitMap[props.unit];
 
   return (
-    <Card>
+    <Card disabled>
       <Text category="h1">{unit.name}</Text>
       <Divider />
       <Text>{unit.description}</Text>
-      <View style={styles.quizzes}>
-        <Text category="h3">Quizzes</Text>
+      <View style={styles.lessons}>
+        <Text category="h3">Lessons</Text>
         <Divider />
         <List
-          data={unit.quizzes}
+          data={unit.lessons}
           renderItem={({ item }) => (
             <ListItem
               key={item.url}
@@ -51,7 +51,7 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
               onPress={() =>
                 navigation.navigate(START_QUIZ_SCREEN, {
                   ...props,
-                  quiz: item.url,
+                  lesson: item.url,
                 })
               }
             />

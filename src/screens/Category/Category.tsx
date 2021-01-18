@@ -36,7 +36,7 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
 
   return (
     <>
-      <Card>
+      <Card disabled>
         <Text category="h1">{category.name}</Text>
         <Divider />
         <Text>{category.description}</Text>

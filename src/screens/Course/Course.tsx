@@ -21,7 +21,7 @@ export function Course(props: ParamList[typeof COURSE_SCREEN]) {
     course = getCategory(props.category).courseMap[props.course];
 
   return (
-    <Card>
+    <Card disabled>
       <Text category="h1">{course.name}</Text>
       <Divider />
       <Text>{course.description}</Text>

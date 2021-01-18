@@ -8,7 +8,7 @@ export function Profile() {
   const user = useMapStateToProps(selectUser).unwrap();
 
   return (
-    <Card>
+    <Card disabled>
       <ProfileForm user={user} />
     </Card>
   );

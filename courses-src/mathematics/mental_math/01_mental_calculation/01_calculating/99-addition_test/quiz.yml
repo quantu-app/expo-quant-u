@@ -5,6 +5,6 @@ description: |
 items:
   - generator: mathematics.mental_math.mental_calculation.addition
     count: 5
-    timeInSeconds: 10
+    timeInSeconds: 5
     config:
-      magnitude: 2
+      magnitude: 1

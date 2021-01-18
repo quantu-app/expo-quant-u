@@ -31,7 +31,7 @@ export function Categories() {
 
   return (
     <>
-      <Card>
+      <Card disabled>
         <Text category="h1">Categories</Text>
       </Card>
       <View style={styles.grid}>

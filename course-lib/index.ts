@@ -19,7 +19,9 @@ export {
   IQuizItem,
   IChapter,
   ICourse,
+  ILesson,
   IUnit,
+  isQuiz,
 } from "./interfaces";
 export {
   getCategories,

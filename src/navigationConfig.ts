@@ -29,14 +29,14 @@ export type ParamList = {
     course: string;
     chapter: string;
     unit: string;
-    quiz: string;
+    lesson: string;
   };
   [QUIZ_SCREEN]: {
     category: string;
     course: string;
     chapter: string;
     unit: string;
-    quiz: string;
+    lesson: string;
     seed: number;
   };
 };
@@ -60,10 +60,9 @@ export const linking = {
       [COURSE_SCREEN]: ":category/:course",
       [CHAPTER_SCREEN]: ":category/:course/:chapter",
       [UNIT_SCREEN]: ":category/:course/:chapter/:unit",
-      [START_QUIZ_SCREEN]:
-        ":category/:course/:chapter/:unit/quizzes/:quiz/start",
+      [START_QUIZ_SCREEN]: ":category/:course/:chapter/:unit/:lesson/start",
       [QUIZ_SCREEN]: {
-        path: ":category/:course/:chapter/:unit/quizzes/:quiz",
+        path: ":category/:course/:chapter/:unit/:lesson",
         parse: {
           seed: Number,
         },

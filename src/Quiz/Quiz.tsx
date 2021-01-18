@@ -11,6 +11,8 @@ import { Question } from "./Question";
 import { IQuestionResult, QuestionResult } from "./QuestionResult";
 import { Results } from "./Results";
 import { Status } from "./Status";
+import { StyleSheet, View } from "react-native";
+import { Counter } from "./Counter";
 
 export interface IQuizProps {
   rng: Rng;
@@ -18,7 +20,6 @@ export interface IQuizProps {
 }
 
 export interface IQuizState {
-  loading: boolean;
   done: boolean;
   current: number;
   start: number;
@@ -28,8 +29,7 @@ export interface IQuizState {
 }
 
 export const QuizState = Record<IQuizState>({
-  loading: false,
-  done: false,
+  done: true,
   current: -1,
   start: 0,
   end: 0,
@@ -37,93 +37,116 @@ export const QuizState = Record<IQuizState>({
   results: List(),
 });
 
+const styles = StyleSheet.create({
+  timer: {
+    alignItems: "center",
+  },
+});
+
 export function Quiz(props: IQuizProps) {
   const [state, setState] = useState(QuizState());
+  const [loading, setLoading] = useState(true);
 
   async function onReset() {
-    setState(state.set("loading", true));
+    setLoading(true);
     const questions = await props.quiz.getQuestions(props.rng);
 
     if (questions.length) {
       setState(
         QuizState({
+          done: false,
+          current: 0,
           start: Date.now(),
           questions: List(questions),
           results: List(questions.map(() => QuestionResult())),
-          current: 0,
         })
       );
     } else {
       setState(
         QuizState({
           start: Date.now(),
+          end: Date.now(),
         })
       );
     }
+    setLoading(false);
   }
 
   useMemo(onReset, [props.quiz, props.rng]);
 
-  function onCheck(result: RecordOf<IQuestionResult>) {
-    if (state.current !== -1) {
-      let nextState = state.update("results", (results) =>
-        results.set(state.current, result)
-      );
+  if (loading) {
+    return <Loading />;
+  } else if (state.done) {
+    return <Results state={state} quiz={props.quiz} onReset={onReset} />;
+  } else {
+    const result = state.results.get(
+        state.current
+      ) as RecordOf<IQuestionResult>,
+      question = state.questions.get(state.current) as QuestionClass;
 
-      if (props.quiz.getAutoNext() && !result.explained) {
-        const current = getNextQuestionIndex(nextState);
+    const onSelectQuestion = (index: number) => {
+      if (index >= 0 && index < state.questions.size) {
+        setState(state.set("current", index));
+      }
+    };
 
-        nextState = nextState
-          .set("done", current === -1)
-          .set("current", current);
+    const onCheck = (result: RecordOf<IQuestionResult>) => {
+      if (state.current !== -1) {
+        let nextState = state.update("results", (results) =>
+          results.set(state.current, result)
+        );
 
-        if (nextState.done) {
-          nextState = nextState.set("end", Date.now());
+        if (props.quiz.getAutoNext() && !result.explained) {
+          const current = getNextQuestionIndex(nextState);
+
+          nextState = nextState
+            .set("done", current === -1)
+            .set("current", current);
+
+          if (nextState.done) {
+            nextState = nextState.set("end", Date.now());
+          }
         }
+
+        setState(nextState);
+      }
+    };
+
+    const onNext = () => {
+      const endTime = Date.now(),
+        current = getNextQuestionIndex(state);
+      let nextState = state.set("done", current === -1).set("current", current);
+
+      if (nextState.done) {
+        nextState = nextState.set("end", endTime);
       }
 
       setState(nextState);
-    }
+    };
+
+    return (
+      <>
+        <Status
+          current={state.current}
+          state={state}
+          onSelectQuestion={onSelectQuestion}
+        />
+        <View style={styles.timer}>
+          <Counter
+            key={state.current}
+            timeInSeconds={question.getTimeInSeconds()}
+          />
+        </View>
+        <Question
+          key={state.current}
+          result={result}
+          question={question}
+          onNext={onNext}
+          onCheck={onCheck}
+        />
+      </>
+    );
   }
-
-  function onSelectQuestion(index: number) {
-    if (index >= 0 && index < state.questions.size) {
-      setState(state.set("current", index));
-    }
-  }
-
-  function onNext() {
-    const current = getNextQuestionIndex(state);
-    let nextState = state.set("done", current === -1).set("current", current);
-
-    if (nextState.done) {
-      nextState = nextState.set("end", Date.now());
-    }
-
-    setState(nextState);
-  }
-
-  return state.loading ? (
-    <Loading />
-  ) : state.done ? (
-    <Results state={state} quiz={props.quiz} onReset={onReset} />
-  ) : (
-    <>
-      <Status
-        current={state.current}
-        state={state}
-        onSelectQuestion={onSelectQuestion}
-      />
-      <Question
-        key={state.current}
-        result={state.results.get(state.current) as RecordOf<IQuestionResult>}
-        question={state.questions.get(state.current) as QuestionClass}
-        timeInSeconds={props.quiz.getTimeInSecond()}
-        onNext={onNext}
-        onCheck={onCheck}
-      />
-    </>
-  );
 }
 
 function getNextQuestionIndex(state: RecordOf<IQuizState>) {

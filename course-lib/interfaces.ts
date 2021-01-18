@@ -36,18 +36,23 @@ export interface IUnit {
   logo?: any;
   url: string;
   tags: string[];
-  quizzes: IQuiz[];
-  quizMap: Record<string, IQuiz>;
+  lessons: ILesson[];
+  lessonMap: Record<string, ILesson>;
 }
 
-export interface IQuiz {
+export interface ILesson {
   name: string;
+  type: string;
   description: string;
-  autoNext: boolean;
-  timeInSeconds?: number;
   logo?: any;
   url: string;
   tags: string[];
+}
+
+export interface IQuiz extends ILesson {
+  type: "quiz";
+  autoNext: boolean;
+  timeInSeconds?: number;
   items: IQuizItem[];
 }
 
@@ -55,6 +60,10 @@ export interface IQuizItem {
   generator: string;
   config: IJSONObject | null;
   count: number;
-  retires: number;
+  retries: number | null;
   timeInSeconds?: number;
+}
+
+export function isQuiz(value: any): value is IQuiz {
+  return value != null && typeof value === "object" && value.type === "quiz";
 }

@@ -25,8 +25,8 @@ const configSchema = {
 
 function generator(config: IAdditionConfig) {
   return function (rng: Rng) {
-    const min = (config.negatives ? -1 : 0) * (config.magnitude * 10),
-      max = config.magnitude * 10,
+    const min = (config.negatives ? -1 : 0) * Math.pow(10, config.magnitude),
+      max = Math.pow(10, config.magnitude),
       uniformRng = rng.uniformIntRng(min, max),
       variables = new Range(1, config.variables)
         .iter()

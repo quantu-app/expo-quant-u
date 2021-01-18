@@ -2,13 +2,13 @@ import { EOL } from "os";
 import { IJSONObject } from "@aicacia/json";
 import { Schema } from "js-yaml";
 import { join, basename, relative, sep } from "path";
-import { none, Option } from "@aicacia/core";
 import { readYaml } from "./utils/readYaml";
 import { writeFile } from "./utils/writeFile";
 import { stripOrdering } from "./utils/stripOrdering";
 import { createAsset } from "./utils/createAsset";
 import { findImage } from "./utils/findImage";
 import { createTSImport } from "./utils/createTSImport";
+import { Lesson } from "./Lesson";
 
 export class QuizItem {
   generator = "";
@@ -18,14 +18,9 @@ export class QuizItem {
   timeInSeconds?: number;
 }
 
-export class Quiz {
-  name = "";
-  description = "";
+export class Quiz extends Lesson {
   autoNext = false;
   timeInSeconds?: number;
-  logo: Option<string> = none();
-  url = "";
-  tags: string[] = [];
   items: QuizItem[] = [];
 
   async parse(dirname: string): Promise<this> {
@@ -81,9 +76,9 @@ export class Quiz {
         join(dirname, "index.ts"),
         `import { IQuiz } from "${createTSImport(
           "." + sep + relative(dirname, courselibDir)
-        )}";${EOL}${EOL}export const quiz: IQuiz = {${EOL}\tname: "${
+        )}";${EOL}${EOL}export const lesson: IQuiz = {${EOL}\tname: "${
           this.name
-        }",${EOL}\turl: "${this.url}",${EOL}\tautoNext: ${
+        }",${EOL}\turl: "${this.url}",${EOL}\ttype: "quiz",${EOL}\tautoNext: ${
           this.autoNext
         },${EOL}${
           this.timeInSeconds
