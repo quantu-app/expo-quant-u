@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
   const quiz = getCategory(props.category).courseMap[props.course].chapterMap[
       props.chapter
-    ].unitMap[props.unit].lessonMap[props.quiz],
+    ].unitMap[props.unit].lessonMap[props.lesson],
     navigation = useNavigation();
 
   return (
