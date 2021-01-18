@@ -24,8 +24,8 @@ export default function App() {
         customMapping={customMapping as any}
       >
         <StateProvider>
-          <Navigation />
           <StatusBar style="auto" />
+          <Navigation />
         </StateProvider>
       </ApplicationProvider>
     </>

@@ -28,6 +28,9 @@ web-build/
 /dist
 # @end @expo/electron-adapter
 
+# private 
+google-services.json
+
 # generated
 assets/courses/
 courses/

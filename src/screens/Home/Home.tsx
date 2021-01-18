@@ -11,6 +11,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   contentSmall: {
+    justifyContent: "flex-start",
+    alignContent: "center",
     flexDirection: "column",
   },
   grid: {
@@ -21,7 +23,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   image: {
-    height: 256,
+    width: "100%",
   },
 });
 
@@ -39,7 +41,7 @@ export function Home() {
         }
       >
         <View style={styles.grid}>
-          <Image source={bg} style={styles.image} resizeMode="contain" />
+          <Image source={bg} style={styles.image} resizeMode="center" />
         </View>
         <View style={styles.grid}>
           <Text category="h3">Lifelong Learning</Text>

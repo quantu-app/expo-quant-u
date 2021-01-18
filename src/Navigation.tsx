@@ -8,7 +8,7 @@ import {
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { CourseScreen } from "./screens/Course/CourseScreen";
-import { StyleSheet } from "react-native";
+import { Platform, SafeAreaView, StyleSheet, StatusBar } from "react-native";
 import { Option } from "@aicacia/core";
 import {
   Button,
@@ -96,6 +96,7 @@ function NavigationDrawer() {
 
 const headerStyles = StyleSheet.create({
   container: {
+    paddingTop: Platform.OS !== "web" ? StatusBar.currentHeight : 0,
     borderBottomColor: customTheme["color-danger-transparent-100"],
     borderBottomWidth: 1,
   },
@@ -107,50 +108,67 @@ interface IDrawerHeaderProps extends DrawerHeaderProps {
 
 export function Header(props: IDrawerHeaderProps) {
   return (
-    <Layout style={headerStyles.container}>
-      <TopNavigation
-        alignment="start"
-        title={() => (
-          <Button
-            appearance="ghost"
-            onPress={() =>
-              props.scene.descriptor.navigation.navigate(HOME_SCREEN)
-            }
-          >
-            {app.expo.name}
-          </Button>
-        )}
-        accessoryLeft={(accessoryProps) => (
-          <TopNavigationAction
-            {...accessoryProps}
-            onPress={() =>
-              (props.scene.descriptor.navigation as any).openDrawer()
-            }
-            icon={(props) => <Icon {...props} name="menu-outline" />}
-          />
-        )}
-        accessoryRight={
-          props.user.isSome()
-            ? (accessoryProps) => (
-                <TopNavigationAction
-                  {...accessoryProps}
-                  onPress={signOut}
-                  accessibilityHint="Log out"
-                  icon={(props) => <Icon {...props} name="log-out-outline" />}
-                />
-              )
-            : (props) => (
-                <TopNavigationAction
-                  {...props}
-                  onPress={toggleSignInUpOpen}
-                  accessibilityHint="Log in"
-                  icon={(props) => <Icon {...props} name="log-in-outline" />}
-                />
-              )
-        }
-      />
-      <SignInUp />
-    </Layout>
+    <SafeAreaView>
+      <Layout style={headerStyles.container}>
+        <TopNavigation
+          alignment="start"
+          title={() => (
+            <Button
+              appearance="ghost"
+              onPress={() =>
+                props.scene.descriptor.navigation.navigate(HOME_SCREEN)
+              }
+            >
+              {app.expo.name}
+            </Button>
+          )}
+          accessoryLeft={(accessoryProps) => (
+            <TopNavigationAction
+              {...accessoryProps}
+              onPress={() =>
+                (props.scene.descriptor.navigation as any).openDrawer()
+              }
+              icon={(props) => <Icon {...props} name="menu-outline" />}
+            />
+          )}
+          accessoryRight={
+            props.user.isSome()
+              ? (accessoryProps) => (
+                  <>
+                    <Button
+                      size="small"
+                      appearance="ghost"
+                      onPress={() =>
+                        props.scene.descriptor.navigation.navigate(
+                          PROFILE_SCREEN
+                        )
+                      }
+                    >
+                      {props.user.unwrap().extra.username}
+                    </Button>
+                    <TopNavigationAction
+                      {...accessoryProps}
+                      onPress={signOut}
+                      accessibilityHint="Log out"
+                      icon={(props) => (
+                        <Icon {...props} name="log-out-outline" />
+                      )}
+                    />
+                  </>
+                )
+              : (props) => (
+                  <TopNavigationAction
+                    {...props}
+                    onPress={toggleSignInUpOpen}
+                    accessibilityHint="Log in"
+                    icon={(props) => <Icon {...props} name="log-in-outline" />}
+                  />
+                )
+          }
+        />
+        <SignInUp />
+      </Layout>
+    </SafeAreaView>
   );
 }
 

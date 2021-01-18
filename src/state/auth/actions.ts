@@ -4,6 +4,7 @@ import { state } from "../lib/state";
 import { none, Option, some } from "@aicacia/core";
 import { RecordOf } from "immutable";
 import { XorShiftRng } from "@aicacia/rand";
+import { firebaseSignInWithGoogle } from "./firebaseSignInWithGoogle";
 
 export const store = state.getStore(STORE_NAME);
 
@@ -164,9 +165,7 @@ export async function signInWithGithub() {
 }
 
 export async function signInWithGoogle() {
-  return firebase
-    .auth()
-    .signInWithPopup(googleAuthProvider)
+  return firebaseSignInWithGoogle()
     .then((result) => {
       if (result.user) {
         signUserIn(result.user, result.additionalUserInfo?.isNewUser === true);

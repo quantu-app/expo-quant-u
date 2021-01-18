@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { Modal, Text, Button, Icon, Card } from "@ui-kitten/components";
 import { SMALL_WIDTH } from "./screens";
 import { useMapStateToProps } from "./state";
@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
   },
-  google: { backgroundColor: "#ea4335", border: "none" },
-  github: { backgroundColor: "#24292e", border: "none" },
+  google: { backgroundColor: "#ea4335", borderColor: "transparent" },
+  github: { backgroundColor: "#24292e", borderColor: "transparent" },
 });
 
 export function SignInUp() {
@@ -82,15 +82,17 @@ function SignIn() {
         >
           Google
         </Button>
-        <Button
-          style={styles.github}
-          accessoryLeft={(props) => <Icon {...props} name="github" />}
-          appearance="filled"
-          disabled={loading}
-          onPress={() => signIn(signInWithGithub)}
-        >
-          Github
-        </Button>
+        {Platform.OS === "web" && (
+          <Button
+            style={styles.github}
+            accessoryLeft={(props) => <Icon {...props} name="github" />}
+            appearance="filled"
+            disabled={loading}
+            onPress={() => signIn(signInWithGithub)}
+          >
+            Github
+          </Button>
+        )}
       </View>
     </>
   );
