@@ -5,23 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run lint
-
-  site:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,10 +13,22 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - run: npm ci
       - run: npm install expo-cli json -g
       - run: json -I -f package.json -e 'this.homepage="https://quantu-app.gitlab.io/expo-quant-u/"'
+      - run: json -I -f web/manifest.json -e 'this.start_url="/expo-quant-u?utm_source=web_app_manifest"'
       - run: npm run sync
       - run: npm run build.web
 
