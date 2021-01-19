@@ -36,6 +36,7 @@ export class Category {
 
     for (const courseDir of walkDirectoriesSync(dirname)) {
       const course = new Course();
+      course.category = this.url;
       this.courses.push(course);
       tasks.push(course.parse(courseDir));
     }
@@ -71,9 +72,9 @@ export class Category {
         )}";${EOL}${courses
           .map(
             ([path, course]) =>
-              `import { course as ${camelCase(
-                course.url
-              )} } from "${createTSImport(path)}";`
+              `const ${camelCase(course.url)} = import("${createTSImport(
+                path
+              )}");`
           )
           .join(EOL)}${EOL}`
       ).then((filepath) =>

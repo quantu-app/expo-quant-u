@@ -13,6 +13,7 @@ import { findImage } from "./utils/findImage";
 import { createTSImport } from "./utils/createTSImport";
 
 export class Course {
+  category = "";
   name = "";
   description = "";
   logo: Option<string> = none();
@@ -83,7 +84,9 @@ export class Course {
           filepath,
           `export const course: ICourse = {${EOL}\tname: "${
             this.name
-          }",${EOL}\turl: "${this.url}",${EOL}${
+          }",${EOL}\turl: "${this.url}",${EOL}\tcategory: "${
+            this.category
+          }",${EOL}${
             logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
           }\ttags: ${JSON.stringify(
             this.tags

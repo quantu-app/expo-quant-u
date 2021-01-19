@@ -9,6 +9,9 @@ import {
   START_QUIZ_SCREEN,
   UNIT_SCREEN,
 } from "../../navigationConfig";
+import { Async } from "@aicacia/async_component-react";
+import { JSError } from "../../JSError";
+import { Loading } from "../../Loading";
 
 const styles = StyleSheet.create({
   lessons: {
@@ -17,47 +20,54 @@ const styles = StyleSheet.create({
 });
 
 export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
-  const navigation = useNavigation(),
-    unit = getCategory(props.category).courseMap[props.course].chapterMap[
-      props.chapter
-    ].unitMap[props.unit];
+  const navigation = useNavigation();
 
   return (
-    <Card disabled>
-      <Text category="h1">{unit.name}</Text>
-      <Divider />
-      <Text>{unit.description}</Text>
-      <View style={styles.lessons}>
-        <Text category="h3">Lessons</Text>
-        <Divider />
-        <List
-          data={unit.lessons}
-          renderItem={({ item }) => (
-            <ListItem
-              key={item.url}
-              title={item.name}
-              accessoryLeft={
-                item.logo &&
-                ((props) => (
-                  <Image
-                    {...props}
-                    source={item.logo}
-                    style={{ width: 64, height: 64 }}
-                    resizeMode="contain"
-                  />
-                ))
-              }
-              description={excerpt(item.description)}
-              onPress={() =>
-                navigation.navigate(START_QUIZ_SCREEN, {
-                  ...props,
-                  lesson: item.url,
-                })
-              }
+    <Async
+      promise={getCategory(props.category).courseMap[props.course].then(
+        (exports) =>
+          exports.course.chapterMap[props.chapter].unitMap[props.unit]
+      )}
+      onPending={() => <Loading />}
+      onError={(error) => <JSError error={error} />}
+      onSuccess={(unit) => (
+        <Card disabled>
+          <Text category="h1">{unit.name}</Text>
+          <Divider />
+          <Text>{unit.description}</Text>
+          <View style={styles.lessons}>
+            <Text category="h3">Lessons</Text>
+            <Divider />
+            <List
+              data={unit.lessons}
+              renderItem={({ item }) => (
+                <ListItem
+                  key={item.url}
+                  title={item.name}
+                  accessoryLeft={
+                    item.logo &&
+                    ((props) => (
+                      <Image
+                        {...props}
+                        source={item.logo}
+                        style={{ width: 64, height: 64 }}
+                        resizeMode="contain"
+                      />
+                    ))
+                  }
+                  description={excerpt(item.description)}
+                  onPress={() =>
+                    navigation.navigate(START_QUIZ_SCREEN, {
+                      ...props,
+                      lesson: item.url,
+                    })
+                  }
+                />
+              )}
             />
-          )}
-        />
-      </View>
-    </Card>
+          </View>
+        </Card>
+      )}
+    />
   );
 }

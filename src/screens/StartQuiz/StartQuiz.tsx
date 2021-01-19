@@ -8,6 +8,9 @@ import {
   START_QUIZ_SCREEN,
   QUIZ_SCREEN,
 } from "../../navigationConfig";
+import { Async } from "@aicacia/async_component-react";
+import { JSError } from "../../JSError";
+import { Loading } from "../../Loading";
 
 const styles = StyleSheet.create({
   buttons: {
@@ -17,29 +20,37 @@ const styles = StyleSheet.create({
 });
 
 export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
-  const quiz = getCategory(props.category).courseMap[props.course].chapterMap[
-      props.chapter
-    ].unitMap[props.unit].lessonMap[props.lesson],
-    navigation = useNavigation();
+  const navigation = useNavigation();
 
   return (
-    <Card disabled>
-      <Text category="h1">{quiz.name}</Text>
-      <Divider />
-      <Text>{quiz.description}</Text>
-      <View style={styles.buttons}>
-        <Button
-          appearance="filled"
-          onPress={() =>
-            navigation.navigate(QUIZ_SCREEN, {
-              ...props,
-              seed: Date.now(),
-            })
-          }
-        >
-          Start Quiz
-        </Button>
-      </View>
-    </Card>
+    <Async
+      promise={getCategory(props.category).courseMap[props.course].then(
+        (exports) =>
+          exports.course.chapterMap[props.chapter].unitMap[props.unit]
+            .lessonMap[props.lesson]
+      )}
+      onPending={() => <Loading />}
+      onError={(error) => <JSError error={error} />}
+      onSuccess={(quiz) => (
+        <Card disabled>
+          <Text category="h1">{quiz.name}</Text>
+          <Divider />
+          <Text>{quiz.description}</Text>
+          <View style={styles.buttons}>
+            <Button
+              appearance="filled"
+              onPress={() =>
+                navigation.navigate(QUIZ_SCREEN, {
+                  ...props,
+                  seed: Date.now(),
+                })
+              }
+            >
+              Start Quiz
+            </Button>
+          </View>
+        </Card>
+      )}
+    />
   );
 }

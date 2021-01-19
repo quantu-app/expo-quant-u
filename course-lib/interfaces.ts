@@ -1,16 +1,19 @@
 import { IJSONObject } from "@aicacia/json";
 
+export type IImport<Name extends string, T> = Promise<Record<Name, T>>;
+
 export interface ICategory {
   name: string;
   description: string;
   logo?: any;
   url: string;
   tags: string[];
-  courses: ICourse[];
-  courseMap: Record<string, ICourse>;
+  courses: IImport<"course", ICourse>[];
+  courseMap: Record<string, IImport<"course", ICourse>>;
 }
 
 export interface ICourse {
+  category: string;
   name: string;
   description: string;
   logo?: any;

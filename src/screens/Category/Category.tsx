@@ -9,6 +9,9 @@ import {
   COURSE_SCREEN,
   ParamList,
 } from "../../navigationConfig";
+import { Async } from "@aicacia/async_component-react";
+import { Loading } from "../../Loading";
+import { JSError } from "../../JSError";
 
 const styles = StyleSheet.create({
   grid: {
@@ -41,34 +44,45 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
         <Divider />
         <Text>{category.description}</Text>
       </Card>
-      <View style={styles.grid}>
-        {category.courses.map((course) => (
-          <Card key={course.url} style={styles.card}>
-            <Text category="h2">{course.name}</Text>
-            {course.logo && (
-              <Image
-                source={course.logo}
-                resizeMode="contain"
-                style={{ height: 128 }}
-              />
-            )}
-            <Text>{excerpt(course.description)}</Text>
-            <View style={styles.buttons}>
-              <Button
-                appearance="filled"
-                onPress={() =>
-                  navigation.navigate(COURSE_SCREEN, {
-                    ...props,
-                    course: course.url,
-                  })
-                }
-              >
-                Start
-              </Button>
-            </View>
-          </Card>
-        ))}
-      </View>
+      <Async
+        promise={Promise.all(
+          category.courses.map((promise) =>
+            promise.then((exports) => exports.course)
+          )
+        )}
+        onError={(error) => <JSError error={error} />}
+        onPending={() => <Loading />}
+        onSuccess={(courses) => (
+          <View style={styles.grid}>
+            {courses.map((course) => (
+              <Card key={course.url} style={styles.card}>
+                <Text category="h2">{course.name}</Text>
+                {course.logo && (
+                  <Image
+                    source={course.logo}
+                    resizeMode="contain"
+                    style={{ height: 128 }}
+                  />
+                )}
+                <Text>{excerpt(course.description)}</Text>
+                <View style={styles.buttons}>
+                  <Button
+                    appearance="filled"
+                    onPress={() =>
+                      navigation.navigate(COURSE_SCREEN, {
+                        ...props,
+                        course: course.url,
+                      })
+                    }
+                  >
+                    Start
+                  </Button>
+                </View>
+              </Card>
+            ))}
+          </View>
+        )}
+      />
     </>
   );
 }

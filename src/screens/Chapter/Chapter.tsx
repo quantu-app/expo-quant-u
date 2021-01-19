@@ -5,6 +5,9 @@ import { Divider, Card, List, ListItem, Text } from "@ui-kitten/components";
 import { getCategory } from "../../../course-lib";
 import { excerpt } from "../../excerpt";
 import { CHAPTER_SCREEN, ParamList, UNIT_SCREEN } from "../../navigationConfig";
+import { Async } from "@aicacia/async_component-react";
+import { JSError } from "../../JSError";
+import { Loading } from "../../Loading";
 
 const styles = StyleSheet.create({
   units: {
@@ -13,47 +16,53 @@ const styles = StyleSheet.create({
 });
 
 export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
-  const navigation = useNavigation(),
-    chapter = getCategory(props.category).courseMap[props.course].chapterMap[
-      props.chapter
-    ];
+  const navigation = useNavigation();
 
   return (
-    <Card disabled>
-      <Text category="h1">{chapter.name}</Text>
-      <Divider />
-      <Text>{chapter.description}</Text>
-      <View style={styles.units}>
-        <Text category="h3">Units</Text>
-        <Divider />
-        <List
-          data={chapter.units}
-          renderItem={({ item }) => (
-            <ListItem
-              key={item.url}
-              title={item.name}
-              accessoryLeft={
-                item.logo &&
-                ((props) => (
-                  <Image
-                    {...props}
-                    source={item.logo}
-                    style={{ width: 64, height: 64 }}
-                    resizeMode="contain"
-                  />
-                ))
-              }
-              description={excerpt(item.description)}
-              onPress={() =>
-                navigation.navigate(UNIT_SCREEN, {
-                  ...props,
-                  unit: item.url,
-                })
-              }
+    <Async
+      promise={getCategory(props.category).courseMap[props.course].then(
+        (exports) => exports.course.chapterMap[props.chapter]
+      )}
+      onPending={() => <Loading />}
+      onError={(error) => <JSError error={error} />}
+      onSuccess={(chapter) => (
+        <Card disabled>
+          <Text category="h1">{chapter.name}</Text>
+          <Divider />
+          <Text>{chapter.description}</Text>
+          <View style={styles.units}>
+            <Text category="h3">Units</Text>
+            <Divider />
+            <List
+              data={chapter.units}
+              renderItem={({ item }) => (
+                <ListItem
+                  key={item.url}
+                  title={item.name}
+                  accessoryLeft={
+                    item.logo &&
+                    ((props) => (
+                      <Image
+                        {...props}
+                        source={item.logo}
+                        style={{ width: 64, height: 64 }}
+                        resizeMode="contain"
+                      />
+                    ))
+                  }
+                  description={excerpt(item.description)}
+                  onPress={() =>
+                    navigation.navigate(UNIT_SCREEN, {
+                      ...props,
+                      unit: item.url,
+                    })
+                  }
+                />
+              )}
             />
-          )}
-        />
-      </View>
-    </Card>
+          </View>
+        </Card>
+      )}
+    />
   );
 }
