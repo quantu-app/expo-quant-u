@@ -4,6 +4,7 @@ export interface IQuestionResult<T = any> {
   done: boolean;
   changed: boolean;
   value?: T;
+  attempt: number;
   explained: boolean;
   correct: boolean;
   total: number;
@@ -16,6 +17,7 @@ export const QuestionResult = Record<IQuestionResult>({
   done: false,
   changed: false,
   value: null,
+  attempt: 0,
   explained: false,
   correct: false,
   total: 0,

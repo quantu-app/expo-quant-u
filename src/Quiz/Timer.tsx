@@ -8,7 +8,7 @@ interface ITimerProps {
 
 export const Timer = memo((props: ITimerProps) => {
   const minutes = (props.timeInSeconds / 60) | 0,
-    seconds = props.timeInSeconds % 60;
+    seconds = props.timeInSeconds % 60 | 0;
 
   return (
     <Text category={props.category}>

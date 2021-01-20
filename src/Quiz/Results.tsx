@@ -6,6 +6,7 @@ import { Quiz } from "../../course-lib";
 import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
 import { QuestionInput } from "./QuestionInput";
+import { Timer } from "./Timer";
 
 interface IResultsProps {
   quiz: Quiz;
@@ -26,9 +27,8 @@ export const Results = memo((props: IResultsProps) => (
   <>
     <View>
       <Text>
-        Total Time
-        {props.state.end - props.state.start}
-        ms
+        Total Time -{" "}
+        <Timer timeInSeconds={(props.state.end - props.state.start) / 1000} />
       </Text>
     </View>
     <View>
@@ -53,10 +53,11 @@ export const Results = memo((props: IResultsProps) => (
               </Text>
             </View>
             <View>
-              <Text>
-                {questionResult.end - questionResult.start}
-                ms
-              </Text>
+              <Timer
+                timeInSeconds={
+                  (questionResult.end - questionResult.start) / 1000
+                }
+              />
             </View>
           </View>
         );

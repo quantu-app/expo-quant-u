@@ -2,7 +2,7 @@ import React, { memo, useCallback } from "react";
 import { RecordOf } from "immutable";
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, Spinner } from "@ui-kitten/components";
+import { Button } from "@ui-kitten/components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { Question as QuestionClass } from "../../course-lib";
 import { QuestionInput } from "./QuestionInput";
@@ -14,6 +14,7 @@ export interface IQuestionProps<T = any> {
   result: RecordOf<IQuestionResult<T>>;
   question: QuestionClass<T>;
   onNext(): void;
+  onRetry(result: RecordOf<IQuestionResult<T>>): void;
   onCheck(result: RecordOf<IQuestionResult<T>>): void;
 }
 
@@ -99,9 +100,7 @@ export const Question = memo((props: IQuestionProps) => {
     props.onCheck(nextState);
   }, [state, setState, props.onCheck]);
 
-  if (timeInSeconds) {
-    useTimeout(timeInSeconds, onCheck);
-  }
+  timeInSeconds.map((s) => useTimeout(s, onCheck));
 
   return (
     <>
@@ -116,13 +115,19 @@ export const Question = memo((props: IQuestionProps) => {
       </View>
       <View style={styles.buttons}>
         {state.done ? (
-          <Button appearance="filled" onPress={props.onNext}>
-            Next
-          </Button>
+          <>
+            <Button appearance="filled" onPress={props.onNext}>
+              Next
+            </Button>
+            {!state.correct && props.question.getRetries().isSome() && (
+              <Button appearance="filled" onPress={() => props.onRetry(state)}>
+                Retry
+              </Button>
+            )}
+          </>
         ) : (
           <Button
             appearance="filled"
-            accessoryLeft={loading ? () => <Spinner /> : undefined}
             disabled={!state.changed || loading}
             onPress={onCheck}
           >
@@ -132,7 +137,6 @@ export const Question = memo((props: IQuestionProps) => {
         {props.question.getExplanation().isSome() && (
           <Button
             appearance="outline"
-            accessoryLeft={loading ? () => <Spinner /> : undefined}
             disabled={state.explained || loading}
             onPress={onExplain}
           >

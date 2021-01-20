@@ -5,6 +5,7 @@ description: |
 items:
   - generator: mathematics.mental_math.mental_calculation.addition
     count: 5
+    retries: 1
     timeInSeconds: 5
     config:
       magnitude: 1

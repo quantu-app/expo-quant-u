@@ -10,8 +10,9 @@ import { getQuestionGenerator } from "./questionGenerators";
 export interface IQuizItemConfig<C = any, T = any> {
   generator: Promise<{ default: IQuestionGenerator<C, T> }>;
   config: IJSONObject;
-  timeInSeconds?: number;
   count: number;
+  retries?: number;
+  timeInSeconds?: number;
 }
 
 export class Quiz {
@@ -44,6 +45,9 @@ export class Quiz {
           .iter()
           .map(() => {
             const question = generatorFn(rng);
+            if (typeof item.retries === "number") {
+              question.setRetries(item.retries);
+            }
             if (typeof item.timeInSeconds === "number") {
               question.setTimeInSeconds(item.timeInSeconds);
             }
@@ -77,6 +81,7 @@ export class Quiz {
         generator,
         config: item.config || {},
         count: item.count,
+        retries: item.retries,
         timeInSeconds: item.timeInSeconds,
       });
     }

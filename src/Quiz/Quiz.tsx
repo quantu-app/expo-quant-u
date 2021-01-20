@@ -57,6 +57,7 @@ export function Quiz(props: IQuizProps) {
           done: false,
           current: 0,
           start: Date.now(),
+          end: Date.now(),
           questions: List(questions),
           results: List(questions.map(() => QuestionResult())),
         })
@@ -86,11 +87,16 @@ export function Quiz(props: IQuizProps) {
   const onCheck = useCallback(
     (result: RecordOf<IQuestionResult>) => {
       if (state.current !== -1) {
+        const question = state.questions.get(state.current) as QuestionClass;
         let nextState = state.update("results", (results) =>
           results.set(state.current, result)
         );
 
-        if (props.quiz.getAutoNext() && !result.explained) {
+        if (
+          !question.getRetries() &&
+          props.quiz.getAutoNext() &&
+          !result.explained
+        ) {
           const current = getNextQuestionIndex(nextState);
 
           nextState = nextState
@@ -120,6 +126,25 @@ export function Quiz(props: IQuizProps) {
     setState(nextState);
   }, [state, setState]);
 
+  const onRetry = useCallback(
+    (result: RecordOf<IQuestionResult>) => {
+      if (state.current !== -1) {
+        setState(
+          state.update("results", (results) =>
+            results.set(
+              state.current,
+              QuestionResult({
+                start: result.start,
+                attempt: result.attempt + 1,
+              })
+            )
+          )
+        );
+      }
+    },
+    [state, setState]
+  );
+
   if (loading) {
     return <Loading />;
   } else if (state.done) {
@@ -128,7 +153,8 @@ export function Quiz(props: IQuizProps) {
     const result = state.results.get(
         state.current
       ) as RecordOf<IQuestionResult>,
-      question = state.questions.get(state.current) as QuestionClass;
+      question = state.questions.get(state.current) as QuestionClass,
+      key = `${state.current}-${result.attempt}`;
 
     return (
       <>
@@ -139,15 +165,18 @@ export function Quiz(props: IQuizProps) {
         />
         <View style={styles.timer}>
           <Counter
-            key={state.current}
-            timeInSeconds={question.getTimeInSeconds()}
+            key={key}
+            timeInSeconds={question
+              .getTimeInSeconds()
+              .unwrapOr(undefined as any)}
           />
         </View>
         <Question
-          key={state.current}
+          key={key}
           result={result}
           question={question}
           onNext={onNext}
+          onRetry={onRetry}
           onCheck={onCheck}
         />
       </>

@@ -5,7 +5,8 @@ import { QuestionInput } from "./QuestionInput";
 export class Question<T = any, I extends QuestionInput<T> = QuestionInput<T>> {
   protected prompt: ReactNode;
   protected input: I;
-  protected timeInSeconds?: number;
+  protected retries: Option<number> = none();
+  protected timeInSeconds: Option<number> = none();
   protected explanation: Option<ReactNode> = none();
 
   constructor(prompt: ReactNode, input: I) {
@@ -29,12 +30,20 @@ export class Question<T = any, I extends QuestionInput<T> = QuestionInput<T>> {
     return this.prompt;
   }
 
-  setTimeInSeconds(timeInSeconds: number) {
-    this.timeInSeconds = timeInSeconds;
+  setTimeInSeconds(timeInSeconds?: number) {
+    this.timeInSeconds.from(timeInSeconds);
     return this;
   }
   getTimeInSeconds() {
     return this.timeInSeconds;
+  }
+
+  setRetries(retries?: number) {
+    this.retries.from(retries);
+    return this;
+  }
+  getRetries() {
+    return this.retries;
   }
 
   setExplanation(explanation?: ReactNode) {

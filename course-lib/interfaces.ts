@@ -63,7 +63,7 @@ export interface IQuizItem {
   generator: string;
   config: IJSONObject | null;
   count: number;
-  retries: number | null;
+  retries?: number;
   timeInSeconds?: number;
 }
 
