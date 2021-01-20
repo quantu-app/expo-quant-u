@@ -28,6 +28,7 @@
       { "argsIgnorePattern": "^_" }
     ],
     "react/jsx-uses-react": "error",
-    "react/react-in-jsx-scope": "error"
+    "react/react-in-jsx-scope": "error",
+    "react/display-name": "off"
   }
 }

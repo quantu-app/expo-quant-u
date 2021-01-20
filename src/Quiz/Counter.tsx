@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Timer } from "./Timer";
 import { useCountdown } from "./useCountdown";
 import { useCounter } from "./useCounter";
@@ -8,10 +8,10 @@ interface ICounterProps {
   timeInSeconds?: number;
 }
 
-export function Counter(props: ICounterProps) {
+export const Counter = memo((props: ICounterProps) => {
   const timeInSeconds = props.timeInSeconds
     ? useCountdown(props.timeInSeconds)
     : useCounter();
 
   return <Timer category={props.category} timeInSeconds={timeInSeconds} />;
-}
+});

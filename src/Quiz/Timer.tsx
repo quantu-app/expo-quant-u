@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Text } from "@ui-kitten/components";
 
 interface ITimerProps {
@@ -6,7 +6,7 @@ interface ITimerProps {
   timeInSeconds: number;
 }
 
-export function Timer(props: ITimerProps) {
+export const Timer = memo((props: ITimerProps) => {
   const minutes = (props.timeInSeconds / 60) | 0,
     seconds = props.timeInSeconds % 60;
 
@@ -16,4 +16,4 @@ export function Timer(props: ITimerProps) {
       {seconds.toString().padStart(2, "0")}
     </Text>
   );
-}
+});

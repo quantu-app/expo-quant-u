@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import { RecordOf } from "immutable";
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -53,27 +53,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Question<T = any>(props: IQuestionProps<T>) {
+export const Question = memo((props: IQuestionProps) => {
   const [loading, setLoading] = useState(false),
     [state, setState] = useState(props.result),
     timeInSeconds = props.question.getTimeInSeconds();
-
-  if (timeInSeconds) {
-    useTimeout(timeInSeconds, onCheck);
-  }
 
   useMemo(async () => {
     setLoading(true);
     const total = await props.question.getTotalPoints();
     setState(state.set("total", total).set("start", Date.now()));
     setLoading(false);
-  }, [props.question, props.result]);
+  }, [props.question, props.result, setLoading, setState]);
 
-  function onInputChange(value: any) {
-    setState(state.set("value", value).set("changed", true));
-  }
+  const onInputChange = useCallback(
+    (value: any) => {
+      setState(state.set("value", value).set("changed", true));
+    },
+    [setState, state]
+  );
 
-  async function onCheck() {
+  const onCheck = useCallback(async () => {
     const endTime = Date.now();
     setLoading(true);
     const points = await props.question.checkAnswer(state.value as any),
@@ -85,9 +84,9 @@ export function Question<T = any>(props: IQuestionProps<T>) {
     setState(nextState);
     props.onCheck(nextState);
     setLoading(false);
-  }
+  }, [setLoading, state, props.question, props.onCheck, setState]);
 
-  async function onExplain() {
+  const onExplain = useCallback(async () => {
     let nextState = state;
 
     if (!nextState.done) {
@@ -98,6 +97,10 @@ export function Question<T = any>(props: IQuestionProps<T>) {
 
     setState(nextState);
     props.onCheck(nextState);
+  }, [state, setState, props.onCheck]);
+
+  if (timeInSeconds) {
+    useTimeout(timeInSeconds, onCheck);
   }
 
   return (
@@ -164,4 +167,4 @@ export function Question<T = any>(props: IQuestionProps<T>) {
           .unwrapOr(null as any)}
     </>
   );
-}
+});

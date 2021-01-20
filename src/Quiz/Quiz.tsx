@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Rng } from "@aicacia/rand";
 import { List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
@@ -74,23 +74,17 @@ export function Quiz(props: IQuizProps) {
 
   useMemo(onReset, [props.quiz, props.rng]);
 
-  if (loading) {
-    return <Loading />;
-  } else if (state.done) {
-    return <Results state={state} quiz={props.quiz} onReset={onReset} />;
-  } else {
-    const result = state.results.get(
-        state.current
-      ) as RecordOf<IQuestionResult>,
-      question = state.questions.get(state.current) as QuestionClass;
-
-    const onSelectQuestion = (index: number) => {
+  const onSelectQuestion = useCallback(
+    (index: number) => {
       if (index >= 0 && index < state.questions.size) {
         setState(state.set("current", index));
       }
-    };
+    },
+    [setState, state]
+  );
 
-    const onCheck = (result: RecordOf<IQuestionResult>) => {
+  const onCheck = useCallback(
+    (result: RecordOf<IQuestionResult>) => {
       if (state.current !== -1) {
         let nextState = state.update("results", (results) =>
           results.set(state.current, result)
@@ -110,19 +104,31 @@ export function Quiz(props: IQuizProps) {
 
         setState(nextState);
       }
-    };
+    },
+    [state, setState, props.quiz]
+  );
 
-    const onNext = () => {
-      const endTime = Date.now(),
-        current = getNextQuestionIndex(state);
-      let nextState = state.set("done", current === -1).set("current", current);
+  const onNext = useCallback(() => {
+    const endTime = Date.now(),
+      current = getNextQuestionIndex(state);
+    let nextState = state.set("done", current === -1).set("current", current);
 
-      if (nextState.done) {
-        nextState = nextState.set("end", endTime);
-      }
+    if (nextState.done) {
+      nextState = nextState.set("end", endTime);
+    }
 
-      setState(nextState);
-    };
+    setState(nextState);
+  }, [state, setState]);
+
+  if (loading) {
+    return <Loading />;
+  } else if (state.done) {
+    return <Results state={state} quiz={props.quiz} onReset={onReset} />;
+  } else {
+    const result = state.results.get(
+        state.current
+      ) as RecordOf<IQuestionResult>,
+      question = state.questions.get(state.current) as QuestionClass;
 
     return (
       <>
