@@ -47,7 +47,6 @@ import {
 } from "./navigationConfig";
 import { SignInUp } from "./SignInUp";
 import app from "../app.json";
-import customTheme from "../custom-theme.json";
 import { DrawerHeaderProps } from "@react-navigation/drawer/lib/typescript/src/types";
 
 export const { Navigator, Screen } = createDrawerNavigator<ParamList>();
@@ -97,7 +96,7 @@ function NavigationDrawer() {
 const headerStyles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS !== "web" ? StatusBar.currentHeight : 0,
-    borderBottomColor: customTheme["color-danger-transparent-100"],
+    borderBottomColor: "rgb(228, 233, 242)",
     borderBottomWidth: 1,
   },
 });

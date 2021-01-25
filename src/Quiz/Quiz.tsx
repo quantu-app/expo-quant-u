@@ -11,8 +11,6 @@ import { Question } from "./Question";
 import { IQuestionResult, QuestionResult } from "./QuestionResult";
 import { Results } from "./Results";
 import { Status } from "./Status";
-import { StyleSheet, View } from "react-native";
-import { Counter } from "./Counter";
 
 export interface IQuizProps {
   rng: Rng;
@@ -35,12 +33,6 @@ export const QuizState = Record<IQuizState>({
   end: 0,
   questions: List(),
   results: List(),
-});
-
-const styles = StyleSheet.create({
-  timer: {
-    alignItems: "center",
-  },
 });
 
 export function Quiz(props: IQuizProps) {
@@ -88,12 +80,17 @@ export function Quiz(props: IQuizProps) {
     (result: RecordOf<IQuestionResult>) => {
       if (state.current !== -1) {
         const question = state.questions.get(state.current) as QuestionClass;
+
         let nextState = state.update("results", (results) =>
           results.set(state.current, result)
         );
 
         if (
-          !question.getRetries() &&
+          (result.correct ||
+            question
+              .getRetries()
+              .map((retries) => result.attempt < retries)
+              .unwrapOr(true)) &&
           props.quiz.getAutoNext() &&
           !result.explained
         ) {
@@ -135,6 +132,7 @@ export function Quiz(props: IQuizProps) {
               state.current,
               QuestionResult({
                 start: result.start,
+                end: result.end,
                 attempt: result.attempt + 1,
               })
             )
@@ -156,6 +154,8 @@ export function Quiz(props: IQuizProps) {
       question = state.questions.get(state.current) as QuestionClass,
       key = `${state.current}-${result.attempt}`;
 
+    console.log(JSON.stringify(result, null, 2));
+
     return (
       <>
         <Status
@@ -163,14 +163,6 @@ export function Quiz(props: IQuizProps) {
           state={state}
           onSelectQuestion={onSelectQuestion}
         />
-        <View style={styles.timer}>
-          <Counter
-            key={key}
-            timeInSeconds={question
-              .getTimeInSeconds()
-              .unwrapOr(undefined as any)}
-          />
-        </View>
         <Question
           key={key}
           result={result}

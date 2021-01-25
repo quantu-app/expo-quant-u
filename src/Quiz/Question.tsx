@@ -8,7 +8,7 @@ import type { Question as QuestionClass } from "../../course-lib";
 import { QuestionInput } from "./QuestionInput";
 import customTheme from "../../custom-theme.json";
 import { IQuestionResult } from "./QuestionResult";
-import { useTimeout } from "./useTimeout";
+import { Counter } from "./Counter";
 
 export interface IQuestionProps<T = any> {
   result: RecordOf<IQuestionResult<T>>;
@@ -19,6 +19,9 @@ export interface IQuestionProps<T = any> {
 }
 
 const styles = StyleSheet.create({
+  timer: {
+    alignItems: "center",
+  },
   prompt: {
     paddingTop: 8,
     paddingBottom: 8,
@@ -56,13 +59,16 @@ const styles = StyleSheet.create({
 
 export const Question = memo((props: IQuestionProps) => {
   const [loading, setLoading] = useState(false),
-    [state, setState] = useState(props.result),
-    timeInSeconds = props.question.getTimeInSeconds();
+    [state, setState] = useState(props.result);
 
   useMemo(async () => {
     setLoading(true);
     const total = await props.question.getTotalPoints();
-    setState(state.set("total", total).set("start", Date.now()));
+    setState(
+      state
+        .set("total", total)
+        .set("start", Date.now() - (state.end - state.start))
+    );
     setLoading(false);
   }, [props.question, props.result, setLoading, setState]);
 
@@ -100,10 +106,17 @@ export const Question = memo((props: IQuestionProps) => {
     props.onCheck(nextState);
   }, [state, setState, props.onCheck]);
 
-  timeInSeconds.map((s) => useTimeout(s, onCheck));
-
   return (
     <>
+      <View style={styles.timer}>
+        <Counter
+          paused={state.done}
+          callback={onCheck}
+          timeInSeconds={props.question
+            .getTimeInSeconds()
+            .unwrapOr(undefined as any)}
+        />
+      </View>
       <View style={styles.prompt}>{props.question.getPrompt()}</View>
       <View style={styles.input}>
         <QuestionInput
@@ -119,11 +132,23 @@ export const Question = memo((props: IQuestionProps) => {
             <Button appearance="filled" onPress={props.onNext}>
               Next
             </Button>
-            {!state.correct && props.question.getRetries().isSome() && (
-              <Button appearance="filled" onPress={() => props.onRetry(state)}>
-                Retry
-              </Button>
-            )}
+            {!state.correct &&
+              !state.explained &&
+              props.question
+                .getRetries()
+                .map((retries) => state.attempt <= retries)
+                .unwrapOr(true) && (
+                <Button
+                  appearance="filled"
+                  onPress={() => props.onRetry(state)}
+                >
+                  {"Retry" +
+                    props.question
+                      .getRetries()
+                      .map((retries) => ` ${state.attempt} out of ${retries}`)
+                      .unwrapOr("")}
+                </Button>
+              )}
           </>
         ) : (
           <Button

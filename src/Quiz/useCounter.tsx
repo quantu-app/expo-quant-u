@@ -1,17 +1,26 @@
 import { useEffect, useState } from "react";
 
-export function useCounter() {
-  const [timeInSeconds, setTimeInSeconds] = useState(0);
+export function useCounter(paused: boolean) {
+  const [[timeInSeconds], setTimeInSeconds] = useState([0, 0]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeInSeconds(timeInSeconds + 1);
-    }, 1000);
+    let interval: any = null;
 
-    return () => {
+    if (paused) {
       clearInterval(interval);
-    };
-  });
+    } else {
+      interval = setInterval(
+        () =>
+          setTimeInSeconds(([timeInSeconds, lastTimeInSeconds]) => {
+            const now = Date.now() / 1000,
+              delta = now - (lastTimeInSeconds || now - 1);
+            return [timeInSeconds + delta, now];
+          }),
+        1000
+      );
+    }
+    return () => clearInterval(interval);
+  }, [timeInSeconds, paused]);
 
   return timeInSeconds;
 }

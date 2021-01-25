@@ -27,8 +27,19 @@ export const Results = memo((props: IResultsProps) => (
   <>
     <View>
       <Text>
-        Total Time -{" "}
+        Total Quiz Time -{" "}
         <Timer timeInSeconds={(props.state.end - props.state.start) / 1000} />
+      </Text>
+      <Text>
+        Total Time -{" "}
+        <Timer
+          timeInSeconds={
+            props.state.results.reduce(
+              (acc, result) => acc + (result.end - result.start),
+              0
+            ) / 1000
+          }
+        />
       </Text>
     </View>
     <View>

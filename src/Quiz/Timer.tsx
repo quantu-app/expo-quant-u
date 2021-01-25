@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Text } from "@ui-kitten/components";
 
-interface ITimerProps {
+export interface ITimerProps {
   category?: string;
   timeInSeconds: number;
 }

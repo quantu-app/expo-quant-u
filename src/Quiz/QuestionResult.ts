@@ -17,7 +17,7 @@ export const QuestionResult = Record<IQuestionResult>({
   done: false,
   changed: false,
   value: null,
-  attempt: 0,
+  attempt: 1,
   explained: false,
   correct: false,
   total: 0,
