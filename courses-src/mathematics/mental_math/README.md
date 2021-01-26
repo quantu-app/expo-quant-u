@@ -17,9 +17,11 @@ or textual intuition as to why the method works.
 
 #### Unit 1 - Simplifying Expressions
 
+1. Shaving off numbers to simplify addition.
+
 1. How to simplify addition problems
-2. How to simplify multiplication problems
-3. Left to Right mental computation
+1. How to simplify multiplication problems
+1. Left to Right mental computation
 
 #### Unit 2 - Working with Components of Numbers
 
