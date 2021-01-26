@@ -7,10 +7,7 @@ import {
   createQuestionGenerator,
 } from "../../../../course-lib";
 import { Latex } from "../../../../src/Latex";
-import {
-  getIntRngForNDigits,
-  getIntegerPlaceValues,
-} from "../../../../src/learning/utils";
+import { getIntRngForNDigits } from "../../../../src/learning/utils";
 
 interface IAddingByShifting {
   nDigits: number;
