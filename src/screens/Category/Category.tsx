@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, View } from "react-native";
 import { Card, Button, Text, Divider } from "@ui-kitten/components";
-import { getCategory } from "../../../course-lib/categories";
+import { getCategory, getCourses } from "../../../course-lib/categories";
 import { excerpt } from "../../excerpt";
 import {
   CATEGORY_SCREEN,
@@ -45,11 +45,7 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
         <Text>{category.description}</Text>
       </Card>
       <Async
-        promise={Promise.all(
-          category.courses.map((promise) =>
-            promise.then((exports) => exports.course)
-          )
-        )}
+        promise={getCourses(category.url)}
         onError={(error) => <JSError error={error} />}
         onPending={() => <Loading />}
         onSuccess={(courses) => (

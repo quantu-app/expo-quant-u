@@ -8,8 +8,10 @@ export function HomeScreen() {
   return (
     <Container>
       <Async
-        promise={import("./Home")}
-        onSuccess={({ Home }) => <Home />}
+        promise={import("../Course/Course")}
+        onSuccess={({ Course }) => (
+          <Course category="mathematics" course="mental_math" />
+        )}
         onPending={() => <Loading />}
         onError={(error) => <JSError error={error} />}
       />

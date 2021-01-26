@@ -2,12 +2,12 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, View } from "react-native";
 import { Divider, Card, List, ListItem, Text } from "@ui-kitten/components";
-import { getCategory } from "../../../course-lib";
 import { excerpt } from "../../excerpt";
 import { CHAPTER_SCREEN, ParamList, UNIT_SCREEN } from "../../navigationConfig";
 import { Async } from "@aicacia/async_component-react";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
+import { getChapter } from "../../../course-lib/categories";
 
 const styles = StyleSheet.create({
   units: {
@@ -20,9 +20,7 @@ export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
 
   return (
     <Async
-      promise={getCategory(props.category).courseMap[props.course].then(
-        (exports) => exports.course.chapterMap[props.chapter]
-      )}
+      promise={getChapter(props.category, props.course, props.chapter)}
       onPending={() => <Loading />}
       onError={(error) => <JSError error={error} />}
       onSuccess={(chapter) => (

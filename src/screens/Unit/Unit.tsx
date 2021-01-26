@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, View } from "react-native";
 import { ListItem, Divider, Card, List, Text } from "@ui-kitten/components";
-import { getCategory } from "../../../course-lib";
 import { excerpt } from "../../excerpt";
 import {
   ParamList,
@@ -12,6 +11,7 @@ import {
 import { Async } from "@aicacia/async_component-react";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
+import { getUnit } from "../../../course-lib/categories";
 
 const styles = StyleSheet.create({
   lessons: {
@@ -24,10 +24,7 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
 
   return (
     <Async
-      promise={getCategory(props.category).courseMap[props.course].then(
-        (exports) =>
-          exports.course.chapterMap[props.chapter].unitMap[props.unit]
-      )}
+      promise={getUnit(props.category, props.course, props.chapter, props.unit)}
       onPending={() => <Loading />}
       onError={(error) => <JSError error={error} />}
       onSuccess={(unit) => (

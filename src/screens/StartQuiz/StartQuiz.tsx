@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Divider, Text } from "@ui-kitten/components";
-import { getCategory } from "../../../course-lib";
+import { IQuiz } from "../../../course-lib";
 import {
   ParamList,
   START_QUIZ_SCREEN,
@@ -11,6 +11,7 @@ import {
 import { Async } from "@aicacia/async_component-react";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
+import { getLesson } from "../../../course-lib/categories";
 
 const styles = StyleSheet.create({
   buttons: {
@@ -24,10 +25,12 @@ export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
 
   return (
     <Async
-      promise={getCategory(props.category).courseMap[props.course].then(
-        (exports) =>
-          exports.course.chapterMap[props.chapter].unitMap[props.unit]
-            .lessonMap[props.lesson]
+      promise={getLesson<IQuiz>(
+        props.category,
+        props.course,
+        props.chapter,
+        props.unit,
+        props.lesson
       )}
       onPending={() => <Loading />}
       onError={(error) => <JSError error={error} />}

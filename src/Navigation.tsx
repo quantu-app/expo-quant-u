@@ -70,9 +70,7 @@ function NavigationDrawer() {
       initialRouteName={DEFAULT_SCREEN}
       screenOptions={{
         headerShown: true,
-        header(props) {
-          return <Header {...props} user={user} />;
-        },
+        header: (props) => <Header {...props} user={user} />,
       }}
       drawerType="front"
       drawerContent={(props) => <DrawerContent {...props} user={user} />}
@@ -200,10 +198,11 @@ function DrawerContent(props: IDrawerContentProps) {
         />
         <DrawerItem
           accessoryLeft={(props) => <Icon {...props} name="list-outline" />}
-          title={"Mathematics"}
+          title={"Mentel Math"}
           onPress={() =>
-            props.navigation.navigate(CATEGORY_SCREEN, {
+            props.navigation.navigate(COURSE_SCREEN, {
               category: "mathematics",
+              course: "mental_math",
             })
           }
         />
