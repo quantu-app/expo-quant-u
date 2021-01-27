@@ -154,8 +154,6 @@ export function Quiz(props: IQuizProps) {
       question = state.questions.get(state.current) as QuestionClass,
       key = `${state.current}-${result.attempt}`;
 
-    console.log(JSON.stringify(result, null, 2));
-
     return (
       <>
         <Status
