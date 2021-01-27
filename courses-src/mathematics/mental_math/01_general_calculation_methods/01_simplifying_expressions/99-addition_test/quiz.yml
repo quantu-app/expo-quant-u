@@ -3,7 +3,7 @@ autoNext: true
 description: |
   This is a quiz to test your skills with basic addition.
 items:
-  - generator: mathematics.mental_math.mental_calculation.addition
+  - generator: mathematics.mental_math.general_calculation_methods.addition
     count: 5
     retries: 1
     timeInSeconds: 5
