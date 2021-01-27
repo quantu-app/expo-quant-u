@@ -9,7 +9,7 @@ export const HOME_SCREEN = "Home",
   UNIT_SCREEN = "Unit",
   START_QUIZ_SCREEN = "Start Quiz",
   QUIZ_SCREEN = "Quiz",
-  DEFAULT_SCREEN = COURSE_SCREEN;
+  DEFAULT_SCREEN = HOME_SCREEN;
 
 export type ParamList = {
   [HOME_SCREEN]: undefined;
