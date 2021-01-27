@@ -18,7 +18,7 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
       - run: npm i
-      - run: npm install expo-cli json -g
+      - run: npm install json -g
       - run: json -I -f package.json -e 'this.homepage="https://quantu-app.gitlab.io/expo-quant-u/"'
       - run: json -I -f web/manifest.json -e 'this.start_url="/expo-quant-u/?utm_source=web_app_manifest"'
       - run: npm run sync
