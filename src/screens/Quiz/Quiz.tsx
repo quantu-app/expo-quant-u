@@ -27,6 +27,7 @@ export function Quiz(props: ParamList[typeof QUIZ_SCREEN]) {
           <Text category="h1">{quiz.name}</Text>
           <Divider />
           <QuizComponent
+            {...props}
             quiz={QuizClass.fromQuizData(quiz as IQuiz)}
             rng={XorShiftRng.fromSeed(props.seed)}
           />

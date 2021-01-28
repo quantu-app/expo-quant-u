@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, View } from "react-native";
 import { Card, Button, Text, Divider } from "@ui-kitten/components";
@@ -12,6 +12,7 @@ import {
 import { Async } from "@aicacia/async_component-react";
 import { Loading } from "../../Loading";
 import { JSError } from "../../JSError";
+import { viewCategory } from "../../state/tracking";
 
 const styles = StyleSheet.create({
   grid: {
@@ -36,6 +37,8 @@ const styles = StyleSheet.create({
 export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
   const navigation = useNavigation(),
     category = getCategory(props.category);
+
+  useEffect(() => viewCategory(props.category), []);
 
   return (
     <>
@@ -64,12 +67,12 @@ export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
                 <View style={styles.buttons}>
                   <Button
                     appearance="filled"
-                    onPress={() =>
+                    onPress={() => {
                       navigation.navigate(COURSE_SCREEN, {
                         ...props,
                         course: course.url,
-                      })
-                    }
+                      });
+                    }}
                   >
                     Start
                   </Button>

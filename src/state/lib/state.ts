@@ -10,15 +10,22 @@ import {
   INITIAL_STATE as auth,
   STORE_NAME as authName,
 } from "../auth/definitiions";
+import {
+  fromJSON as trackingFromJSON,
+  INITIAL_STATE as tracking,
+  STORE_NAME as trackingName,
+} from "../tracking/definitiions";
 
 export const state = new State(
   {
     [formsName]: forms,
     [authName]: auth,
+    [trackingName]: tracking,
   },
   {
     [formsName]: formsFromJSON,
     [authName]: authFromJSON,
+    [trackingName]: trackingFromJSON,
   }
 );
 export type IState = IStateTypeOf<typeof state>;

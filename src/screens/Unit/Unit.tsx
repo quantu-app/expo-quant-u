@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, View } from "react-native";
 import { ListItem, Divider, Card, List, Text } from "@ui-kitten/components";
@@ -12,6 +12,7 @@ import { Async } from "@aicacia/async_component-react";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { getUnit } from "../../../course-lib/categories";
+import { viewUnit } from "../../state/tracking";
 
 const styles = StyleSheet.create({
   lessons: {
@@ -21,6 +22,11 @@ const styles = StyleSheet.create({
 
 export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
   const navigation = useNavigation();
+
+  useEffect(
+    () => viewUnit(props.category, props.course, props.chapter, props.unit),
+    []
+  );
 
   return (
     <Async

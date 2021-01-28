@@ -5,6 +5,7 @@ import { Text, Button, Card } from "@ui-kitten/components";
 import { getCategories } from "../../../course-lib/categories";
 import { excerpt } from "../../excerpt";
 import { CATEGORY_SCREEN } from "../../navigationConfig";
+import { viewCategory } from "../../state/tracking";
 
 const styles = StyleSheet.create({
   grid: {
@@ -49,11 +50,12 @@ export function Categories() {
             <View style={styles.buttons}>
               <Button
                 appearance="filled"
-                onPress={() =>
+                onPress={() => {
+                  viewCategory(category.url);
                   navigation.navigate(CATEGORY_SCREEN, {
                     category: category.url,
-                  })
-                }
+                  });
+                }}
               >
                 Start
               </Button>

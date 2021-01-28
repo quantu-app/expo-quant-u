@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Divider, Text } from "@ui-kitten/components";
@@ -12,6 +12,7 @@ import { Async } from "@aicacia/async_component-react";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { getLesson } from "../../../course-lib/categories";
+import { viewLesson } from "../../state/tracking";
 
 const styles = StyleSheet.create({
   buttons: {
@@ -22,6 +23,19 @@ const styles = StyleSheet.create({
 
 export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
   const navigation = useNavigation();
+
+  useEffect(
+    () =>
+      viewLesson(
+        props.category,
+        props.course,
+        props.chapter,
+        props.unit,
+        props.lesson,
+        "quiz"
+      ),
+    []
+  );
 
   return (
     <Async

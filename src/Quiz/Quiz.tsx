@@ -15,6 +15,12 @@ import { Status } from "./Status";
 export interface IQuizProps {
   rng: Rng;
   quiz: QuizClass;
+  category: string;
+  course: string;
+  chapter: string;
+  unit: string;
+  lesson: string;
+  seed: number;
 }
 
 export interface IQuizState {
@@ -146,7 +152,19 @@ export function Quiz(props: IQuizProps) {
   if (loading) {
     return <Loading />;
   } else if (state.done) {
-    return <Results state={state} quiz={props.quiz} onReset={onReset} />;
+    return (
+      <Results
+        category={props.category}
+        course={props.course}
+        chapter={props.chapter}
+        unit={props.unit}
+        lesson={props.lesson}
+        seed={props.seed}
+        state={state}
+        quiz={props.quiz}
+        onReset={onReset}
+      />
+    );
   } else {
     const result = state.results.get(
         state.current

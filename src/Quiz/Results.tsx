@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { RecordOf } from "immutable";
 import { StyleSheet, View } from "react-native";
 import { Button, Text } from "@ui-kitten/components";
@@ -7,10 +7,17 @@ import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
 import { QuestionInput } from "./QuestionInput";
 import { Timer } from "./Timer";
+import { TrackingQuestion, updateQuizSession } from "../state/tracking";
 
 interface IResultsProps {
   quiz: Quiz;
   state: RecordOf<IQuizState>;
+  category: string;
+  course: string;
+  chapter: string;
+  unit: string;
+  lesson: string;
+  seed: number;
   onReset(): void;
 }
 
@@ -23,75 +30,95 @@ const styles = StyleSheet.create({
 
 const noop = () => null;
 
-export const Results = memo((props: IResultsProps) => (
-  <>
-    <View>
-      <Text>
-        Total Quiz Time -{" "}
-        <Timer timeInSeconds={(props.state.end - props.state.start) / 1000} />
-      </Text>
-      <Text>
-        Total Time -{" "}
-        <Timer
-          timeInSeconds={
-            props.state.results.reduce(
-              (acc, result) => acc + (result.end - result.start),
-              0
-            ) / 1000
-          }
-        />
-      </Text>
-    </View>
-    <View>
-      {props.state.questions.map((question, index) => {
-        const questionResult = props.state.results.get(
-          index
-        ) as RecordOf<IQuestionResult>;
+export const Results = memo((props: IResultsProps) => {
+  useEffect(
+    () =>
+      updateQuizSession(
+        props.category,
+        props.course,
+        props.chapter,
+        props.unit,
+        props.lesson,
+        props.seed,
+        (quizSession) =>
+          quizSession.set(
+            "results",
+            props.state.results.map((result) => TrackingQuestion(result.toJS()))
+          )
+      ),
+    []
+  );
 
-        return (
-          <View key={index}>
-            <View>
-              <QuestionInput
-                result={questionResult}
-                input={question.getInput()}
-                onChange={noop}
-                onCheck={noop}
-              />
+  return (
+    <>
+      <View>
+        <Text>
+          Total Quiz Time -{" "}
+          <Timer timeInSeconds={(props.state.end - props.state.start) / 1000} />
+        </Text>
+        <Text>
+          Total Time -{" "}
+          <Timer
+            timeInSeconds={
+              props.state.results.reduce(
+                (acc, result) => acc + (result.end - result.start),
+                0
+              ) / 1000
+            }
+          />
+        </Text>
+      </View>
+      <View>
+        {props.state.questions.map((question, index) => {
+          const questionResult = props.state.results.get(
+            index
+          ) as RecordOf<IQuestionResult>;
+
+          return (
+            <View key={index}>
+              <View>
+                <QuestionInput
+                  result={questionResult}
+                  input={question.getInput()}
+                  onChange={noop}
+                  onCheck={noop}
+                />
+              </View>
+              <View>
+                <Text>
+                  {questionResult.points} / {questionResult.total}
+                </Text>
+              </View>
+              <View>
+                <Timer
+                  timeInSeconds={
+                    (questionResult.end - questionResult.start) / 1000
+                  }
+                />
+              </View>
             </View>
-            <View>
-              <Text>
-                {questionResult.points} / {questionResult.total}
-              </Text>
-            </View>
-            <View>
-              <Timer
-                timeInSeconds={
-                  (questionResult.end - questionResult.start) / 1000
-                }
-              />
-            </View>
-          </View>
-        );
-      })}
-    </View>
-    <View>
-      <Text>
-        Points -{" "}
-        {props.state.results.reduce(
-          (count, questionResult) => count + questionResult.points,
-          0
-        )}
-        {" / "}
-        {props.state.results.reduce(
-          (count, questionResult) => count + questionResult.total,
-          0
-        )}
-      </Text>
-    </View>
-    <View style={styles.buttons}>
-      <Button appearance="filled" onPress={props.onReset}>
-        Reset
-      </Button>
-    </View>
-  </>
-));
+          );
+        })}
+      </View>
+      <View>
+        <Text>
+          Points -{" "}
+          {props.state.results.reduce(
+            (count, questionResult) => count + questionResult.points,
+            0
+          )}
+          {" / "}
+          {props.state.results.reduce(
+            (count, questionResult) => count + questionResult.total,
+            0
+          )}
+        </Text>
+      </View>
+      <View style={styles.buttons}>
+        <Button appearance="filled" onPress={props.onReset}>
+          Reset
+        </Button>
+      </View>
+    </>
+  );
+});
