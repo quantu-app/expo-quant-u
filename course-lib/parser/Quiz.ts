@@ -19,6 +19,7 @@ export class QuizItem {
 }
 
 export class Quiz extends Lesson {
+  shuffle = false;
   autoNext = false;
   timeInSeconds?: number;
   items: QuizItem[] = [];
@@ -34,6 +35,7 @@ export class Quiz extends Lesson {
         this.name = json.name as string;
         this.description = json.description as string;
         this.tags = (json.tags as Array<string>) || [];
+        this.shuffle = json.shuffle === true;
         this.autoNext = json.autoNext === true;
         if (typeof json.timeInSeconds === "number") {
           this.timeInSeconds = json.timeInSeconds;
@@ -78,9 +80,9 @@ export class Quiz extends Lesson {
           "." + sep + relative(dirname, courselibDir)
         )}";${EOL}${EOL}export const lesson: IQuiz = {${EOL}\tname: "${
           this.name
-        }",${EOL}\turl: "${this.url}",${EOL}\ttype: "quiz",${EOL}\tautoNext: ${
-          this.autoNext
-        },${EOL}${
+        }",${EOL}\turl: "${this.url}",${EOL}\ttype: "quiz",${EOL}\tshuffle: ${
+          this.shuffle
+        },${EOL}\tautoNext: ${this.autoNext},${EOL}${
           this.timeInSeconds
             ? `\ttimeInSeconds: ${this.timeInSeconds},${EOL}`
             : ""

@@ -54,6 +54,7 @@ export interface ILesson {
 
 export interface IQuiz extends ILesson {
   type: "quiz";
+  shuffle: boolean;
   autoNext: boolean;
   timeInSeconds?: number;
   items: IQuizItem[];

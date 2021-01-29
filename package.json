@@ -52,7 +52,7 @@
   "dependencies": {
     "@aicacia/async_component-react": "0",
     "@aicacia/changeset": "0",
-    "@aicacia/core": "0",
+    "@aicacia/core": "1",
     "@aicacia/json": "0",
     "@aicacia/rand": "0",
     "@aicacia/state": "0",

@@ -16,6 +16,7 @@ export interface IQuizItemConfig<C = any, T = any> {
 }
 
 export class Quiz {
+  protected shuffle = false;
   protected autoNext = false;
   protected timeInSeconds?: number;
   protected items: IQuizItemConfig[] = [];
@@ -58,7 +59,11 @@ export class Quiz {
       questions.push(...generatedQuestions);
     }
 
-    return questions;
+    if (this.shuffle) {
+      return rng.shuffle(questions);
+    } else {
+      return questions;
+    }
   }
 
   getAutoNext() {
@@ -71,6 +76,7 @@ export class Quiz {
   static fromQuizData(quizData: IQuiz) {
     const quiz = new Quiz();
 
+    quiz.shuffle = quizData.shuffle === true;
     quiz.autoNext = quizData.autoNext === true;
     quiz.timeInSeconds = quizData.timeInSeconds;
 
@@ -84,6 +90,28 @@ export class Quiz {
         retries: item.retries,
         timeInSeconds: item.timeInSeconds,
       });
+    }
+
+    return quiz;
+  }
+
+  static fromQuizDatum(quizDatum: IQuiz[]) {
+    const quiz = new Quiz();
+
+    quiz.shuffle = true;
+
+    for (const quizData of quizDatum) {
+      for (const item of quizData.items) {
+        const generator = getQuestionGenerator(item.generator);
+
+        quiz.items.push({
+          generator,
+          config: item.config || {},
+          count: item.count,
+          retries: item.retries,
+          timeInSeconds: item.timeInSeconds,
+        });
+      }
     }
 
     return quiz;

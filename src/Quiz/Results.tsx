@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo } from "react";
 import { RecordOf } from "immutable";
 import { StyleSheet, View } from "react-native";
 import { Button, Text } from "@ui-kitten/components";
@@ -7,7 +7,6 @@ import { IQuizState } from "./Quiz";
 import { IQuestionResult } from "./QuestionResult";
 import { QuestionInput } from "./QuestionInput";
 import { Timer } from "./Timer";
-import { TrackingQuestion, updateQuizSession } from "../state/tracking";
 
 interface IResultsProps {
   quiz: Quiz;
@@ -31,24 +30,6 @@ const styles = StyleSheet.create({
 const noop = () => null;
 
 export const Results = memo((props: IResultsProps) => {
-  useEffect(
-    () =>
-      updateQuizSession(
-        props.category,
-        props.course,
-        props.chapter,
-        props.unit,
-        props.lesson,
-        props.seed,
-        (quizSession) =>
-          quizSession.set(
-            "results",
-            props.state.results.map((result) => TrackingQuestion(result.toJS()))
-          )
-      ),
-    []
-  );
-
   return (
     <>
       <View>

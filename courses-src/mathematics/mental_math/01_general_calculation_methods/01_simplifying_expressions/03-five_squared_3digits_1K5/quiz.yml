@@ -2,7 +2,7 @@ name: Calculate the square of three digit numbers of the form 1K5 where 0 < K < 
 description: |
   When squaring three digit numbers ending in 5, apply the area technique with 25 carry.
 items:
-  - generator: mathematics.mental_math.mental_calculation.five_squared_3digits
+  - generator: mathematics.mental_math.general_calculation_methods.five_squared_3digits
     count: 10
     config:
       firstDigitNumber: 1

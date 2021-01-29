@@ -25,6 +25,8 @@ import { CategoryScreen } from "./screens/Category/CategoryScreen";
 import { CategoriesScreen } from "./screens/Categories/CategoriesScreen";
 import { ChapterScreen } from "./screens/Chapter/ChapterScreen";
 import { UnitScreen } from "./screens/Unit/UnitScreen";
+import { StartPracticeUnitScreen } from "./screens/StartPracticeUnit/StartPracticeUnitScreen";
+import { PracticeUnitScreen } from "./screens/PracticeUnit/PracticeUnitScreen";
 import { QuizScreen } from "./screens/Quiz/QuizScreen";
 import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
 import { ProfileScreen } from "./screens/Profile/ProfileScreen";
@@ -40,8 +42,10 @@ import {
   HOME_SCREEN,
   linking,
   ParamList,
+  PRACTICE_UNIT_SCREEN,
   PROFILE_SCREEN,
   QUIZ_SCREEN,
+  START_PRACTICE_UNIT_SCREEN,
   START_QUIZ_SCREEN,
   UNIT_SCREEN,
 } from "./navigationConfig";
@@ -85,6 +89,11 @@ function NavigationDrawer() {
       <Screen name={COURSE_SCREEN} component={CourseScreen} />
       <Screen name={CHAPTER_SCREEN} component={ChapterScreen} />
       <Screen name={UNIT_SCREEN} component={UnitScreen} />
+      <Screen
+        name={START_PRACTICE_UNIT_SCREEN}
+        component={StartPracticeUnitScreen}
+      />
+      <Screen name={PRACTICE_UNIT_SCREEN} component={PracticeUnitScreen} />
       <Screen name={START_QUIZ_SCREEN} component={StartQuizScreen} />
       <Screen name={QUIZ_SCREEN} component={QuizScreen} />
     </Navigator>

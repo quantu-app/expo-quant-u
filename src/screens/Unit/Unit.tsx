@@ -1,10 +1,18 @@
 import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, View } from "react-native";
-import { ListItem, Divider, Card, List, Text } from "@ui-kitten/components";
+import {
+  ListItem,
+  Divider,
+  Card,
+  List,
+  Text,
+  Button,
+} from "@ui-kitten/components";
 import { excerpt } from "../../excerpt";
 import {
   ParamList,
+  START_PRACTICE_UNIT_SCREEN,
   START_QUIZ_SCREEN,
   UNIT_SCREEN,
 } from "../../navigationConfig";
@@ -13,6 +21,7 @@ import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { getUnit } from "../../../course-lib/categories";
 import { viewUnit } from "../../state/tracking";
+import { ILesson, isQuiz } from "../../../course-lib";
 
 const styles = StyleSheet.create({
   lessons: {
@@ -25,7 +34,7 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
 
   useEffect(
     () => viewUnit(props.category, props.course, props.chapter, props.unit),
-    []
+    [props.category, props.course, props.chapter, props.unit]
   );
 
   return (
@@ -38,8 +47,20 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
           <Text category="h1">{unit.name}</Text>
           <Divider />
           <Text>{unit.description}</Text>
+          <View>
+            <Button
+              onPress={() =>
+                navigation.navigate(START_PRACTICE_UNIT_SCREEN, props)
+              }
+            >
+              Practice
+            </Button>
+          </View>
           <View style={styles.lessons}>
             <Text category="h3">Lessons</Text>
+            <Text category="h6">
+              Quizzes: {getLessonQuizCount(unit.lessons)}
+            </Text>
             <Divider />
             <List
               data={unit.lessons}
@@ -73,4 +94,8 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
       )}
     />
   );
+}
+
+function getLessonQuizCount(lessons: ILesson[]) {
+  return lessons.filter(isQuiz).reduce((count) => count + 1, 0);
 }

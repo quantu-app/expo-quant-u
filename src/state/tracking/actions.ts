@@ -27,11 +27,6 @@ export function viewCategory(category: string) {
 }
 
 export function viewCourse(category: string, course: string) {
-  console.log(
-    updateCourse(store.getCurrent(), category, course, (course) =>
-      course.set("viewed", true)
-    ).toJS()
-  );
   store.update((state) =>
     updateCourse(state, category, course, (course) =>
       course.set("viewed", true)
