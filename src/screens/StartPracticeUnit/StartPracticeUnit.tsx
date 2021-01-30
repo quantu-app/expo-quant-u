@@ -11,6 +11,15 @@ import { Loading } from "../../Loading";
 import { getUnit } from "../../../course-lib/categories";
 import { viewUnit } from "../../state/tracking";
 import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, View } from "react-native";
+
+const styles = StyleSheet.create({
+  buttons: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+});
 
 export function StartPracticeUnit(
   props: ParamList[typeof START_PRACTICE_UNIT_SCREEN]
@@ -30,11 +39,18 @@ export function StartPracticeUnit(
       onSuccess={(unit) => (
         <Card disabled>
           <Text category="h1">{unit.name}</Text>
-          <Button
-            onPress={() => navigation.navigate(PRACTICE_UNIT_SCREEN, props)}
-          >
-            Start
-          </Button>
+          <View style={styles.buttons}>
+            <Button
+              onPress={() =>
+                navigation.navigate(PRACTICE_UNIT_SCREEN, {
+                  ...props,
+                  seed: Date.now(),
+                })
+              }
+            >
+              Start
+            </Button>
+          </View>
         </Card>
       )}
     />

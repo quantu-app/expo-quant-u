@@ -9,7 +9,7 @@ import { Loading } from "../../Loading";
 import { getUnit } from "../../../course-lib/categories";
 import { viewUnit } from "../../state/tracking";
 import { isQuiz } from "../../../course-lib";
-import { Quiz as QuizComponent } from "../../Quiz";
+import { Quiz } from "../../Quiz";
 
 export function PracticeUnit(props: ParamList[typeof PRACTICE_UNIT_SCREEN]) {
   useEffect(
@@ -26,7 +26,7 @@ export function PracticeUnit(props: ParamList[typeof PRACTICE_UNIT_SCREEN]) {
         <Card disabled>
           <Text category="h1">{unit.name}</Text>
           <Divider />
-          <QuizComponent
+          <Quiz
             quiz={QuizClass.fromQuizDatum(unit.lessons.filter(isQuiz))}
             rng={XorShiftRng.fromSeed(props.seed)}
           />

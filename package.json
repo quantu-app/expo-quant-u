@@ -54,7 +54,7 @@
     "@aicacia/changeset": "0",
     "@aicacia/core": "1",
     "@aicacia/json": "0",
-    "@aicacia/rand": "0",
+    "@aicacia/rand": "^0.1.17",
     "@aicacia/state": "0",
     "@aicacia/state-forms": "0",
     "@aicacia/state-react": "0",

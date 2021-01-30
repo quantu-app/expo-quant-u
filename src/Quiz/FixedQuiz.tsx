@@ -12,12 +12,12 @@ import { IQuestionResult, QuestionResult } from "./QuestionResult";
 import { Results } from "./Results";
 import { Status } from "./Status";
 
-export interface IQuizProps {
+export interface IFixedQuizProps {
   rng: Rng;
   quiz: QuizClass;
 }
 
-export interface IQuizState {
+export interface IFixedQuizState {
   done: boolean;
   current: number;
   start: number;
@@ -26,7 +26,7 @@ export interface IQuizState {
   results: List<RecordOf<IQuestionResult>>;
 }
 
-export const QuizState = Record<IQuizState>({
+export const FixedQuizState = Record<IFixedQuizState>({
   done: true,
   current: -1,
   start: 0,
@@ -35,24 +35,33 @@ export const QuizState = Record<IQuizState>({
   results: List(),
 });
 
-export function Quiz(props: IQuizProps) {
-  const [state, setState] = useState(QuizState());
+export function FixedQuiz(props: IFixedQuizProps) {
+  const [state, setState] = useState(FixedQuizState());
   const [loading, setLoading] = useState(true);
 
   async function onReset() {
     setLoading(true);
-    const question = await props.quiz.getNextQuestion(props.rng);
+    const questions = await props.quiz.getQuestions(props.rng);
 
-    setState(
-      QuizState({
-        done: false,
-        current: 0,
-        start: Date.now(),
-        end: Date.now(),
-        questions: List([question]),
-        results: List([QuestionResult()]),
-      })
-    );
+    if (questions.length) {
+      setState(
+        FixedQuizState({
+          done: false,
+          current: 0,
+          start: Date.now(),
+          end: Date.now(),
+          questions: List(questions),
+          results: List(questions.map(() => QuestionResult())),
+        })
+      );
+    } else {
+      setState(
+        FixedQuizState({
+          start: Date.now(),
+          end: Date.now(),
+        })
+      );
+    }
     setLoading(false);
   }
 
@@ -69,55 +78,49 @@ export function Quiz(props: IQuizProps) {
 
   const onCheck = useCallback(
     async (result: RecordOf<IQuestionResult>) => {
-      const currentQuestion = state.questions.get(
-        state.current
-      ) as QuestionClass;
+      if (state.current !== -1) {
+        const question = state.questions.get(state.current) as QuestionClass;
 
-      let nextState = state.update("results", (results) =>
-        results.set(state.current, result)
-      );
+        let nextState = state.update("results", (results) =>
+          results.set(state.current, result)
+        );
 
-      if (
-        (result.correct ||
-          currentQuestion
-            .getRetries()
-            .map((retries) => result.attempt < retries)
-            .unwrapOr(true)) &&
-        props.quiz.getAutoNext() &&
-        !result.explained
-      ) {
-        const question = await props.quiz.getNextQuestion(props.rng);
-        nextState = nextState
-          .set("current", state.current + 1)
-          .update("results", (results) => results.push(QuestionResult()))
-          .update("questions", (questions) => questions.push(question));
+        if (
+          (result.correct ||
+            question
+              .getRetries()
+              .map((retries) => result.attempt < retries)
+              .unwrapOr(true)) &&
+          props.quiz.getAutoNext() &&
+          !result.explained
+        ) {
+          const current = getNextQuestionIndex(nextState);
+
+          nextState = nextState
+            .set("done", current === -1)
+            .set("current", current);
+
+          if (nextState.done) {
+            nextState = nextState.set("end", Date.now());
+          }
+        }
+
+        setState(nextState);
       }
-
-      setState(nextState);
     },
-    [state, setState, props.quiz, props.rng]
+    [state, setState, props.quiz]
   );
 
   const onNext = useCallback(async () => {
-    const question = await props.quiz.getNextQuestion(props.rng);
+    const endTime = Date.now(),
+      current = getNextQuestionIndex(state);
+    let nextState = state.set("done", current === -1).set("current", current);
 
-    setState(
-      state
-        .update("results", (results) => results.push(QuestionResult()))
-        .update("questions", (questions) => questions.push(question))
-        .set("current", state.current + 1)
-    );
-  }, [state, setState, props.quiz, props.rng]);
+    if (nextState.done) {
+      nextState = nextState.set("end", endTime);
+    }
 
-  const onQuit = useCallback(() => {
-    setState(
-      state
-        .update("results", (results) => results.pop())
-        .update("questions", (questions) => questions.pop())
-        .set("done", true)
-        .set("current", -1)
-        .set("end", Date.now())
-    );
+    setState(nextState);
   }, [state, setState]);
 
   const onRetry = useCallback(
@@ -174,9 +177,33 @@ export function Quiz(props: IQuizProps) {
           onNext={onNext}
           onRetry={onRetry}
           onCheck={onCheck}
-          onQuit={onQuit}
         />
       </>
     );
   }
+}
+
+function getNextQuestionIndex(state: RecordOf<IFixedQuizState>) {
+  let next = -1;
+
+  for (let i = state.current + 1, il = state.results.size; i < il; i++) {
+    const result = state.results.get(i) as RecordOf<IQuestionResult>;
+
+    if (!result.done) {
+      next = i;
+      break;
+    }
+  }
+  if (next === -1) {
+    for (let i = 0, il = state.current; i < il; i++) {
+      const result = state.results.get(i) as RecordOf<IQuestionResult>;
+
+      if (!result.done) {
+        next = i;
+        break;
+      }
+    }
+  }
+
+  return next;
 }

@@ -76,7 +76,7 @@ export const linking = {
       [CHAPTER_SCREEN]: ":category/:course/:chapter",
       [UNIT_SCREEN]: ":category/:course/:chapter/:unit",
       [START_PRACTICE_UNIT_SCREEN]:
-        ":category/:course/:chapter/:unit/state-practice",
+        ":category/:course/:chapter/:unit/start-practice",
       [PRACTICE_UNIT_SCREEN]: {
         path: ":category/:course/:chapter/:unit/practice",
         parse: {

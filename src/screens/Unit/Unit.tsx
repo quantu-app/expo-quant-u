@@ -27,6 +27,11 @@ const styles = StyleSheet.create({
   lessons: {
     marginTop: 16,
   },
+  buttons: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
 });
 
 export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
@@ -47,7 +52,7 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
           <Text category="h1">{unit.name}</Text>
           <Divider />
           <Text>{unit.description}</Text>
-          <View>
+          <View style={styles.buttons}>
             <Button
               onPress={() =>
                 navigation.navigate(START_PRACTICE_UNIT_SCREEN, props)

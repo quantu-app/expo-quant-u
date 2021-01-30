@@ -13,9 +13,10 @@ import { Counter } from "./Counter";
 export interface IQuestionProps<T = any> {
   result: RecordOf<IQuestionResult<T>>;
   question: QuestionClass<T>;
-  onNext(): void;
+  onNext(): Promise<void>;
   onRetry(result: RecordOf<IQuestionResult<T>>): void;
-  onCheck(result: RecordOf<IQuestionResult<T>>): void;
+  onCheck(result: RecordOf<IQuestionResult<T>>): Promise<void>;
+  onQuit?: () => void;
 }
 
 const styles = StyleSheet.create({
@@ -89,11 +90,12 @@ export const Question = memo((props: IQuestionProps) => {
         .set("correct", points === state.total && state.total > 0)
         .set("end", endTime);
     setState(nextState);
-    props.onCheck(nextState);
+    await props.onCheck(nextState);
     setLoading(false);
   }, [setLoading, state, props.question, props.onCheck, setState]);
 
   const onExplain = useCallback(async () => {
+    setLoading(true);
     let nextState = state;
 
     if (!nextState.done) {
@@ -103,7 +105,8 @@ export const Question = memo((props: IQuestionProps) => {
     nextState = nextState.set("done", true).set("explained", true);
 
     setState(nextState);
-    props.onCheck(nextState);
+    await props.onCheck(nextState);
+    setLoading(false);
   }, [state, setState, props.onCheck]);
 
   return (
@@ -129,7 +132,11 @@ export const Question = memo((props: IQuestionProps) => {
       <View style={styles.buttons}>
         {state.done ? (
           <>
-            <Button appearance="filled" onPress={props.onNext}>
+            <Button
+              appearance="filled"
+              status={state.correct ? "success" : "danger"}
+              onPress={props.onNext}
+            >
               Next
             </Button>
             {!state.correct &&
@@ -161,11 +168,22 @@ export const Question = memo((props: IQuestionProps) => {
         )}
         {props.question.getExplanation().isSome() && (
           <Button
-            appearance="outline"
+            appearance="filled"
+            status="warning"
             disabled={state.explained || loading}
             onPress={onExplain}
           >
             Explain
+          </Button>
+        )}
+        {props.onQuit && (
+          <Button
+            appearance="filled"
+            status="danger"
+            disabled={loading}
+            onPress={props.onQuit}
+          >
+            Quit
           </Button>
         )}
       </View>

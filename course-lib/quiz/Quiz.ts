@@ -21,6 +21,39 @@ export class Quiz {
   protected timeInSeconds?: number;
   protected items: IQuizItemConfig[] = [];
 
+  async getNextQuestion(rng: Rng): Promise<Question> {
+    const item = rng
+        .fromArray(this.items)
+        .expect("Failed to get item from items"),
+      { default: generator } = await item.generator;
+
+    if (!isQuestionGenerator(generator)) {
+      throw new TypeError(`Invalid Question Generator ${generator}`);
+    }
+
+    const config = {
+        ...generator.defaults,
+        ...item.config,
+      },
+      result = validate(config, generator.schema);
+
+    if (!result.valid) {
+      console.warn(result);
+    }
+
+    const generatorFn = generator.createGeneratorFn(config),
+      question = generatorFn(rng);
+
+    if (typeof item.retries === "number") {
+      question.setRetries(item.retries);
+    }
+    if (typeof item.timeInSeconds === "number") {
+      question.setTimeInSeconds(item.timeInSeconds);
+    }
+
+    return question;
+  }
+
   async getQuestions(rng: Rng): Promise<Question[]> {
     const questions: Question[] = [];
 
@@ -99,6 +132,7 @@ export class Quiz {
     const quiz = new Quiz();
 
     quiz.shuffle = true;
+    quiz.autoNext = true;
 
     for (const quizData of quizDatum) {
       for (const item of quizData.items) {

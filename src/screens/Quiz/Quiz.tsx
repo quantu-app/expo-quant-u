@@ -5,7 +5,7 @@ import { Async } from "@aicacia/async_component-react";
 import { IQuiz } from "../../../course-lib";
 import { Quiz as QuizClass } from "../../../course-lib/quiz";
 import { ParamList, QUIZ_SCREEN } from "../../navigationConfig";
-import { Quiz as QuizComponent } from "../../Quiz";
+import { FixedQuiz } from "../../Quiz";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { getLesson } from "../../../course-lib/categories";
@@ -26,7 +26,7 @@ export function Quiz(props: ParamList[typeof QUIZ_SCREEN]) {
         <Card disabled>
           <Text category="h1">{quiz.name}</Text>
           <Divider />
-          <QuizComponent
+          <FixedQuiz
             quiz={QuizClass.fromQuizData(quiz as IQuiz)}
             rng={XorShiftRng.fromSeed(props.seed)}
           />

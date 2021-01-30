@@ -1,22 +1,18 @@
 import React, { memo } from "react";
-import { RecordOf } from "immutable";
+import { List, RecordOf } from "immutable";
 import { StyleSheet, View } from "react-native";
 import { Button, Text } from "@ui-kitten/components";
-import { Quiz } from "../../course-lib";
-import { IQuizState } from "./Quiz";
+import { Question, Quiz } from "../../course-lib";
 import { IQuestionResult } from "./QuestionResult";
 import { QuestionInput } from "./QuestionInput";
 import { Timer } from "./Timer";
 
 interface IResultsProps {
   quiz: Quiz;
-  state: RecordOf<IQuizState>;
-  category: string;
-  course: string;
-  chapter: string;
-  unit: string;
-  lesson: string;
-  seed: number;
+  questions: List<Question>;
+  results: List<RecordOf<IQuestionResult>>;
+  start: number;
+  end: number;
   onReset(): void;
 }
 
@@ -35,13 +31,13 @@ export const Results = memo((props: IResultsProps) => {
       <View>
         <Text>
           Total Quiz Time -{" "}
-          <Timer timeInSeconds={(props.state.end - props.state.start) / 1000} />
+          <Timer timeInSeconds={(props.end - props.start) / 1000} />
         </Text>
         <Text>
           Total Time -{" "}
           <Timer
             timeInSeconds={
-              props.state.results.reduce(
+              props.results.reduce(
                 (acc, result) => acc + (result.end - result.start),
                 0
               ) / 1000
@@ -50,8 +46,8 @@ export const Results = memo((props: IResultsProps) => {
         </Text>
       </View>
       <View>
-        {props.state.questions.map((question, index) => {
-          const questionResult = props.state.results.get(
+        {props.questions.map((question, index) => {
+          const questionResult = props.results.get(
             index
           ) as RecordOf<IQuestionResult>;
 
@@ -84,12 +80,12 @@ export const Results = memo((props: IResultsProps) => {
       <View>
         <Text>
           Points -{" "}
-          {props.state.results.reduce(
+          {props.results.reduce(
             (count, questionResult) => count + questionResult.points,
             0
           )}
           {" / "}
-          {props.state.results.reduce(
+          {props.results.reduce(
             (count, questionResult) => count + questionResult.total,
             0
           )}
