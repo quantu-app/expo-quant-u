@@ -1,8 +1,6 @@
 import { ICategory, IChapter, ICourse, ILesson, IUnit } from "./interfaces";
 
-const CATEGORIES: Record<string, ICategory> =
-  (global as any).__GLOBAL_CATEGORIES_INSTANCE__ ||
-  ((global as any).__GLOBAL_CATEGORIES_INSTANCE__ = {});
+const CATEGORIES: Record<string, ICategory> = {};
 
 export function addCategory(category: ICategory) {
   if (hasCategory(category.url)) {

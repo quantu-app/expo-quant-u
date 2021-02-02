@@ -16,6 +16,7 @@ export class Course {
   category = "";
   name = "";
   description = "";
+  isFree = false;
   logo: Option<string> = none();
   url = "";
   tags: string[] = [];
@@ -31,6 +32,7 @@ export class Course {
       readYaml(join(dirname, "course")).then((json) => {
         this.name = json.name as string;
         this.description = json.description as string;
+        this.isFree = json.isFree === true;
         this.tags = (json.tags as Array<string>) || [];
       })
     );
@@ -84,9 +86,9 @@ export class Course {
           filepath,
           `export const course: ICourse = {${EOL}\tname: "${
             this.name
-          }",${EOL}\turl: "${this.url}",${EOL}\tcategory: "${
-            this.category
-          }",${EOL}${
+          }",${EOL}\turl: "${this.url}",${EOL}\tisFree: ${
+            this.isFree
+          },${EOL}\tcategory: "${this.category}",${EOL}${
             logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
           }\ttags: ${JSON.stringify(
             this.tags

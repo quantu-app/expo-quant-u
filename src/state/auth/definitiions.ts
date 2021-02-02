@@ -4,6 +4,7 @@ import { IJSONObject, isJSONObject } from "@aicacia/json";
 import { Record, RecordOf } from "immutable";
 
 export interface IUserExtra {
+  online: boolean;
   firstName?: string;
   lastName?: string;
   username?: string;
@@ -12,6 +13,7 @@ export interface IUserExtra {
 }
 
 export const UserExtra = Record<IUserExtra>({
+  online: false,
   firstName: undefined,
   lastName: undefined,
   username: undefined,

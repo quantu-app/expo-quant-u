@@ -1,4 +1,5 @@
 name: Mental Calculation
+isFree: true
 description: |
   Mental calculation consists of arithmetical calculations using only the human brain,
   with no help from any supplies or devices such as a calculator. People use mental

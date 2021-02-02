@@ -34,6 +34,7 @@ export class Quiz extends Lesson {
       readYaml(join(dirname, "quiz")).then((json) => {
         this.name = json.name as string;
         this.description = json.description as string;
+        this.isFree = json.isFree === true;
         this.tags = (json.tags as Array<string>) || [];
         this.shuffle = json.shuffle === true;
         this.autoNext = json.autoNext === true;
@@ -80,7 +81,9 @@ export class Quiz extends Lesson {
           "." + sep + relative(dirname, courselibDir)
         )}";${EOL}${EOL}export const lesson: IQuiz = {${EOL}\tname: "${
           this.name
-        }",${EOL}\turl: "${this.url}",${EOL}\ttype: "quiz",${EOL}\tshuffle: ${
+        }",${EOL}\turl: "${this.url}",${EOL}\tisFree: ${
+          this.isFree
+        },${EOL}\ttype: "quiz",${EOL}\tshuffle: ${
           this.shuffle
         },${EOL}\tautoNext: ${this.autoNext},${EOL}${
           this.timeInSeconds

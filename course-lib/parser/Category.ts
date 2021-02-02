@@ -15,6 +15,7 @@ import { createTSImport } from "./utils/createTSImport";
 export class Category {
   name = "";
   description = "";
+  isFree = false;
   logo: Option<string> = none();
   url = "";
   tags: string[] = [];
@@ -30,6 +31,7 @@ export class Category {
       readYaml(join(dirname, "category")).then((json) => {
         this.name = json.name as string;
         this.description = json.description as string;
+        this.isFree = json.isFree === true;
         this.tags = (json.tags as Array<string>) || [];
       })
     );
@@ -82,7 +84,7 @@ export class Category {
           filepath,
           `export const category: ICategory = {${EOL}\tname: "${
             this.name
-          }",${EOL}\turl: "${this.url}",${EOL}${
+          }",${EOL}\turl: "${this.url}",${EOL}\tisFree: ${this.isFree},${EOL}${
             logo
               ? `\tlogo: require("${
                   "." + sep + relative(dirname, logo)

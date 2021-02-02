@@ -3,9 +3,7 @@ import { IQuestionGenerator } from "./IQuestionGenerator";
 const QUESTION_GENERATORS: Record<
   string,
   Promise<{ default: IQuestionGenerator }>
-> =
-  (global as any).__GLOBAL_QUESTION_GENERATORS_INSTANCE__ ||
-  ((global as any).__GLOBAL_QUESTION_GENERATORS_INSTANCE__ = {});
+> = {};
 
 export function addQuestionGenerator<C = any, T = any>(
   name: string,

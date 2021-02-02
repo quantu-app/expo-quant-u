@@ -129,13 +129,24 @@ export function Header(props: IDrawerHeaderProps) {
             </Button>
           )}
           accessoryLeft={(accessoryProps) => (
-            <TopNavigationAction
-              {...accessoryProps}
-              onPress={() =>
-                (props.scene.descriptor.navigation as any).openDrawer()
-              }
-              icon={(props) => <Icon {...props} name="menu-outline" />}
-            />
+            <>
+              <TopNavigationAction
+                {...accessoryProps}
+                onPress={() =>
+                  (props.scene.descriptor.navigation as any).openDrawer()
+                }
+                icon={(props) => <Icon {...props} name="menu-outline" />}
+              />
+              {props.scene.descriptor.navigation.canGoBack() && (
+                <TopNavigationAction
+                  {...accessoryProps}
+                  onPress={() => props.scene.descriptor.navigation.goBack()}
+                  icon={(props) => (
+                    <Icon {...props} name="arrow-back-outline" />
+                  )}
+                />
+              )}
+            </>
           )}
           accessoryRight={
             props.user.isSome()

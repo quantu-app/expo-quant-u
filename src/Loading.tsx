@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Spinner } from "@ui-kitten/components";
+import { EvaSize } from "@ui-kitten/components/devsupport";
 
 const styles = StyleSheet.create({
   container: {
@@ -11,10 +12,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Loading() {
+export interface ILoadingProps {
+  size?: EvaSize;
+}
+
+export function Loading(props: ILoadingProps) {
   return (
     <View style={styles.container}>
-      <Spinner animating size="large" />
+      <Spinner animating size={props.size || "large"} />
     </View>
   );
 }

@@ -53,6 +53,7 @@
     "@aicacia/async_component-react": "0",
     "@aicacia/changeset": "0",
     "@aicacia/core": "0",
+    "@aicacia/debounce": "^0.1.9",
     "@aicacia/json": "0",
     "@aicacia/rand": "0",
     "@aicacia/state": "0",

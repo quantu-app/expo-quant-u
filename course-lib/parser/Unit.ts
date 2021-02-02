@@ -17,6 +17,7 @@ import { Lesson } from "./Lesson";
 export class Unit {
   name = "";
   description = "";
+  isFree = false;
   logo: Option<string> = none();
   url = "";
   tags: string[] = [];
@@ -32,6 +33,7 @@ export class Unit {
       readYaml(join(dirname, "unit")).then((json) => {
         this.name = json.name as string;
         this.description = json.description as string;
+        this.isFree = json.isFree === true;
         this.tags = (json.tags as Array<string>) || [];
       })
     );
@@ -87,7 +89,7 @@ export class Unit {
           filepath,
           `export const unit: IUnit = {${EOL}\tname: "${
             this.name
-          }",${EOL}\turl: "${this.url}",${EOL}${
+          }",${EOL}\turl: "${this.url}",${EOL}\tisFree: ${this.isFree},${EOL}${
             logo ? `\tlogo: require("${relative(dirname, logo)}"),${EOL}` : ""
           }\ttags: ${JSON.stringify(
             this.tags

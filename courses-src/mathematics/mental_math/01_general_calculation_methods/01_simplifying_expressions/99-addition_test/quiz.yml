@@ -1,5 +1,6 @@
 name: Addition
 autoNext: true
+isFree: true
 description: |
   This is a quiz to test your skills with basic addition.
 items:

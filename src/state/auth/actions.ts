@@ -1,12 +1,16 @@
 import { firebase } from "../../firebase";
-import { IUser, IUserExtra, STORE_NAME, User } from "./definitiions";
+import { IUser, IUserExtra, STORE_NAME, User, UserExtra } from "./definitiions";
 import { state } from "../lib/state";
 import { none, Option, some } from "@aicacia/core";
-import { RecordOf } from "immutable";
+import { Map, RecordOf } from "immutable";
 import { XorShiftRng } from "@aicacia/rand";
 import { firebaseSignInWithGoogle } from "./firebaseSignInWithGoogle";
 
 export const store = state.getStore(STORE_NAME);
+
+window.addEventListener("unload", () =>
+  store.getCurrent().user.map((user) => setUserOnline(user, false))
+);
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
@@ -16,10 +20,22 @@ firebase.auth().onAuthStateChanged((user) => {
   }
 });
 
+export function setUserOnline(user: RecordOf<IUser>, online: boolean) {
+  return firebase
+    .database()
+    .ref(`users/${user.uid}`)
+    .child("online")
+    .set(online);
+}
+
 export function toggleSignInUpOpen() {
   store.update((state) =>
     state.set("signInUpOpen", !state.get("signInUpOpen"))
   );
+}
+
+export function setSignInUpOpen(open: boolean) {
+  store.update((state) => state.set("signInUpOpen", open));
 }
 
 export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
@@ -62,6 +78,27 @@ export async function isValidUsername(user: RecordOf<IUser>, username = "") {
   );
 }
 
+export async function findByUsername(user: RecordOf<IUser>, username = "") {
+  const dataSnapshot = await firebase
+      .database()
+      .ref("users")
+      .orderByChild("username")
+      .startAt(username)
+      .endAt(username + "\uf8ff")
+      .once("value"),
+    users: Record<string, any> = dataSnapshot.val() || {};
+
+  return Object.keys(users).reduce((acc, uid) => {
+    const otherUser = UserExtra(users[uid]);
+
+    if (uid === user.uid || !otherUser.online) {
+      return acc;
+    } else {
+      return acc.set(uid, otherUser);
+    }
+  }, Map<string, RecordOf<IUserExtra>>());
+}
+
 export function setUserExtra(user: RecordOf<IUser>, userExtra: IUserExtra) {
   return firebase
     .database()
@@ -97,6 +134,7 @@ async function subscribeUserExtra(user: RecordOf<IUser>, isNewUser: boolean) {
               .set("username", data.username)
               .set("birthday", data.birthday && new Date(data.birthday))
               .set("about", data.about)
+              .set("online", true)
           )
         )
       )
@@ -133,6 +171,7 @@ function signUserIn(firebaseUser: firebase.User, isNewUser: boolean) {
     uid: firebaseUser.uid,
   });
 
+  setUserOnline(user, true);
   subscribeUserExtra(user, isNewUser);
 
   return store.update((state) => state.set("user", some(user)));
@@ -140,12 +179,15 @@ function signUserIn(firebaseUser: firebase.User, isNewUser: boolean) {
 
 function signUserOut() {
   unsubscribeUserExtra();
-  return store.update((state) => state.set("user", none()));
+  return store.update((state) => {
+    state.user.map((user) => setUserOnline(user, false));
+    return state.set("user", none());
+  });
 }
 
 export async function signOut() {
+  signUserOut();
   await firebase.auth().signOut();
-  return signUserOut();
 }
 
 export async function signInWithGithub() {

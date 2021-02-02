@@ -5,6 +5,7 @@ export type IImport<Name extends string, T> = Promise<Record<Name, T>>;
 export interface ICategory {
   name: string;
   description: string;
+  isFree: boolean;
   logo?: any;
   url: string;
   tags: string[];
@@ -16,6 +17,7 @@ export interface ICourse {
   category: string;
   name: string;
   description: string;
+  isFree: boolean;
   logo?: any;
   url: string;
   tags: string[];
@@ -26,6 +28,7 @@ export interface ICourse {
 export interface IChapter {
   name: string;
   description: string;
+  isFree: boolean;
   logo?: any;
   url: string;
   tags: string[];
@@ -36,6 +39,7 @@ export interface IChapter {
 export interface IUnit {
   name: string;
   description: string;
+  isFree: boolean;
   logo?: any;
   url: string;
   tags: string[];
@@ -47,6 +51,7 @@ export interface ILesson {
   name: string;
   type: string;
   description: string;
+  isFree: boolean;
   logo?: any;
   url: string;
   tags: string[];
