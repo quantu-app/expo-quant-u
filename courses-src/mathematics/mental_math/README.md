@@ -26,8 +26,8 @@ or textual intuition as to why the method works.
 
 #### Challenges:
 
-1. Adding: 2 digit numbers 2 pairs, 3 pairs, 4 pairs
-2.
+1. Adding: 2 digit numbers 2 pairs, 3 pairs, 4 pairs.
+2. Multiplication: 1 digit and 2 digit numbers.
 
 #### Unit 2 - Approximating and rounding off
 

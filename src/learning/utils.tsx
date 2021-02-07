@@ -39,3 +39,11 @@ export function getRandomNDigitEvenNumber(n: number, rng: Rng): number {
 
   return num;
 }
+
+export function getRandomNDigitOddNumber(n: number, rng: Rng): number {
+  const odds = [1, 3, 5, 7, 9],
+    baseNum = getRandomNDigitTenRoundedNumber(n, rng),
+    num = baseNum + rng.shuffle(odds)[0];
+
+  return num;
+}
