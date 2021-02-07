@@ -1,7 +1,10 @@
 name: Mental Math
 isFree: true
 description: |
-  Mental math is a group of skills that allow people to do math “in their head” without using pencil and paper or a calculator.
+  This course teaches mental mathematics. This is a group of skills that allows people to do math "in their head" without using a calculator.
+  The techniques taught consists of methods of arithmetical calculations using only the human brain, with no help from any supplies or devices.
+  Often it can be useful to use mental calculation when computing tools are not available, when it is faster than other means
+  of calculation, or even in a competitive context.
 tags:
   - mental
   - math

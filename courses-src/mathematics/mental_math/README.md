@@ -13,23 +13,30 @@ or textual intuition as to why the method works.
 
 ## Outline
 
-### Chapter 1 - General Calculation Methods
+### Chapter 1 - Fundamental Methods
 
 #### Unit 1 - Simplifying Expressions
 
-1. Shaving off numbers to simplify addition.
-
-1. How to simplify addition problems
-1. How to simplify multiplication problems
 1. Left to Right mental computation
+2. Shaving off numbers to simplify addition.
+3. Breaking a number into parts.
+3. How to simplify addition problems
+4. How to simplify multiplication problems
+5. Adding numbers by 10 groups
 
-#### Unit 2 - Working with Components of Numbers
+#### Challenges:
+
+1. Adding: 2 digit numbers 2 pairs, 3 pairs, 4 pairs
+2. 
+
+
+#### Unit 2 - Approximating and rounding off
 
 1. Breaking up numbers into easier parts
 2. Concentrating and Remember Results of Operations (not parts)
 3. Rounding to nearest Units
 
-#### Unit 3 - Checking Answers to Computations
+#### Unit 3 - Checking Results
 
 1. Casting out Nines
 2. Using Parity to Check Addition

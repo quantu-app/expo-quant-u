@@ -5,12 +5,12 @@ import {
   TextInput,
   Question,
   createQuestionGenerator,
-} from "../../../../course-lib";
-import { Latex } from "../../../../src/Latex";
+} from "../../../../../course-lib";
+import { Latex } from "../../../../../src/Latex";
 import {
   getIntRngForNDigits,
   getIntegerPlaceValues,
-} from "../../../../src/learning/utils";
+} from "../../../../../src/learning/utils";
 
 /**
  * BUGS:

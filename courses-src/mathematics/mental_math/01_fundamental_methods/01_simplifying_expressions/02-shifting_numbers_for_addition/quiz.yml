@@ -1,0 +1,12 @@
+name: Shifting numbers for increasing addition speed
+description: |
+  When adding numbers you can add and subtract.
+items:
+  - generator: mathematics.mental_math.fundamental_methods.simplify_expressions.adding_numbers_by_shifting
+    count: 5
+    config:
+      nDigits: 2
+  - generator: mathematics.mental_math.fundamental_methods.simplify_expressions.adding_numbers_by_shifting
+    count: 5
+    config:
+      nDigits: 3

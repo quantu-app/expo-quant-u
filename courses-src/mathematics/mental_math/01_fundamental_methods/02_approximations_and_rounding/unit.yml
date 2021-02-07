@@ -1,0 +1,9 @@
+name: Approximations and Rounding
+isFree: false
+description: |
+  In this unit we look at how we can guess, round, estimate and get rough approximations of
+  the results.
+tags:
+  - approximation
+  - rounding
+  - estimation

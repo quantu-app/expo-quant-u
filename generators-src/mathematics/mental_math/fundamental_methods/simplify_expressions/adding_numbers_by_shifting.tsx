@@ -5,9 +5,9 @@ import {
   TextInput,
   Question,
   createQuestionGenerator,
-} from "../../../../course-lib";
-import { Latex } from "../../../../src/Latex";
-import { getIntRngForNDigits } from "../../../../src/learning/utils";
+} from "../../../../../course-lib";
+import { Latex } from "../../../../../src/Latex";
+import { getIntRngForNDigits } from "../../../../../src/learning/utils";
 
 interface IAddingByShifting {
   nDigits: number;
