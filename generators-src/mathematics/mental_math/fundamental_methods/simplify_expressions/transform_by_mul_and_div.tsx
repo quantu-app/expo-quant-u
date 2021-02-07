@@ -1,6 +1,6 @@
 import React from "react";
 import { Rng } from "@aicacia/rand";
-import { Divider, Text } from "@ui-kitten/components";
+//import { Divider, Text } from "@ui-kitten/components";
 import {
   TextInput,
   Question,
