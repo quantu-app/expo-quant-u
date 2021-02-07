@@ -23,3 +23,19 @@ export function getIntegerPlaceValues(x: number) {
 
   return placeValuesPowers;
 }
+
+export function getRandomNDigitTenRoundedNumber(n: number, rng: Rng): number {
+  const dRng = getIntRngForNDigits(n, rng),
+    rawNum = dRng.next().unwrap(),
+    num = rawNum - (rawNum % 10);
+
+  return num;
+}
+
+export function getRandomNDigitEvenNumber(n: number, rng: Rng): number {
+  const evens = [2, 4, 6, 8],
+    baseNum = getRandomNDigitTenRoundedNumber(n, rng),
+    num = baseNum + rng.shuffle(evens)[0];
+
+  return num;
+}
