@@ -20,15 +20,14 @@ or textual intuition as to why the method works.
 1. Left to Right mental computation
 2. Shaving off numbers to simplify addition.
 3. Breaking a number into parts.
-3. How to simplify addition problems
-4. How to simplify multiplication problems
-5. Adding numbers by 10 groups
+4. How to simplify addition problems
+5. How to simplify multiplication problems
+6. Adding numbers by 10 groups
 
 #### Challenges:
 
 1. Adding: 2 digit numbers 2 pairs, 3 pairs, 4 pairs
-2. 
-
+2.
 
 #### Unit 2 - Approximating and rounding off
 
