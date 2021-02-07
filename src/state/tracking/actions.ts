@@ -14,7 +14,7 @@ import {
   ITrackingLesson,
   TrackingQuizSession,
   ITrackingQuizSession,
-} from "./definitiions";
+} from "./definitions";
 import { state } from "../lib/state";
 import { Map, RecordOf } from "immutable";
 

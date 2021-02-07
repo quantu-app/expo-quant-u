@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { Modal, Text, Button, Icon, Card } from "@ui-kitten/components";
 import { SMALL_WIDTH } from "./screens";
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   github: { backgroundColor: "#24292e", borderColor: "transparent" },
 });
 
-export function SignInUp() {
+export const SignInUp = memo(() => {
   const signInUpOpen = useMapStateToProps(selectSignInUpOpen);
 
   return (
@@ -44,7 +44,7 @@ export function SignInUp() {
       </Card>
     </Modal>
   );
-}
+});
 
 function SignIn() {
   const [loading, setLoading] = useState(false);

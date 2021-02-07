@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createDrawerNavigator,
@@ -9,7 +9,6 @@ import {
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { CourseScreen } from "./screens/Course/CourseScreen";
 import { Platform, SafeAreaView, StyleSheet, StatusBar } from "react-native";
-import { Option } from "@aicacia/core";
 import {
   Button,
   Layout,
@@ -30,11 +29,18 @@ import { PracticeUnitScreen } from "./screens/PracticeUnit/PracticeUnitScreen";
 import { QuizScreen } from "./screens/Quiz/QuizScreen";
 import { StartQuizScreen } from "./screens/StartQuiz/StartQuizScreen";
 import { ProfileScreen } from "./screens/Profile/ProfileScreen";
-import { IUser, selectUser, signOut, toggleSignInUpOpen } from "./state/auth";
+import {
+  IUser,
+  selectIsSignedIn,
+  selectUser,
+  signOut,
+  toggleSignInUpOpen,
+} from "./state/auth";
 import { useMapStateToProps } from "./state";
 import {
   CATEGORIES_SCREEN,
   CATEGORY_SCREEN,
+  CHALLENGE_QUIZ_SCREEN,
   CHAPTER_SCREEN,
   COURSE_SCREEN,
   DEFAULT_SCREEN,
@@ -45,6 +51,7 @@ import {
   PRACTICE_UNIT_SCREEN,
   PROFILE_SCREEN,
   QUIZ_SCREEN,
+  START_CHALLENGE_QUIZ_SCREEN,
   START_PRACTICE_UNIT_SCREEN,
   START_QUIZ_SCREEN,
   UNIT_SCREEN,
@@ -52,6 +59,9 @@ import {
 import { SignInUp } from "./SignInUp";
 import app from "../app.json";
 import { DrawerHeaderProps } from "@react-navigation/drawer/lib/typescript/src/types";
+import { StartChallengeQuizScreen } from "./screens/StartChallengeQuiz/StartChallengeQuizScreen";
+import { ChallengeQuizScreen } from "./screens/ChallengeQuiz/ChallengeQuizScreen";
+import { RecordOf } from "immutable";
 
 export const { Navigator, Screen } = createDrawerNavigator<ParamList>();
 
@@ -67,23 +77,28 @@ export function Navigation() {
 }
 
 function NavigationDrawer() {
-  const user = useMapStateToProps(selectUser);
+  const [isSignedIn, user] = useMapStateToProps((state) => [
+    selectIsSignedIn(state),
+    selectUser(state),
+  ]);
 
   return (
     <Navigator
       initialRouteName={DEFAULT_SCREEN}
       screenOptions={{
         headerShown: true,
-        header: (props) => <Header {...props} user={user} />,
+        header: (props) => (
+          <Header {...props} user={user} isSignedIn={isSignedIn} />
+        ),
       }}
       drawerType="front"
-      drawerContent={(props) => <DrawerContent {...props} user={user} />}
+      drawerContent={(props) => (
+        <DrawerContent {...props} isSignedIn={isSignedIn} />
+      )}
       detachInactiveScreens
     >
       <Screen name={HOME_SCREEN} component={HomeScreen} />
-      {user.isSome() && (
-        <Screen name={PROFILE_SCREEN} component={ProfileScreen} />
-      )}
+      {isSignedIn && <Screen name={PROFILE_SCREEN} component={ProfileScreen} />}
       <Screen name={CATEGORIES_SCREEN} component={CategoriesScreen} />
       <Screen name={CATEGORY_SCREEN} component={CategoryScreen} />
       <Screen name={COURSE_SCREEN} component={CourseScreen} />
@@ -96,6 +111,11 @@ function NavigationDrawer() {
       <Screen name={PRACTICE_UNIT_SCREEN} component={PracticeUnitScreen} />
       <Screen name={START_QUIZ_SCREEN} component={StartQuizScreen} />
       <Screen name={QUIZ_SCREEN} component={QuizScreen} />
+      <Screen
+        name={START_CHALLENGE_QUIZ_SCREEN}
+        component={StartChallengeQuizScreen}
+      />
+      <Screen name={CHALLENGE_QUIZ_SCREEN} component={ChallengeQuizScreen} />
     </Navigator>
   );
 }
@@ -109,89 +129,100 @@ const headerStyles = StyleSheet.create({
 });
 
 interface IDrawerHeaderProps extends DrawerHeaderProps {
-  user: Option<IUser>;
+  user: RecordOf<IUser>;
+  isSignedIn: boolean;
 }
 
-export function Header(props: IDrawerHeaderProps) {
-  return (
-    <SafeAreaView>
-      <Layout style={headerStyles.container}>
-        <TopNavigation
-          alignment="start"
-          title={() => (
-            <Button
-              appearance="ghost"
-              onPress={() =>
-                props.scene.descriptor.navigation.navigate(HOME_SCREEN)
-              }
-            >
-              {app.expo.name}
-            </Button>
-          )}
-          accessoryLeft={(accessoryProps) => (
-            <>
-              <TopNavigationAction
-                {...accessoryProps}
+const Header = memo(
+  (props: IDrawerHeaderProps) => {
+    return (
+      <SafeAreaView>
+        <Layout style={headerStyles.container}>
+          <TopNavigation
+            alignment="start"
+            title={() => (
+              <Button
+                appearance="ghost"
                 onPress={() =>
-                  (props.scene.descriptor.navigation as any).openDrawer()
+                  props.scene.descriptor.navigation.navigate(HOME_SCREEN)
                 }
-                icon={(props) => <Icon {...props} name="menu-outline" />}
-              />
-              {props.scene.descriptor.navigation.canGoBack() && (
+              >
+                {app.expo.name}
+              </Button>
+            )}
+            accessoryLeft={(accessoryProps) => (
+              <>
                 <TopNavigationAction
                   {...accessoryProps}
-                  onPress={() => props.scene.descriptor.navigation.goBack()}
-                  icon={(props) => (
-                    <Icon {...props} name="arrow-back-outline" />
-                  )}
+                  onPress={() =>
+                    (props.scene.descriptor.navigation as any).openDrawer()
+                  }
+                  icon={(props) => <Icon {...props} name="menu-outline" />}
                 />
-              )}
-            </>
-          )}
-          accessoryRight={
-            props.user.isSome()
-              ? (accessoryProps) => (
-                  <>
-                    <Button
-                      size="small"
-                      appearance="ghost"
-                      onPress={() =>
-                        props.scene.descriptor.navigation.navigate(
-                          PROFILE_SCREEN
-                        )
-                      }
-                    >
-                      {props.user.unwrap().extra.username}
-                    </Button>
+                {props.scene.descriptor.navigation.canGoBack() && (
+                  <TopNavigationAction
+                    {...accessoryProps}
+                    onPress={() => props.scene.descriptor.navigation.goBack()}
+                    icon={(props) => (
+                      <Icon {...props} name="arrow-back-outline" />
+                    )}
+                  />
+                )}
+              </>
+            )}
+            accessoryRight={
+              props.isSignedIn
+                ? (accessoryProps) => (
+                    <>
+                      <Button
+                        size="small"
+                        appearance="ghost"
+                        onPress={() =>
+                          props.scene.descriptor.navigation.navigate(
+                            PROFILE_SCREEN
+                          )
+                        }
+                      >
+                        {props.user.extra.username}
+                      </Button>
+                      <TopNavigationAction
+                        {...accessoryProps}
+                        onPress={signOut}
+                        accessibilityHint="Log out"
+                        icon={(props) => (
+                          <Icon {...props} name="log-out-outline" />
+                        )}
+                      />
+                    </>
+                  )
+                : (props) => (
                     <TopNavigationAction
-                      {...accessoryProps}
-                      onPress={signOut}
-                      accessibilityHint="Log out"
+                      {...props}
+                      onPress={toggleSignInUpOpen}
+                      accessibilityHint="Log in"
                       icon={(props) => (
-                        <Icon {...props} name="log-out-outline" />
+                        <Icon {...props} name="log-in-outline" />
                       )}
                     />
-                  </>
-                )
-              : (props) => (
-                  <TopNavigationAction
-                    {...props}
-                    onPress={toggleSignInUpOpen}
-                    accessibilityHint="Log in"
-                    icon={(props) => <Icon {...props} name="log-in-outline" />}
-                  />
-                )
-          }
-        />
-        <SignInUp />
-      </Layout>
-    </SafeAreaView>
-  );
-}
+                  )
+            }
+          />
+          <SignInUp />
+        </Layout>
+      </SafeAreaView>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.isSignedIn === nextProps.isSignedIn &&
+      prevProps.user === nextProps.user
+    );
+  }
+);
 
 interface IDrawerContentProps
   extends DrawerContentComponentProps<DrawerContentOptions> {
-  user: Option<IUser>;
+  isSignedIn: boolean;
 }
 
 function mapStateIndexToListed(index: number) {
@@ -205,37 +236,49 @@ function mapStateIndexToListed(index: number) {
   }
 }
 
-function DrawerContent(props: IDrawerContentProps) {
-  return (
-    <DrawerContentScrollView {...props}>
-      <Drawer
-        selectedIndex={new IndexPath(mapStateIndexToListed(props.state.index))}
-      >
-        <DrawerItem
-          accessoryLeft={(props) => <Icon {...props} name="home-outline" />}
-          title={HOME_SCREEN}
-          onPress={() => props.navigation.navigate(HOME_SCREEN)}
-        />
-        <DrawerItem
-          accessoryLeft={(props) => <Icon {...props} name="list-outline" />}
-          title={"Mentel Math"}
-          onPress={() =>
-            props.navigation.navigate(COURSE_SCREEN, {
-              category: "mathematics",
-              course: "mental_math",
-            })
+const DrawerContent = memo(
+  (props: IDrawerContentProps) => {
+    return (
+      <DrawerContentScrollView {...props}>
+        <Drawer
+          selectedIndex={
+            new IndexPath(mapStateIndexToListed(props.state.index))
           }
-        />
-        {props.user.isSome() ? (
+        >
           <DrawerItem
-            accessoryLeft={(props) => <Icon {...props} name="person-outline" />}
-            title={PROFILE_SCREEN}
-            onPress={() => props.navigation.navigate(PROFILE_SCREEN)}
+            accessoryLeft={(props) => <Icon {...props} name="home-outline" />}
+            title={HOME_SCREEN}
+            onPress={() => props.navigation.navigate(HOME_SCREEN)}
           />
-        ) : (
-          (null as any)
-        )}
-      </Drawer>
-    </DrawerContentScrollView>
-  );
-}
+          <DrawerItem
+            accessoryLeft={(props) => <Icon {...props} name="list-outline" />}
+            title={"Mentel Math"}
+            onPress={() =>
+              props.navigation.navigate(COURSE_SCREEN, {
+                category: "mathematics",
+                course: "mental_math",
+              })
+            }
+          />
+          {props.isSignedIn ? (
+            <DrawerItem
+              accessoryLeft={(props) => (
+                <Icon {...props} name="person-outline" />
+              )}
+              title={PROFILE_SCREEN}
+              onPress={() => props.navigation.navigate(PROFILE_SCREEN)}
+            />
+          ) : (
+            (null as any)
+          )}
+        </Drawer>
+      </DrawerContentScrollView>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.isSignedIn === nextProps.isSignedIn &&
+      prevProps.state.index === nextProps.state.index
+    );
+  }
+);

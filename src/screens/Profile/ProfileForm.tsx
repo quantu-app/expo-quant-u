@@ -53,8 +53,8 @@ export function ProfileForm(props: IProfileFormProps) {
     try {
       const userExtra = changeset.applyChanges().toJS() as IUserExtra;
 
-      if (await isValidUsername(props.user, userExtra.username)) {
-        await setUserExtra(props.user, userExtra);
+      if (await isValidUsername(props.user.uid, userExtra.username)) {
+        await setUserExtra(props.user.uid, userExtra);
       } else {
         setChangeset(changeset.addError("username", "already taken"));
       }

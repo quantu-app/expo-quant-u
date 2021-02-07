@@ -1,9 +1,12 @@
-import { Option } from "@aicacia/core";
 import { RecordOf } from "immutable";
 import { IState } from "../lib/state";
-import { IUser } from "./definitiions";
+import { IUser } from "./definitions";
 
-export function selectUser(state: IState): Option<RecordOf<IUser>> {
+export function selectIsSignedIn(state: IState): boolean {
+  return state.auth.isSignedIn;
+}
+
+export function selectUser(state: IState): RecordOf<IUser> {
   return state.auth.user;
 }
 

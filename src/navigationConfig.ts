@@ -11,6 +11,8 @@ export const HOME_SCREEN = "Home",
   PRACTICE_UNIT_SCREEN = "Practice Unit",
   START_QUIZ_SCREEN = "Start Quiz",
   QUIZ_SCREEN = "Quiz",
+  START_CHALLENGE_QUIZ_SCREEN = "Start Challenge Quiz",
+  CHALLENGE_QUIZ_SCREEN = "Challenge Quiz",
   DEFAULT_SCREEN = HOME_SCREEN;
 
 export type ParamList = {
@@ -45,6 +47,7 @@ export type ParamList = {
     chapter: string;
     unit: string;
     lesson: string;
+    seed: number;
   };
   [QUIZ_SCREEN]: {
     category: string;
@@ -53,6 +56,24 @@ export type ParamList = {
     unit: string;
     lesson: string;
     seed: number;
+  };
+  [START_CHALLENGE_QUIZ_SCREEN]: {
+    category: string;
+    course: string;
+    chapter: string;
+    unit: string;
+    lesson: string;
+    seed: number;
+    id: string;
+  };
+  [CHALLENGE_QUIZ_SCREEN]: {
+    category: string;
+    course: string;
+    chapter: string;
+    unit: string;
+    lesson: string;
+    seed: number;
+    id: string;
   };
 };
 
@@ -83,9 +104,26 @@ export const linking = {
           seed: Number,
         },
       },
-      [START_QUIZ_SCREEN]: ":category/:course/:chapter/:unit/:lesson/start",
+      [START_QUIZ_SCREEN]: {
+        path: ":category/:course/:chapter/:unit/:lesson/start",
+        parse: {
+          seed: Number,
+        },
+      },
       [QUIZ_SCREEN]: {
         path: ":category/:course/:chapter/:unit/:lesson",
+        parse: {
+          seed: Number,
+        },
+      },
+      [START_CHALLENGE_QUIZ_SCREEN]: {
+        path: ":category/:course/:chapter/:unit/:lesson/challenge/start",
+        parse: {
+          seed: Number,
+        },
+      },
+      [CHALLENGE_QUIZ_SCREEN]: {
+        path: ":category/:course/:chapter/:unit/:lesson/challenge",
         parse: {
           seed: Number,
         },

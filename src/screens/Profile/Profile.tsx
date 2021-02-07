@@ -5,7 +5,7 @@ import { selectUser } from "../../state/auth";
 import { ProfileForm } from "./ProfileForm";
 
 export function Profile() {
-  const user = useMapStateToProps(selectUser).unwrap();
+  const user = useMapStateToProps(selectUser);
 
   return (
     <Card disabled>

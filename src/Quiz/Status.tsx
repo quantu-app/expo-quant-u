@@ -1,14 +1,15 @@
 import React, { memo } from "react";
-import { RecordOf } from "immutable";
+import { RecordOf, List } from "immutable";
 import { StyleSheet, View } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import customThem from "../../custom-theme.json";
-import { IQuizState } from "./Quiz";
+import { IQuestionResult } from "./QuestionResult";
 
 interface IStatusProps {
   current: number;
-  state: RecordOf<IQuizState>;
-  onSelectQuestion(index: number): void;
+  results: List<RecordOf<IQuestionResult>>;
+  done: boolean;
+  onSelectQuestion?: (index: number) => void;
 }
 
 const styles = StyleSheet.create({
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
 
 export const Status = memo((props: IStatusProps) => (
   <View style={styles.container}>
-    {props.state.results.map((result, index) => (
+    {props.results.map((result, index) => (
       <Icon
         key={index}
         size="tiny"
@@ -41,8 +42,8 @@ export const Status = memo((props: IStatusProps) => (
               : "close-square-outline"
             : "square-outline"
         }
-        disabled={index === props.current || props.state.done}
-        onPress={() => props.onSelectQuestion(index)}
+        disabled={index === props.current || props.done}
+        onPress={() => props.onSelectQuestion && props.onSelectQuestion(index)}
       />
     ))}
   </View>

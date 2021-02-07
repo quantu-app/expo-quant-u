@@ -12,11 +12,6 @@ import { IQuestionResult, QuestionResult } from "./QuestionResult";
 import { Results } from "./Results";
 import { Status } from "./Status";
 
-export interface IQuizProps {
-  rng: Rng;
-  quiz: QuizClass;
-}
-
 export interface IQuizState {
   done: boolean;
   current: number;
@@ -34,6 +29,11 @@ export const QuizState = Record<IQuizState>({
   questions: List(),
   results: List(),
 });
+
+export interface IQuizProps {
+  rng: Rng;
+  quiz: QuizClass;
+}
 
 export function Quiz(props: IQuizProps) {
   const [state, setState] = useState(QuizState());
@@ -164,7 +164,8 @@ export function Quiz(props: IQuizProps) {
       <>
         <Status
           current={state.current}
-          state={state}
+          results={state.results}
+          done={state.done}
           onSelectQuestion={onSelectQuestion}
         />
         <Question

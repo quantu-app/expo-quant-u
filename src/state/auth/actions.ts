@@ -1,16 +1,20 @@
 import { firebase } from "../../firebase";
-import { IUser, IUserExtra, STORE_NAME, User, UserExtra } from "./definitiions";
+import { IUserExtra, STORE_NAME, User, UserExtra } from "./definitions";
 import { state } from "../lib/state";
-import { none, Option, some } from "@aicacia/core";
+import { none, Option } from "@aicacia/core";
 import { Map, RecordOf } from "immutable";
 import { XorShiftRng } from "@aicacia/rand";
 import { firebaseSignInWithGoogle } from "./firebaseSignInWithGoogle";
 
 export const store = state.getStore(STORE_NAME);
 
-window.addEventListener("unload", () =>
-  store.getCurrent().user.map((user) => setUserOnline(user, false))
-);
+window.addEventListener("beforeunload", () => {
+  const state = store.getCurrent();
+
+  if (state.isSignedIn) {
+    setUserOnline(state.user.uid, false);
+  }
+});
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
@@ -20,12 +24,8 @@ firebase.auth().onAuthStateChanged((user) => {
   }
 });
 
-export function setUserOnline(user: RecordOf<IUser>, online: boolean) {
-  return firebase
-    .database()
-    .ref(`users/${user.uid}`)
-    .child("online")
-    .set(online);
+export function setUserOnline(uid: string, online: boolean) {
+  return firebase.database().ref(`users/${uid}`).child("online").set(online);
 }
 
 export function toggleSignInUpOpen() {
@@ -65,7 +65,7 @@ firebase
     console.error(error);
   });
 
-export async function isValidUsername(user: RecordOf<IUser>, username = "") {
+export async function isValidUsername(uid: string, username = "") {
   const dataSnapshot = await firebase
     .database()
     .ref("users")
@@ -74,11 +74,11 @@ export async function isValidUsername(user: RecordOf<IUser>, username = "") {
     .once("value");
 
   return (
-    !dataSnapshot.exists() || Object.keys(dataSnapshot.val()).includes(user.uid)
+    !dataSnapshot.exists() || Object.keys(dataSnapshot.val()).includes(uid)
   );
 }
 
-export async function findByUsername(user: RecordOf<IUser>, username = "") {
+export async function findByUsername(uid: string, username = "") {
   const dataSnapshot = await firebase
       .database()
       .ref("users")
@@ -88,21 +88,21 @@ export async function findByUsername(user: RecordOf<IUser>, username = "") {
       .once("value"),
     users: Record<string, any> = dataSnapshot.val() || {};
 
-  return Object.keys(users).reduce((acc, uid) => {
-    const otherUser = UserExtra(users[uid]);
+  return Object.keys(users).reduce((acc, id) => {
+    const otherUser = UserExtra(users[id]);
 
-    if (uid === user.uid || !otherUser.online) {
+    if (id === uid || !otherUser.online) {
       return acc;
     } else {
-      return acc.set(uid, otherUser);
+      return acc.set(id, otherUser);
     }
   }, Map<string, RecordOf<IUserExtra>>());
 }
 
-export function setUserExtra(user: RecordOf<IUser>, userExtra: IUserExtra) {
+export function setUserExtra(uid: string, userExtra: IUserExtra) {
   return firebase
     .database()
-    .ref(`users/${user.uid}`)
+    .ref(`users/${uid}`)
     .set(
       JSON.parse(
         JSON.stringify({
@@ -115,8 +115,12 @@ export function setUserExtra(user: RecordOf<IUser>, userExtra: IUserExtra) {
 
 const USER_EXTRA_REF: Option<firebase.database.Reference> = none();
 
-async function subscribeUserExtra(user: RecordOf<IUser>, isNewUser: boolean) {
-  const ref = firebase.database().ref(`users/${user.uid}`);
+async function subscribeUserExtra(
+  uid: string,
+  displayName: string,
+  isNewUser: boolean
+) {
+  const ref = firebase.database().ref(`users/${uid}`);
 
   unsubscribeUserExtra();
   USER_EXTRA_REF.replace(ref);
@@ -125,17 +129,15 @@ async function subscribeUserExtra(user: RecordOf<IUser>, isNewUser: boolean) {
     const data: IUserExtra = snapshot.val() || {};
 
     store.update((state) =>
-      state.update("user", (userOption) =>
-        userOption.map((user) =>
-          user.update("extra", (extra) =>
-            extra
-              .set("firstName", data.firstName)
-              .set("lastName", data.lastName)
-              .set("username", data.username)
-              .set("birthday", data.birthday && new Date(data.birthday))
-              .set("about", data.about)
-              .set("online", true)
-          )
+      state.update("user", (user) =>
+        user.update("extra", (extra) =>
+          extra
+            .set("firstName", data.firstName)
+            .set("lastName", data.lastName)
+            .set("username", data.username)
+            .set("birthday", data.birthday && new Date(data.birthday))
+            .set("about", data.about)
+            .set("online", true)
         )
       )
     );
@@ -144,14 +146,13 @@ async function subscribeUserExtra(user: RecordOf<IUser>, isNewUser: boolean) {
   if (isNewUser) {
     const snapshot = await ref.child("username").once("value"),
       username = await getValidUsername(
-        user,
-        snapshot.val() ||
-          (user.displayName || "").toLowerCase().replace(/\s+/g, "")
+        uid,
+        snapshot.val() || displayName.toLowerCase().replace(/\s+/g, "")
       );
 
     await firebase
       .database()
-      .ref(`users/${user.uid}`)
+      .ref(`users/${uid}`)
       .child("username")
       .set(username);
   }
@@ -171,17 +172,21 @@ function signUserIn(firebaseUser: firebase.User, isNewUser: boolean) {
     uid: firebaseUser.uid,
   });
 
-  setUserOnline(user, true);
-  subscribeUserExtra(user, isNewUser);
+  subscribeUserExtra(user.uid, user.displayName || "", isNewUser);
+  setUserOnline(user.uid, true);
 
-  return store.update((state) => state.set("user", some(user)));
+  return store.update((state) =>
+    state.set("isSignedIn", true).set("user", user)
+  );
 }
 
 function signUserOut() {
   unsubscribeUserExtra();
   return store.update((state) => {
-    state.user.map((user) => setUserOnline(user, false));
-    return state.set("user", none());
+    if (state.isSignedIn) {
+      setUserOnline(state.user.uid, false);
+    }
+    return state.set("isSignedIn", false).set("user", User());
   });
 }
 
@@ -221,26 +226,26 @@ export async function signInWithGoogle() {
 }
 
 async function getValidUsername(
-  user: RecordOf<IUser>,
+  uid: string,
   username: string
 ): Promise<string> {
-  if (await isValidUsername(user, username)) {
+  if (await isValidUsername(uid, username)) {
     return username;
   } else {
-    return getValidUsernameRecur(user, username);
+    return getValidUsernameRecur(uid, username);
   }
 }
 
 async function getValidUsernameRecur(
-  user: RecordOf<IUser>,
+  uid: string,
   username: string
 ): Promise<string> {
   const usernameWithRandomString = `${username}${randomString()}`;
 
-  if (await isValidUsername(user, usernameWithRandomString)) {
+  if (await isValidUsername(uid, usernameWithRandomString)) {
     return usernameWithRandomString;
   } else {
-    return getValidUsernameRecur(user, username);
+    return getValidUsernameRecur(uid, username);
   }
 }
 

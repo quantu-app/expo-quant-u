@@ -12,6 +12,7 @@ import {
 import { excerpt } from "../../excerpt";
 import {
   ParamList,
+  START_CHALLENGE_QUIZ_SCREEN,
   START_PRACTICE_UNIT_SCREEN,
   START_QUIZ_SCREEN,
   UNIT_SCREEN,
@@ -30,6 +31,9 @@ const styles = StyleSheet.create({
   buttons: {
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
+  },
+  quizButtons: {
     flexDirection: "row",
   },
 });
@@ -73,6 +77,7 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
                 <ListItem
                   key={item.url}
                   title={item.name}
+                  disabled
                   accessoryLeft={
                     item.logo &&
                     ((props) => (
@@ -84,13 +89,36 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
                       />
                     ))
                   }
+                  accessoryRight={(_accessoryProps) => (
+                    <View style={styles.quizButtons}>
+                      <Button
+                        size="small"
+                        onPress={() =>
+                          navigation.navigate(START_CHALLENGE_QUIZ_SCREEN, {
+                            ...props,
+                            lesson: item.url,
+                            seed: Date.now(),
+                            id: Math.random().toString(36).slice(2),
+                          })
+                        }
+                      >
+                        Challenge
+                      </Button>
+                      <Button
+                        size="small"
+                        onPress={() =>
+                          navigation.navigate(START_QUIZ_SCREEN, {
+                            ...props,
+                            lesson: item.url,
+                            seed: Date.now(),
+                          })
+                        }
+                      >
+                        Start
+                      </Button>
+                    </View>
+                  )}
                   description={excerpt(item.description)}
-                  onPress={() =>
-                    navigation.navigate(START_QUIZ_SCREEN, {
-                      ...props,
-                      lesson: item.url,
-                    })
-                  }
                 />
               )}
             />

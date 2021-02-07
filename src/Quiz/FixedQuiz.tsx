@@ -15,6 +15,7 @@ import { Status } from "./Status";
 export interface IFixedQuizProps {
   rng: Rng;
   quiz: QuizClass;
+  onResult?: (index: number, result: RecordOf<IQuestionResult>) => void;
 }
 
 export interface IFixedQuizState {
@@ -103,6 +104,9 @@ export function FixedQuiz(props: IFixedQuizProps) {
           if (nextState.done) {
             nextState = nextState.set("end", Date.now());
           }
+          if (props.onResult) {
+            props.onResult(state.current, result);
+          }
         }
 
         setState(nextState);
@@ -118,6 +122,13 @@ export function FixedQuiz(props: IFixedQuizProps) {
 
     if (nextState.done) {
       nextState = nextState.set("end", endTime);
+    }
+    if (props.onResult) {
+      const result = state.results.get(state.current);
+
+      if (result) {
+        props.onResult(state.current, result);
+      }
     }
 
     setState(nextState);
@@ -167,7 +178,8 @@ export function FixedQuiz(props: IFixedQuizProps) {
       <>
         <Status
           current={state.current}
-          state={state}
+          results={state.results}
+          done={state.done}
           onSelectQuestion={onSelectQuestion}
         />
         <Question

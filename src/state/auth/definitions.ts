@@ -1,13 +1,12 @@
 import type { firebase } from "../../firebase";
-import { none, some, Option } from "@aicacia/core";
-import { IJSONObject, isJSONObject } from "@aicacia/json";
+import { IJSONObject } from "@aicacia/json";
 import { Record, RecordOf } from "immutable";
 
 export interface IUserExtra {
   online: boolean;
   firstName?: string;
   lastName?: string;
-  username?: string;
+  username: string;
   birthday?: Date;
   about?: string;
 }
@@ -16,7 +15,7 @@ export const UserExtra = Record<IUserExtra>({
   online: false,
   firstName: undefined,
   lastName: undefined,
-  username: undefined,
+  username: `guest-${Math.random().toString(36).slice(2)}`,
   birthday: undefined,
   about: undefined,
 });
@@ -36,19 +35,22 @@ export const User = Record<IUser>({
 });
 
 export interface IAuth {
+  isSignedIn: boolean;
   signInUpOpen: boolean;
-  user: Option<RecordOf<IUser>>;
+  user: RecordOf<IUser>;
 }
 
 export const Auth = Record<IAuth>({
+  isSignedIn: false,
   signInUpOpen: false,
-  user: none(),
+  user: User(),
 });
 
 export function fromJSON(json: IJSONObject): RecordOf<IAuth> {
   return Auth({
+    isSignedIn: json.isSignedIn === true,
     signInUpOpen: json.signInUpOpen === true,
-    user: isJSONObject(json.user) ? some(User(json.user)) : none(),
+    user: User(json.user as any),
   });
 }
 

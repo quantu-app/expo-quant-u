@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Divider, Text } from "@ui-kitten/components";
@@ -13,29 +13,18 @@ import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { getLesson } from "../../../course-lib/categories";
 import { viewLesson } from "../../state/tracking";
-import { UsernameSearch } from "../../UsernameSearch";
-import { none, Option, some } from "@aicacia/core";
-import { RecordOf } from "immutable";
-import { IUserExtra } from "../../state/auth";
 
 const styles = StyleSheet.create({
   buttons: {
     marginTop: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  challenge: {
-    marginTop: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    alignContent: "center",
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
 export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
-  const navigation = useNavigation(),
-    [user, setUser] = useState<Option<[string, RecordOf<IUserExtra>]>>(none());
+  const navigation = useNavigation();
 
   useEffect(
     () =>
@@ -69,33 +58,10 @@ export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
           <View style={styles.buttons}>
             <Button
               appearance="filled"
-              onPress={() =>
-                navigation.navigate(QUIZ_SCREEN, {
-                  ...props,
-                  seed: Date.now(),
-                })
-              }
+              onPress={() => navigation.navigate(QUIZ_SCREEN, props)}
             >
               Start Quiz
             </Button>
-            <View style={styles.challenge}>
-              <UsernameSearch
-                onSelect={(userId, user) => setUser(some([userId, user]))}
-              />
-              {user
-                .mapOr(
-                  ([userId, user]) => (
-                    <Button
-                      appearance="filled"
-                      onPress={() => console.log(userId, user.toJS())}
-                    >
-                      {`Challenge ${user.username}`}
-                    </Button>
-                  ),
-                  null as any
-                )
-                .unwrap()}
-            </View>
           </View>
         </Card>
       )}

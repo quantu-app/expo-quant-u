@@ -5,20 +5,19 @@ import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { CATEGORY_SCREEN, ParamList } from "../../navigationConfig";
 import { Container } from "../../Container";
+import { createScreen } from "../../createScreen";
 
 export interface ICategoryScreenProps {
   route: RouteProp<ParamList, typeof CATEGORY_SCREEN>;
 }
 
-export function CategoryScreen(props: ICategoryScreenProps) {
-  return (
-    <Container>
-      <Async
-        promise={import("./Category")}
-        onSuccess={({ Category }) => <Category {...props.route.params} />}
-        onPending={() => <Loading />}
-        onError={(error) => <JSError error={error} />}
-      />
-    </Container>
-  );
-}
+export const CategoryScreen = createScreen((props: ICategoryScreenProps) => (
+  <Container>
+    <Async
+      promise={import("./Category")}
+      onSuccess={({ Category }) => <Category {...props.route.params} />}
+      onPending={() => <Loading />}
+      onError={(error) => <JSError error={error} />}
+    />
+  </Container>
+));

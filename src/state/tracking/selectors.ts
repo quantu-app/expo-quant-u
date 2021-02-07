@@ -7,7 +7,7 @@ import {
   TrackingUnit,
   createFromType,
   TrackingChapter,
-} from "./definitiions";
+} from "./definitions";
 
 export function selectCategories(state: IState) {
   return state.tracking.categories;

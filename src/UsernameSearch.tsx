@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { memo, useCallback, useMemo, useRef, useState } from "react";
 import { debounce } from "@aicacia/debounce";
 import { Autocomplete, AutocompleteItem } from "@ui-kitten/components";
 import { RecordOf, Map } from "immutable";
@@ -10,7 +10,7 @@ export interface IUsernameSearchProps {
   onSelect(user_id: string, user: RecordOf<IUserExtra>): void;
 }
 
-export function UsernameSearch(props: IUsernameSearchProps) {
+export const UsernameSearch = memo((props: IUsernameSearchProps) => {
   const userOption = useMapStateToProps(selectUser),
     autocompleteRef = useRef<Autocomplete | null>(null),
     [loading, setLoading] = useState(false),
@@ -19,8 +19,8 @@ export function UsernameSearch(props: IUsernameSearchProps) {
     [users, setUsers] = useState<Map<string, RecordOf<IUserExtra>>>(Map());
 
   useMemo(() => {
-    if (search && userOption.isSome()) {
-      findByUsername(userOption.unwrap(), search)
+    if (search && userOption) {
+      findByUsername(userOption.uid, search)
         .then(setUsers)
         .finally(() => {
           setLoading(false);
@@ -71,4 +71,4 @@ export function UsernameSearch(props: IUsernameSearchProps) {
         .toArray()}
     </Autocomplete>
   );
-}
+});

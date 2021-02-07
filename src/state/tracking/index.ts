@@ -1,3 +1,3 @@
 export * from "./actions";
-export * from "./definitiions";
+export * from "./definitions";
 export * from "./selectors";

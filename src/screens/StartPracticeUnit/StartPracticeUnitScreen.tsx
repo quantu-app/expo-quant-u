@@ -5,13 +5,14 @@ import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { ParamList, START_PRACTICE_UNIT_SCREEN } from "../../navigationConfig";
 import { Container } from "../../Container";
+import { createScreen } from "../../createScreen";
 
 export interface IStartPracticeUnitScreenProps {
   route: RouteProp<ParamList, typeof START_PRACTICE_UNIT_SCREEN>;
 }
 
-export function StartPracticeUnitScreen(props: IStartPracticeUnitScreenProps) {
-  return (
+export const StartPracticeUnitScreen = createScreen(
+  (props: IStartPracticeUnitScreenProps) => (
     <Container>
       <Async
         promise={import("./StartPracticeUnit")}
@@ -22,5 +23,5 @@ export function StartPracticeUnitScreen(props: IStartPracticeUnitScreenProps) {
         onError={(error) => <JSError error={error} />}
       />
     </Container>
-  );
-}
+  )
+);
