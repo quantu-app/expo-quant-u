@@ -44,7 +44,6 @@ import {
   CHAPTER_SCREEN,
   COURSE_SCREEN,
   DEFAULT_SCREEN,
-  ENABLE_LINKING,
   HOME_SCREEN,
   linking,
   ParamList,
@@ -68,7 +67,7 @@ export const { Navigator, Screen } = createDrawerNavigator<ParamList>();
 export function Navigation() {
   return (
     <NavigationContainer
-      linking={ENABLE_LINKING ? linking : undefined}
+      linking={linking}
       fallback={<Loading />}
     >
       <NavigationDrawer />
