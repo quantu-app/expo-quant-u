@@ -8,10 +8,10 @@ export interface IScreenProps<T extends keyof ParamList> {
 }
 
 export function createScreen<T extends keyof ParamList>(
-  component: FunctionComponent<IScreenProps<T>>
+  Component: FunctionComponent<IScreenProps<T>>
 ) {
   return memo(
-    component,
+    Component,
     (prevProps, nextProps) =>
       prevProps.route.key === nextProps.route.key &&
       prevProps.route.name === nextProps.route.name &&

@@ -78,8 +78,7 @@ export type ParamList = {
 };
 
 export const ENABLE_LINKING =
-  global.location?.hostname === "localhost" ||
-  (!("electron" in (global.process?.versions || {})) && Platform.OS !== "web");
+  !("electron" in (global.process?.versions || {})) && Platform.OS !== "web";
 
 export const linking = {
   prefixes: [
