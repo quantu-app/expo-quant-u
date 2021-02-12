@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14.x
+          submodules: recursive
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
