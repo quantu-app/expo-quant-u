@@ -77,9 +77,7 @@ export type ParamList = {
   };
 };
 
-export const ENABLE_LINKING = !(
-  !("electron" in (global.process?.versions || {})) && Platform.OS !== "web"
-);
+export const ENABLE_LINKING = !("electron" in (global.process?.versions || {}));
 
 export const linking = {
   prefixes: [
