@@ -1,7 +1,7 @@
 # expo-quant-u
 
 [![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue")](LICENSE-MIT)
-[![site](https://img.shields.io/badge/www-quantu-blue.svg)](http://quantu.aicacia.com/)
+[![site](https://img.shields.io/badge/www-quantu-blue.svg)](https://quantu.aicacia.com/)
 [![build](https://github.com/quantu-app/expo-quant-u/workflows/Test/badge.svg)](https://github.com/quantu-app/expo-quant-u/actions?query=workflow%3ABuild)
 
 ## Tech

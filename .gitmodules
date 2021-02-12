@@ -1,0 +1,6 @@
+[submodule "generators-src"]
+	path = generators-src
+	url = git@github.com:quantu-app/ts-generators.git
+[submodule "courses-src"]
+	path = courses-src
+	url = git@github.com:quantu-app/ts-courses.git
