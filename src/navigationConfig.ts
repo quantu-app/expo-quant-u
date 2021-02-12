@@ -78,9 +78,7 @@ export type ParamList = {
 };
 
 export const linking = {
-  prefixes: [
-    createURL(process.env.NODE_ENV === "production" ? "/expo-quant-u" : "/"),
-  ],
+  prefixes: [createURL("/")],
   config: {
     screens: {
       [HOME_SCREEN]: "",

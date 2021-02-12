@@ -19,8 +19,7 @@ jobs:
 
       - run: npm i
       - run: npm install json -g
-      - run: json -I -f package.json -e 'this.homepage="https://quantu-app.gitlab.io/expo-quant-u/"'
-      - run: json -I -f web/manifest.json -e 'this.start_url="/expo-quant-u/?utm_source=web_app_manifest"'
+      - run: json -I -f package.json -e 'this.homepage="http://quantu.aicacia.com/"'
       - run: npm run sync
       - run: npm run build.web
 
