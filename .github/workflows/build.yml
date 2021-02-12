@@ -22,7 +22,7 @@ jobs:
 
       - run: npm i
       - run: npm install json -g
-      - run: json -I -f package.json -e 'this.homepage="http://quantu.aicacia.com/"'
+      - run: json -I -f package.json -e 'this.homepage="https://quantu.app"'
       - run: npm run sync
       - run: npm run build.web
 
