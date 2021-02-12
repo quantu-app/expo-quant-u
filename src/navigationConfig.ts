@@ -1,4 +1,4 @@
-import { Platform } from "react-native";
+import { createURL } from "expo-linking";
 
 export const HOME_SCREEN = "Home",
   PROFILE_SCREEN = "Profile",
@@ -81,9 +81,7 @@ export const ENABLE_LINKING = !("electron" in (global.process?.versions || {}));
 
 export const linking = {
   prefixes: [
-    "https://quant-u.com",
-    "quant-u://",
-    "https://quantu-app.github.io/expo-quant-u",
+    createURL(process.env.NODE_ENV === "production" ? "/expo-quant-u" : "/"),
   ],
   config: {
     screens: {
@@ -129,9 +127,3 @@ export const linking = {
     },
   },
 };
-
-if (ENABLE_LINKING && process.env.NODE_ENV !== "production") {
-  linking.prefixes.push(
-    `${global.location?.protocol}//${global.location?.host}:${global.location?.port}`
-  );
-}

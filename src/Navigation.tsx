@@ -66,10 +66,7 @@ export const { Navigator, Screen } = createDrawerNavigator<ParamList>();
 
 export function Navigation() {
   return (
-    <NavigationContainer
-      linking={linking}
-      fallback={<Loading />}
-    >
+    <NavigationContainer linking={linking} fallback={<Loading />}>
       <NavigationDrawer />
     </NavigationContainer>
   );
