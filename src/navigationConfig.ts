@@ -77,8 +77,6 @@ export type ParamList = {
   };
 };
 
-export const ENABLE_LINKING = !("electron" in (global.process?.versions || {}));
-
 export const linking = {
   prefixes: [
     createURL(process.env.NODE_ENV === "production" ? "/expo-quant-u" : "/"),
