@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Rng } from "@aicacia/rand";
-import { List, Record, RecordOf } from "immutable";
+import { Map, List, Record, RecordOf } from "immutable";
 import { useMemo, useState } from "react";
 import type {
   Question as QuestionClass,
@@ -11,10 +11,12 @@ import { Question } from "./Question";
 import { IQuestionResult, QuestionResult } from "./QuestionResult";
 import { Results } from "./Results";
 import { Status } from "./Status";
+import { PEER_ID } from "../state/challenge";
 
 export interface IFixedQuizProps {
   rng: Rng;
   quiz: QuizClass;
+  peers?: Map<string, List<RecordOf<IQuestionResult>>>;
   onResult?: (index: number, result: RecordOf<IQuestionResult>) => void;
 }
 
@@ -159,10 +161,8 @@ export function FixedQuiz(props: IFixedQuizProps) {
   } else if (state.done) {
     return (
       <Results
-        results={state.results}
+        results={(props.peers || Map()).merge({ [PEER_ID]: state.results })}
         questions={state.questions}
-        start={state.start}
-        end={state.end}
         quiz={props.quiz}
         onReset={onReset}
       />
