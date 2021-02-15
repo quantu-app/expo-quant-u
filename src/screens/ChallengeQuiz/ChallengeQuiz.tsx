@@ -24,8 +24,6 @@ export function ChallengeQuiz(props: IChallengeQuizProps) {
     rng = useMemo(() => XorShiftRng.fromSeed(props.seed), [props.seed]),
     peers = useMapStateToProps(selectPeerResults);
 
-  console.log(peers.toJS());
-
   return (
     <Card disabled>
       <Text category="h1">{props.quiz.name}</Text>

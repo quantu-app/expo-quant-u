@@ -7,6 +7,6 @@ export function selectPeers(state: IState) {
 
 export function selectPeerResults(state: IState) {
   return selectPeers(state)
-    .filter((_, key) => key === PEER_ID)
+    .filter((_, key) => key !== PEER_ID)
     .map((peer) => peer.results);
 }
