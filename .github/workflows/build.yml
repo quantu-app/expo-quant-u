@@ -25,6 +25,7 @@ jobs:
       - run: json -I -f package.json -e 'this.homepage="https://quantu.app"'
       - run: npm run sync
       - run: npm run build.web
+      - run: cp web/404.html web-build
 
       - uses: peaceiris/actions-gh-pages@v3
         with:
