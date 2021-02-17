@@ -12,6 +12,13 @@
 
 ## Getting Started
 
+## Add the submodules
+
+```bash
+git submodule init
+git submodule update
+```
+
 Install deps and start the dev server
 
 ```bash
