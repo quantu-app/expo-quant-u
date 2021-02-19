@@ -9,6 +9,9 @@ import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { getChapter } from "../../../course-lib/categories";
 import { viewChapter } from "../../state/tracking";
+import { useMapStateToProps } from "../../state";
+import { selectUser, setSignInUpOpen } from "../../state/auth";
+import { createGuard } from "../../createGaurd";
 
 const styles = StyleSheet.create({
   units: {
@@ -16,7 +19,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
+function InternalChapter(props: ParamList[typeof CHAPTER_SCREEN]) {
   const navigation = useNavigation();
 
   useEffect(() => viewChapter(props.category, props.course, props.chapter), []);
@@ -67,3 +70,13 @@ export function Chapter(props: ParamList[typeof CHAPTER_SCREEN]) {
     />
   );
 }
+
+export const Chapter = createGuard(InternalChapter, async (props) => {
+  const user = useMapStateToProps(selectUser),
+    chapter = await getChapter(props.category, props.course, props.chapter);
+
+  if (!user.extra.online || chapter.isFree === false) {
+    setSignInUpOpen(true);
+    throw new Error("No Access");
+  }
+});

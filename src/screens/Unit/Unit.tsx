@@ -23,6 +23,9 @@ import { Loading } from "../../Loading";
 import { getUnit } from "../../../course-lib/categories";
 import { viewUnit } from "../../state/tracking";
 import { ILesson, isQuiz } from "../../../course-lib";
+import { useMapStateToProps } from "../../state";
+import { createGuard } from "../../createGaurd";
+import { selectUser, setSignInUpOpen } from "../../state/auth";
 
 const styles = StyleSheet.create({
   lessons: {
@@ -38,7 +41,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
+export function InternalUnit(props: ParamList[typeof UNIT_SCREEN]) {
   const navigation = useNavigation();
 
   useEffect(
@@ -132,3 +135,18 @@ export function Unit(props: ParamList[typeof UNIT_SCREEN]) {
 function getLessonQuizCount(lessons: ILesson[]) {
   return lessons.filter(isQuiz).reduce((count) => count + 1, 0);
 }
+
+export const Unit = createGuard(InternalUnit, async (props) => {
+  const user = useMapStateToProps(selectUser),
+    unit = await getUnit(
+      props.category,
+      props.course,
+      props.chapter,
+      props.unit
+    );
+
+  if (!user.extra.online || unit.isFree === false) {
+    setSignInUpOpen(true);
+    throw new Error("No Access");
+  }
+});
