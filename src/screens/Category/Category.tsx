@@ -13,9 +13,6 @@ import { Async } from "@aicacia/async_component-react";
 import { Loading } from "../../Loading";
 import { JSError } from "../../JSError";
 import { viewCategory } from "../../state/tracking";
-import { createGuard } from "../../createGaurd";
-import { selectUser, setSignInUpOpen } from "../../state/auth";
-import { useMapStateToProps } from "../../state";
 
 const styles = StyleSheet.create({
   grid: {
@@ -37,7 +34,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function InternalCategory(props: ParamList[typeof CATEGORY_SCREEN]) {
+export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
   const navigation = useNavigation(),
     category = getCategory(props.category);
 
@@ -88,13 +85,3 @@ function InternalCategory(props: ParamList[typeof CATEGORY_SCREEN]) {
     </>
   );
 }
-
-export const Category = createGuard(InternalCategory, async (props) => {
-  const user = useMapStateToProps(selectUser),
-    category = getCategory(props.category);
-
-  if (!user.extra.online || category.isFree === false) {
-    setSignInUpOpen(true);
-    throw new Error("No Access");
-  }
-});

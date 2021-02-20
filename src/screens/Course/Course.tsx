@@ -13,9 +13,6 @@ import { Async } from "@aicacia/async_component-react";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { viewCourse } from "../../state/tracking";
-import { createGuard } from "../../createGaurd";
-import { useMapStateToProps } from "../../state";
-import { selectUser, setSignInUpOpen } from "../../state/auth";
 
 const styles = StyleSheet.create({
   chapters: {
@@ -23,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function InternalCourse(props: ParamList[typeof COURSE_SCREEN]) {
+export function Course(props: ParamList[typeof COURSE_SCREEN]) {
   const navigation = useNavigation();
 
   useEffect(() => viewCourse(props.category, props.course), []);
@@ -73,13 +70,3 @@ export function InternalCourse(props: ParamList[typeof COURSE_SCREEN]) {
     />
   );
 }
-
-export const Course = createGuard(InternalCourse, async (props) => {
-  const user = useMapStateToProps(selectUser),
-    course = await getCourse(props.category, props.course);
-
-  if (!user.extra.online || course.isFree === false) {
-    setSignInUpOpen(true);
-    throw new Error("No Access");
-  }
-});

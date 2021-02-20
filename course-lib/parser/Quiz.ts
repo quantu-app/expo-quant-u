@@ -44,7 +44,7 @@ export class Quiz extends Lesson {
         this.items = ((json.items as Array<IJSONObject>) || []).map((json) => {
           const quizItem = new QuizItem();
           quizItem.generator = json.generator as string;
-          quizItem.config = json.config as Schema;
+          quizItem.config = json.config as any;
           quizItem.count = json.count as number;
           if (typeof json.retries === "number" && json.retries >= 0) {
             quizItem.retries = json.retries;

@@ -1,5 +1,5 @@
-import React, { memo } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import React, { memo, useCallback, useState } from "react";
+import { NavigationContainer, NavigationProp } from "@react-navigation/native";
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -18,6 +18,8 @@ import {
   IndexPath,
   TopNavigation,
   TopNavigationAction,
+  OverflowMenu,
+  MenuItem,
 } from "@ui-kitten/components";
 import { Loading } from "./Loading";
 import { CategoryScreen } from "./screens/Category/CategoryScreen";
@@ -168,32 +170,11 @@ const Header = memo(
             )}
             accessoryRight={
               props.isSignedIn
-                ? (accessoryProps) => (
-                    <>
-                      <Button
-                        size="small"
-                        appearance="ghost"
-                        onPress={() =>
-                          props.scene.descriptor.navigation.navigate(
-                            PROFILE_SCREEN
-                          )
-                        }
-                      >
-                        {props.user.extra.username}
-                      </Button>
-                      <TopNavigationAction
-                        {...accessoryProps}
-                        onPress={signOut}
-                        accessibilityHint="Log out"
-                        icon={(props) => (
-                          <Icon {...props} name="log-out-outline" />
-                        )}
-                      />
-                    </>
+                ? () => (
+                    <Account navigation={props.scene.descriptor.navigation} />
                   )
-                : (props) => (
+                : () => (
                     <TopNavigationAction
-                      {...props}
                       onPress={toggleSignInUpOpen}
                       accessibilityHint="Log in"
                       icon={(props) => (
@@ -215,6 +196,47 @@ const Header = memo(
     );
   }
 );
+
+interface IAccountProps {
+  navigation: NavigationProp<any>;
+}
+
+const Account = memo((props: IAccountProps) => {
+  const [visible, setVisible] = useState(false),
+    [selectedIndex, setSelectedIndex] = useState<IndexPath | undefined>();
+
+  const onItemSelect = useCallback((index: IndexPath) => {
+    setSelectedIndex(index);
+    setVisible(false);
+
+    if (index.row === 0) {
+      props.navigation.navigate(PROFILE_SCREEN);
+    } else if (index.row === 1) {
+      signOut();
+    }
+  }, []);
+
+  return (
+    <Layout level="1">
+      <OverflowMenu
+        anchor={() => (
+          <TopNavigationAction
+            accessibilityHint="Profile"
+            onPress={() => setVisible(true)}
+            icon={(props) => <Icon {...props} name="person-outline" />}
+          />
+        )}
+        visible={visible}
+        selectedIndex={selectedIndex}
+        onSelect={onItemSelect}
+        onBackdropPress={() => setVisible(false)}
+      >
+        <MenuItem title="Profile" />
+        <MenuItem title="Sign out" />
+      </OverflowMenu>
+    </Layout>
+  );
+});
 
 interface IDrawerContentProps
   extends DrawerContentComponentProps<DrawerContentOptions> {

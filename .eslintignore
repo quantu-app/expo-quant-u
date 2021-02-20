@@ -8,4 +8,5 @@ node_modules/
 web-build
 courses.ts
 generators.ts
+metro.config.js
 webpack.config.js

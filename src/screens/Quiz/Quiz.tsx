@@ -9,11 +9,8 @@ import { FixedQuiz } from "../../Quiz";
 import { JSError } from "../../JSError";
 import { Loading } from "../../Loading";
 import { getLesson } from "../../../course-lib/categories";
-import { selectUser, setSignInUpOpen } from "../../state/auth";
-import { useMapStateToProps } from "../../state";
-import { createGuard } from "../../createGaurd";
 
-function InternalQuiz(props: ParamList[typeof QUIZ_SCREEN]) {
+export function Quiz(props: ParamList[typeof QUIZ_SCREEN]) {
   return (
     <Async
       promise={getLesson<IQuiz>(
@@ -38,19 +35,3 @@ function InternalQuiz(props: ParamList[typeof QUIZ_SCREEN]) {
     />
   );
 }
-
-export const Quiz = createGuard(InternalQuiz, async (props) => {
-  const user = useMapStateToProps(selectUser),
-    quiz = await getLesson<IQuiz>(
-      props.category,
-      props.course,
-      props.chapter,
-      props.unit,
-      props.lesson
-    );
-
-  if (!user.extra.online || quiz.isFree === false) {
-    setSignInUpOpen(true);
-    throw new Error("No Access");
-  }
-});

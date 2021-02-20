@@ -11,5 +11,5 @@ export async function readYaml(
     knownExt
       ? await readFile(filepath)
       : await readFileWithExts(filepath, [".yml", ".yaml"])
-  );
+  ) as any;
 }
