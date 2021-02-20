@@ -1,4 +1,5 @@
 import React, { memo, useCallback, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer, NavigationProp } from "@react-navigation/native";
 import {
   createDrawerNavigator,
@@ -8,7 +9,13 @@ import {
 } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/Home/HomeScreen";
 import { CourseScreen } from "./screens/Course/CourseScreen";
-import { Platform, SafeAreaView, StyleSheet, StatusBar } from "react-native";
+import {
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  StatusBar,
+  Linking,
+} from "react-native";
 import {
   Button,
   Layout,
@@ -64,14 +71,55 @@ import { StartChallengeQuizScreen } from "./screens/StartChallengeQuiz/StartChal
 import { ChallengeQuizScreen } from "./screens/ChallengeQuiz/ChallengeQuizScreen";
 import { RecordOf } from "immutable";
 
+export const PERSISTENCE_KEY = "NAVIGATION_STATE";
+
 export const { Navigator, Screen } = createDrawerNavigator<ParamList>();
 
 export function Navigation() {
-  return (
-    <NavigationContainer linking={linking} fallback={<Loading />}>
-      <NavigationDrawer />
-    </NavigationContainer>
-  );
+  const [isReady, setIsReady] = React.useState(false);
+  const [initialState, setInitialState] = React.useState();
+
+  React.useEffect(() => {
+    if (!isReady) {
+      (async () => {
+        try {
+          const initialUrl = await Linking.getInitialURL();
+
+          if (Platform.OS !== "web" && initialUrl === null) {
+            const savedStateString = await AsyncStorage.getItem(
+                PERSISTENCE_KEY
+              ),
+              state = savedStateString
+                ? JSON.parse(savedStateString)
+                : undefined;
+
+            if (state !== undefined) {
+              setInitialState(state);
+            }
+          }
+        } finally {
+          setIsReady(true);
+        }
+      })();
+    }
+  }, [isReady]);
+
+  if (isReady) {
+    return (
+      <NavigationContainer
+        linking={linking}
+        fallback={<Loading />}
+        initialState={initialState}
+        onStateChange={(state) =>
+          AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+        }
+      >
+        <NavigationDrawer />
+      </NavigationContainer>
+    );
+  } else {
+    return <Loading />;
+  }
 }
 
 function NavigationDrawer() {

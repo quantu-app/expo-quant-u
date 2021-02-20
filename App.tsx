@@ -1,5 +1,6 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
+import { enableScreens } from "react-native-screens";
 import { Navigation } from "./src/Navigation";
 import * as eva from "@eva-design/eva";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
@@ -9,6 +10,8 @@ import customMapping from "./custom-mapping.json";
 
 import "./generators";
 import "./courses";
+
+enableScreens();
 
 export default function App() {
   return (
