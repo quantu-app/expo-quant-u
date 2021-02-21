@@ -5,6 +5,7 @@ import {
   MultipleChoiceInputOption,
 } from "../../../course-lib";
 import { IQuestionInputProps } from "./IQuestionInputProps";
+import { ListRenderItemInfo, View } from "react-native";
 
 export function MultipleChoiceInput(
   props: IQuestionInputProps<string[], MultipleChoiceInputClass>
@@ -28,21 +29,22 @@ export function MultipleChoiceInput(
   return (
     <List
       data={props.input.getChoices()}
-      renderItem={({ item }) => (
+      renderItem={({ item }: ListRenderItemInfo<MultipleChoiceInputOption>) => (
         <ListItem
           key={item.getKey()}
           accessoryLeft={() => (
             <CheckBox
               status={
-                (props.result.done && item.isCorrect()) || selected
+                (props.result.done && item.isCorrect()) ||
+                selected.includes(item.getKey())
                   ? "checked"
                   : "unchecked"
               }
               disabled={props.result.done}
-              onPress={() => onSelect(item)}
+              onChange={() => onSelect(item)}
             />
           )}
-          title={item.getChildren()}
+          title={(props) => <View {...props}>{item.getChildren()}</View>}
         />
       )}
     />
