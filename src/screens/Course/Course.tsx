@@ -9,10 +9,11 @@ import {
   COURSE_SCREEN,
   ParamList,
 } from "../../navigationConfig";
-import { Async } from "@aicacia/async_component-react";
-import { JSError } from "../../JSError";
-import { Loading } from "../../Loading";
 import { viewCourse } from "../../state/tracking";
+import { createGuard } from "../../createGaurd";
+import { selectUser } from "../../state/auth";
+import { ICourse } from "../../../course-lib";
+import { AccessError } from "../../AccessError";
 
 const styles = StyleSheet.create({
   chapters: {
@@ -20,53 +21,62 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Course(props: ParamList[typeof COURSE_SCREEN]) {
-  const navigation = useNavigation();
+export type ICourseProps = ParamList[typeof COURSE_SCREEN] & {
+  courseObject: ICourse;
+};
 
-  useEffect(() => viewCourse(props.category, props.course), []);
+export const Course = createGuard(
+  selectUser,
+  async (props: ParamList[typeof COURSE_SCREEN], user) => {
+    const courseObject = await getCourse(props.category, props.course);
 
-  return (
-    <Async
-      promise={getCourse(props.category, props.course)}
-      onPending={() => <Loading />}
-      onError={(error) => <JSError error={error} />}
-      onSuccess={(course) => (
-        <Card disabled>
-          <Text category="h1">{course.name}</Text>
+    if (courseObject.isFree && user.extra.online) {
+      return { ...props, courseObject };
+    } else {
+      throw new AccessError();
+    }
+  },
+  (props: ICourseProps) => {
+    const navigation = useNavigation();
+
+    useEffect(() => viewCourse(props.category, props.course), []);
+
+    return (
+      <Card disabled>
+        <Text category="h1">{props.courseObject.name}</Text>
+        <Divider />
+        <Text>{props.courseObject.description}</Text>
+        <View style={styles.chapters}>
+          <Text category="h3">Chapters</Text>
           <Divider />
-          <Text>{course.description}</Text>
-          <View style={styles.chapters}>
-            <Text category="h3">Chapters</Text>
-            <Divider />
-            <List
-              data={course.chapters}
-              renderItem={({ item }) => (
-                <ListItem
-                  key={item.url}
-                  title={item.name}
-                  accessoryLeft={
-                    item.logo &&
-                    (() => (
-                      <Image
-                        source={item.logo}
-                        style={{ width: 64, height: 64 }}
-                        resizeMode="contain"
-                      />
-                    ))
-                  }
-                  description={excerpt(item.description)}
-                  onPress={() =>
-                    navigation.navigate(CHAPTER_SCREEN, {
-                      ...props,
-                      chapter: item.url,
-                    })
-                  }
-                />
-              )}
-            />
-          </View>
-        </Card>
-      )}
-    />
-  );
-}
+          <List
+            data={props.courseObject.chapters}
+            renderItem={({ item }) => (
+              <ListItem
+                key={item.url}
+                title={item.name}
+                accessoryLeft={
+                  item.logo &&
+                  (() => (
+                    <Image
+                      source={item.logo}
+                      style={{ width: 64, height: 64 }}
+                      resizeMode="contain"
+                    />
+                  ))
+                }
+                description={excerpt(item.description)}
+                onPress={() =>
+                  navigation.navigate(CHAPTER_SCREEN, {
+                    ...props,
+                    chapter: item.url,
+                  })
+                }
+              />
+            )}
+          />
+        </View>
+      </Card>
+    );
+  }
+);
