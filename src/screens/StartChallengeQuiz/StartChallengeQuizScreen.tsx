@@ -15,9 +15,9 @@ export const StartChallengeQuizScreen = createScreen(
   (props: IStartChallengeQuizScreenProps) => (
     <Container>
       <Async
-        promise={import("./StartChallengeQuizLoading")}
-        onSuccess={({ StartChallengeQuizLoading }) => (
-          <StartChallengeQuizLoading {...props.route.params} />
+        promise={import("./StartChallengeQuiz")}
+        onSuccess={({ StartChallengeQuiz }) => (
+          <StartChallengeQuiz {...props.route.params} />
         )}
         onPending={() => <Loading />}
         onError={(error) => <JSError error={error} />}

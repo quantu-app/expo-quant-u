@@ -28,12 +28,6 @@ export function setUserOnline(uid: string, online: boolean) {
   return firebase.database().ref(`users/${uid}`).child("online").set(online);
 }
 
-export function toggleSignInUpOpen() {
-  store.update((state) =>
-    state.set("signInUpOpen", !state.get("signInUpOpen"))
-  );
-}
-
 export function setSignInUpOpen(open: boolean) {
   store.update((state) => state.set("signInUpOpen", open));
 }
@@ -176,7 +170,7 @@ function signUserIn(firebaseUser: firebase.User, isNewUser: boolean) {
   setUserOnline(user.uid, true);
 
   return store.update((state) =>
-    state.set("isSignedIn", true).set("user", user)
+    state.set("isSignedIn", true).set("user", user).set("signInUpOpen", false)
   );
 }
 

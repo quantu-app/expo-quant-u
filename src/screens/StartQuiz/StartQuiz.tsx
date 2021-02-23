@@ -8,11 +8,11 @@ import {
   START_QUIZ_SCREEN,
   QUIZ_SCREEN,
 } from "../../navigationConfig";
-import { Async } from "@aicacia/async_component-react";
-import { JSError } from "../../JSError";
-import { Loading } from "../../Loading";
 import { getLesson } from "../../../course-lib/categories";
 import { viewLesson } from "../../state/tracking";
+import { createGuard } from "../../createGaurd";
+import { selectUser } from "../../state/auth";
+import { AccessError } from "../../AccessError";
 
 const styles = StyleSheet.create({
   buttons: {
@@ -23,48 +23,65 @@ const styles = StyleSheet.create({
   },
 });
 
-export function StartQuiz(props: ParamList[typeof START_QUIZ_SCREEN]) {
-  const navigation = useNavigation();
+export type IStartQuizProps = ParamList[typeof START_QUIZ_SCREEN] & {
+  quizObject: IQuiz;
+};
 
-  useEffect(
-    () =>
-      viewLesson(
-        props.category,
-        props.course,
-        props.chapter,
-        props.unit,
-        props.lesson,
-        "quiz"
-      ),
-    []
-  );
+export const StartQuiz = createGuard(
+  selectUser,
+  async (props: ParamList[typeof START_QUIZ_SCREEN], user) => {
+    const quizObject = await getLesson<IQuiz>(
+      props.category,
+      props.course,
+      props.chapter,
+      props.unit,
+      props.lesson
+    );
 
-  return (
-    <Async
-      promise={getLesson<IQuiz>(
-        props.category,
-        props.course,
-        props.chapter,
-        props.unit,
-        props.lesson
-      )}
-      onPending={() => <Loading />}
-      onError={(error) => <JSError error={error} />}
-      onSuccess={(quiz) => (
-        <Card disabled>
-          <Text category="h1">{quiz.name}</Text>
-          <Divider />
-          <Text>{quiz.description}</Text>
-          <View style={styles.buttons}>
-            <Button
-              appearance="filled"
-              onPress={() => navigation.navigate(QUIZ_SCREEN, props)}
-            >
-              Start Quiz
-            </Button>
-          </View>
-        </Card>
-      )}
-    />
-  );
-}
+    if (quizObject.isFree || user.extra.online) {
+      return { ...props, quizObject };
+    } else {
+      throw new AccessError();
+    }
+  },
+  (props: IStartQuizProps) => {
+    const navigation = useNavigation();
+
+    useEffect(
+      () =>
+        viewLesson(
+          props.category,
+          props.course,
+          props.chapter,
+          props.unit,
+          props.lesson,
+          "quiz"
+        ),
+      []
+    );
+
+    return (
+      <Card disabled>
+        <Text category="h1">{props.quizObject.name}</Text>
+        <Divider />
+        <Text>{props.quizObject.description}</Text>
+        <View style={styles.buttons}>
+          <Button
+            appearance="filled"
+            onPress={() =>
+              navigation.navigate(QUIZ_SCREEN, {
+                category: props.category,
+                course: props.course,
+                chapter: props.chapter,
+                unit: props.unit,
+                lesson: props.lesson,
+              })
+            }
+          >
+            Start Quiz
+          </Button>
+        </View>
+      </Card>
+    );
+  }
+);

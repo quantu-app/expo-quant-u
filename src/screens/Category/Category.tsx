@@ -13,6 +13,10 @@ import { Async } from "@aicacia/async_component-react";
 import { Loading } from "../../Loading";
 import { JSError } from "../../JSError";
 import { viewCategory } from "../../state/tracking";
+import { createGuard } from "../../createGaurd";
+import { selectUser } from "../../state/auth";
+import { ICategory } from "../../../course-lib";
+import { AccessError } from "../../AccessError";
 
 const styles = StyleSheet.create({
   grid: {
@@ -34,54 +38,69 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Category(props: ParamList[typeof CATEGORY_SCREEN]) {
-  const navigation = useNavigation(),
-    category = getCategory(props.category);
+export type ICategoryProps = ParamList[typeof CATEGORY_SCREEN] & {
+  categoryObject: ICategory;
+};
 
-  useEffect(() => viewCategory(props.category), []);
+export const Category = createGuard(
+  selectUser,
+  async (props: ParamList[typeof COURSE_SCREEN], user) => {
+    const categoryObject = await getCategory(props.category);
 
-  return (
-    <>
-      <Card disabled>
-        <Text category="h1">{category.name}</Text>
-        <Divider />
-        <Text>{category.description}</Text>
-      </Card>
-      <Async
-        promise={getCourses(category.url)}
-        onError={(error) => <JSError error={error} />}
-        onPending={() => <Loading />}
-        onSuccess={(courses) => (
-          <View style={styles.grid}>
-            {courses.map((course) => (
-              <Card key={course.url} style={styles.card}>
-                <Text category="h2">{course.name}</Text>
-                {course.logo && (
-                  <Image
-                    source={course.logo}
-                    resizeMode="contain"
-                    style={{ height: 128 }}
-                  />
-                )}
-                <Text>{excerpt(course.description)}</Text>
-                <View style={styles.buttons}>
-                  <Button
-                    appearance="filled"
-                    onPress={() => {
-                      navigation.navigate(COURSE_SCREEN, {
-                        ...props,
-                        course: course.url,
-                      });
-                    }}
-                  >
-                    Start
-                  </Button>
-                </View>
-              </Card>
-            ))}
-          </View>
-        )}
-      />
-    </>
-  );
-}
+    if (categoryObject.isFree || user.extra.online) {
+      return { ...props, categoryObject };
+    } else {
+      throw new AccessError();
+    }
+  },
+  (props: ICategoryProps) => {
+    const navigation = useNavigation();
+
+    useEffect(() => viewCategory(props.category), []);
+
+    return (
+      <>
+        <Card disabled>
+          <Text category="h1">{props.categoryObject.name}</Text>
+          <Divider />
+          <Text>{props.categoryObject.description}</Text>
+        </Card>
+        <Async
+          promise={getCourses(props.categoryObject.url)}
+          onError={(error) => <JSError error={error} />}
+          onPending={() => <Loading />}
+          onSuccess={(courses) => (
+            <View style={styles.grid}>
+              {courses.map((course) => (
+                <Card key={course.url} style={styles.card}>
+                  <Text category="h2">{course.name}</Text>
+                  {course.logo && (
+                    <Image
+                      source={course.logo}
+                      resizeMode="contain"
+                      style={{ height: 128 }}
+                    />
+                  )}
+                  <Text>{excerpt(course.description)}</Text>
+                  <View style={styles.buttons}>
+                    <Button
+                      appearance="filled"
+                      onPress={() => {
+                        navigation.navigate(COURSE_SCREEN, {
+                          ...props,
+                          course: course.url,
+                        });
+                      }}
+                    >
+                      Start
+                    </Button>
+                  </View>
+                </Card>
+              ))}
+            </View>
+          )}
+        />
+      </>
+    );
+  }
+);

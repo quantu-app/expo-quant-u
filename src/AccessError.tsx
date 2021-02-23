@@ -1,1 +1,3 @@
-export class AccessError extends Error {}
+export class AccessError extends Error {
+  message = "Access Denied";
+}

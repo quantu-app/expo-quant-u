@@ -42,8 +42,8 @@ import {
   IUser,
   selectIsSignedIn,
   selectUser,
+  setSignInUpOpen,
   signOut,
-  toggleSignInUpOpen,
 } from "./state/auth";
 import { useMapStateToProps } from "./state";
 import {
@@ -223,7 +223,7 @@ const Header = memo(
                   )
                 : () => (
                     <TopNavigationAction
-                      onPress={toggleSignInUpOpen}
+                      onPress={() => setSignInUpOpen(true)}
                       accessibilityHint="Log in"
                       icon={(props) => (
                         <Icon {...props} name="log-in-outline" />

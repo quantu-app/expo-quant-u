@@ -5,7 +5,6 @@ import { SMALL_WIDTH } from "./screens";
 import { useMapStateToProps } from "./state";
 import {
   selectSignInUpOpen,
-  toggleSignInUpOpen,
   signInWithGithub,
   signInWithGoogle,
 } from "./state/auth";
@@ -36,7 +35,7 @@ export const SignInUp = memo(() => {
     <Modal
       style={styles.modal}
       visible={signInUpOpen}
-      onBackdropPress={toggleSignInUpOpen}
+      onBackdropPress={() => setSignInUpOpen(false)}
       backdropStyle={styles.backdrop}
     >
       <Card disabled>
@@ -53,7 +52,6 @@ function SignIn() {
     setLoading(true);
     try {
       await signInFn();
-      toggleSignInUpOpen();
     } catch (error) {
       throw error;
     } finally {
@@ -69,7 +67,7 @@ function SignIn() {
       <Button
         style={styles.close}
         appearance="ghost"
-        onPress={toggleSignInUpOpen}
+        onPress={() => setSignInUpOpen(false)}
         accessoryLeft={(props) => <Icon {...props} name="close" />}
       />
       <View>

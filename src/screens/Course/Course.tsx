@@ -30,7 +30,7 @@ export const Course = createGuard(
   async (props: ParamList[typeof COURSE_SCREEN], user) => {
     const courseObject = await getCourse(props.category, props.course);
 
-    if (courseObject.isFree && user.extra.online) {
+    if (courseObject.isFree || user.extra.online) {
       return { ...props, courseObject };
     } else {
       throw new AccessError();
@@ -68,7 +68,8 @@ export const Course = createGuard(
                 description={excerpt(item.description)}
                 onPress={() =>
                   navigation.navigate(CHAPTER_SCREEN, {
-                    ...props,
+                    category: props.category,
+                    course: props.course,
                     chapter: item.url,
                   })
                 }

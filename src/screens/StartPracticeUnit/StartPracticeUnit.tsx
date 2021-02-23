@@ -5,13 +5,14 @@ import {
   PRACTICE_UNIT_SCREEN,
   START_PRACTICE_UNIT_SCREEN,
 } from "../../navigationConfig";
-import { Async } from "@aicacia/async_component-react";
-import { JSError } from "../../JSError";
-import { Loading } from "../../Loading";
 import { getUnit } from "../../../course-lib/categories";
 import { viewUnit } from "../../state/tracking";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
+import { selectUser } from "../../state/auth";
+import { createGuard } from "../../createGaurd";
+import { AccessError } from "../../AccessError";
+import { IUnit } from "../../../course-lib";
 
 const styles = StyleSheet.create({
   buttons: {
@@ -21,38 +22,53 @@ const styles = StyleSheet.create({
   },
 });
 
-export function StartPracticeUnit(
-  props: ParamList[typeof START_PRACTICE_UNIT_SCREEN]
-) {
-  const navigation = useNavigation();
+export type IStartPracticeUnitProps = ParamList[typeof START_PRACTICE_UNIT_SCREEN] & {
+  unitObject: IUnit;
+};
 
-  useEffect(
-    () => viewUnit(props.category, props.course, props.chapter, props.unit),
-    [props.category, props.course, props.chapter, props.unit]
-  );
+export const StartPracticeUnit = createGuard(
+  selectUser,
+  async (props: ParamList[typeof START_PRACTICE_UNIT_SCREEN], user) => {
+    const unitObject = await getUnit(
+      props.category,
+      props.course,
+      props.chapter,
+      props.unit
+    );
 
-  return (
-    <Async
-      promise={getUnit(props.category, props.course, props.chapter, props.unit)}
-      onPending={() => <Loading />}
-      onError={(error) => <JSError error={error} />}
-      onSuccess={(unit) => (
-        <Card disabled>
-          <Text category="h1">{unit.name}</Text>
-          <View style={styles.buttons}>
-            <Button
-              onPress={() =>
-                navigation.navigate(PRACTICE_UNIT_SCREEN, {
-                  ...props,
-                  seed: Date.now(),
-                })
-              }
-            >
-              Start
-            </Button>
-          </View>
-        </Card>
-      )}
-    />
-  );
-}
+    if (unitObject.isFree || user.extra.online) {
+      return { ...props, unitObject };
+    } else {
+      throw new AccessError();
+    }
+  },
+  (props: IStartPracticeUnitProps) => {
+    const navigation = useNavigation();
+
+    useEffect(
+      () => viewUnit(props.category, props.course, props.chapter, props.unit),
+      [props.category, props.course, props.chapter, props.unit]
+    );
+
+    return (
+      <Card disabled>
+        <Text category="h1">{props.unitObject.name}</Text>
+        <View style={styles.buttons}>
+          <Button
+            onPress={() =>
+              navigation.navigate(PRACTICE_UNIT_SCREEN, {
+                category: props.category,
+                course: props.course,
+                chapter: props.chapter,
+                unit: props.unit,
+                seed: Date.now(),
+              })
+            }
+          >
+            Start
+          </Button>
+        </View>
+      </Card>
+    );
+  }
+);
