@@ -1,6 +1,8 @@
 export {
+  IConfigSchema,
   IQuestionGenerator,
   IQuestionGeneratorFn,
+  createSchema,
   createQuestionGenerator,
   isQuestionGenerator,
   MultipleChoiceInput,

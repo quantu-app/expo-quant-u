@@ -3,6 +3,15 @@ import { Rng } from "@aicacia/rand";
 import { Schema } from "jsonschema";
 import { Question } from "./Question";
 
+export type IConfigSchema<C> = Record<keyof C, Schema & { default?: any }>;
+
+export function createSchema<C = any>(schema: IConfigSchema<C>): Schema {
+  return {
+    type: "object",
+    properties: schema,
+  };
+}
+
 export interface IQuestionGeneratorJSON {
   generator: string;
   config: IJSONObject;
@@ -23,9 +32,10 @@ export interface IQuestionGenerator<C = any, T = any> {
 }
 
 export function createQuestionGenerator<C = any, T = any>(
-  schema: Schema,
+  config: IConfigSchema<C>,
   createGeneratorFn: ICreateQuestionGeneratorFn<C, T>
 ): IQuestionGenerator<C, T> {
+  const schema = createSchema(config);
   return { schema, defaults: createDefaults(schema), createGeneratorFn };
 }
 

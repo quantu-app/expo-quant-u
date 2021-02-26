@@ -1,4 +1,6 @@
 export {
+  IConfigSchema,
+  createSchema,
   IQuestionGenerator,
   IQuestionGeneratorFn,
   IQuestionGeneratorJSON,

@@ -13,9 +13,8 @@
     "build.web": "expo build:web",
     "lint": "eslint . --fix",
     "prettier": "prettier --ignore-path ./.eslintignore --ignore-unknown --write .",
-    "syncGenerators": "ts-node ./scripts/syncGenerators.ts",
-    "syncCourses": "ts-node ./scripts/syncCourses.ts",
-    "sync": "npm run syncGenerators && npm run syncCourses",
+    "generators": "ts-node ./scripts/syncGenerators.ts",
+    "courses": "ts-node ./scripts/syncCourses.ts",
     "preCommit": "npm run prettier && npm run lint"
   },
   "husky": {

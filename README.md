@@ -23,7 +23,8 @@ Install deps and start the dev server
 
 ```bash
 npm install
-npm run sync
+npm run courses
+npm run generators
 npm run web
 ```
 
