@@ -23,7 +23,8 @@ jobs:
       - run: npm i
       - run: npm install json -g
       - run: json -I -f package.json -e 'this.homepage="https://quantu.app"'
-      - run: npm run sync
+      - run: npm run generators
+      - run: npm run courses
       - run: npm run build.web
       - run: cp web/404.html web-build
 
