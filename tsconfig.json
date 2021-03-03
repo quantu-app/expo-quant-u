@@ -3,6 +3,7 @@
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
+    "target": "ES5",
     "jsx": "react-native",
     "lib": ["dom", "esnext"],
     "moduleResolution": "node",
